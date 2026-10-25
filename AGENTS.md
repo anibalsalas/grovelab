@@ -9,7 +9,7 @@ Detalle en `docs/ALCANCE.md`.
 
 ## Stack (propuesto — confirmar antes de instalar dependencias)
 - Next.js (App Router) + TypeScript estricto
-- Estilos: **Tailwind y SCSS/CSS Modules están permitidos para todo** (layout, efectos, parallax, 3D, animaciones, máscaras). Elige el más adecuado en cada caso con los criterios de `docs/DISENO.md`. Un solo juego de tokens como variables CSS compartidas por ambos.
+- Estilos: **solo Tailwind v4 y CSS** — utilidades de Tailwind, CSS global y **CSS Modules** (`*.module.css`), más CSS nativo (anidado, variables, `@keyframes`, `@property`, animaciones atadas al scroll). Elige el más adecuado en cada caso con los criterios de `docs/DISENO.md`. Un solo juego de tokens en variables CSS (`src/styles/tokens.css`). **No se usa SCSS.**
 - Panel administrable y base de datos: POR CONFIRMAR (opción: Payload CMS + PostgreSQL gestionado)
 - Hosting: Vercel (plan Pro, cuenta a nombre del cliente)
 - Validación: Zod. Pruebas: Vitest y Playwright

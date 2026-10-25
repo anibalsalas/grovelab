@@ -9,17 +9,32 @@
 Un solo lenguaje visual en todo el sitio: mismos tokens, mismos componentes, mismo ritmo de movimiento. Máximo **un momento "wow" por página**.
 
 ## Estrategia de estilos
-Se permiten **ambos para todo**, con un único juego de tokens:
+Solo **Tailwind v4 y CSS**, con un único juego de tokens:
 - **Tailwind:** ideal cuando el resultado cabe en pocas utilidades legibles (layout, responsive, estados, transformaciones y degradados sencillos, e incluso efectos 3D o por scroll con valores arbitrarios).
-- **SCSS / CSS Modules:** ideal cuando hay `@keyframes` propios, muchas capas, selectores, cálculos o lógica repetida (mixins), o cuando las clases se vuelven ilegibles.
+- **CSS Modules (`*.module.css`) y CSS nativo:** ideal cuando hay `@keyframes` propios, muchas capas, selectores, cálculos, `@property`, scroll-driven animations, o cuando las clases de Tailwind se vuelven ilegibles.
 - **Un enfoque por efecto dentro de un mismo componente.**
-- **Tokens como variables CSS** en un solo archivo; ambos los consumen, así el diseño no se desincroniza.
+- **Tokens como variables CSS** en un solo archivo; Tailwind (vía `@theme inline`) y los módulos CSS consumen los mismos valores, sin duplicar literales.
+- **SCSS no forma parte del proyecto.**
 
-## Tokens (PROVISIONAL)
-- Colores: verde de marca (medir del logo), gris oscuro de texto (medir del logo), acento naranja/tierra (opcional), fondo claro cálido, y estados (éxito, error, aviso) con contraste AA.
-- Tipografía: una familia para titulares y otra para texto (a elegir; cargar con `next/font`, sin bloqueo).
-- Escala de espacios en múltiplos de 4 u 8 px. Radios y sombras definidos en 2–3 niveles.
-- Todo vive como variables CSS/SCSS en un único archivo de tokens.
+## Tokens y nombres (PROVISIONAL)
+
+### Catálogo semántico
+Colores: marca, texto, acento, fondo, éxito, error, aviso. Tipografía: titular y texto (`next/font`). Espacios en pasos de 4 px (`espacio-1` … `espacio-16`). Radios `radio-s`, `radio-m`, `radio-l`. Sombras `sombra-s`, `sombra-m`. Foco: `anillo-foco`.
+
+### Convención en código (evitar colisión con Tailwind)
+
+Tailwind v4 define utilidades a partir de variables del theme (`--color-*`, `--spacing-*`, `--radius-*`, etc.). Si en `:root` pones `--color-marca: #…` y en `@theme inline` escribes `--color-marca: var(--color-marca)`, la referencia es **circular**.
+
+**Dos capas:**
+
+1. **`src/styles/tokens.css` (`:root`)** — única fuente de valores literales. Prefijo **`--token-`**: `--token-color-marca`, `--token-color-texto`, `--token-espacio-4`, `--token-radio-s`, `--token-font-titular`, etc. Los comentarios del archivo marcan valores **PROVISIONAL** hasta medir el logo.
+2. **`globals.css` — `@theme inline`** — solo puentes hacia Tailwind, sin hex ni px sueltos, por ejemplo `--color-marca: var(--token-color-marca);`, `--spacing-4: var(--token-espacio-4);`, `--radius-s: var(--token-radio-s);` (ajustar nombres de theme a la utilidad que uses).
+3. **CSS Modules** — siempre `var(--token-…)`, no las variables del theme de Tailwind, para no acoplar el módulo al bundler.
+
+En documentación y revisiones se habla de «color marca» o «radio s»; en CSS el identificador completo es `--token-color-marca`, `--token-radio-s`.
+
+### Movimiento reducido
+Regla **global** en `globals.css` para `prefers-reduced-motion: reduce`, más ajustes **por módulo** o por efecto cuando haga falta una versión estática más fina.
 
 ## Catálogo de efectos
 | Efecto | Dónde | Técnica | Costo | Respaldo |

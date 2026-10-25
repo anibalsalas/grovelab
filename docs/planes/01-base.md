@@ -6,7 +6,7 @@ Referencias: `AGENTS.md`, `docs/ALCANCE.md`, `docs/DISENO.md`.
 
 ## Objetivo
 
-Dejar un proyecto Next.js (App Router) con TypeScript estricto, un solo archivo de tokens en variables CSS consumido por Tailwind y por SCSS, y un panel de administración con inicio de sesión y permisos por rol. Publicar un despliegue de prueba.
+Dejar un proyecto Next.js (App Router) con TypeScript estricto, un solo archivo de tokens en variables CSS consumido por Tailwind v4 y por CSS (Modules y nativo), y un panel de administración con inicio de sesión y permisos por rol. Publicar un despliegue de prueba.
 
 La fase termina cuando un miembro del equipo entra al panel y la portada mínima usa los tokens. El catálogo, el pedido y el diseño de páginas vienen en fases posteriores.
 
@@ -71,8 +71,7 @@ Gestor de paquetes: npm, alineado con los scripts de `AGENTS.md`. Next.js queda 
 | `next@16.4.3`, `react`, `react-dom` | App Router y páginas. La versión de Next es la que admite Payload 3.92.0. | Remix: otro enrutador; se descarta porque el stack ya está decidido. |
 | `typescript` y tipos de Node y React | TypeScript estricto. | — |
 | `eslint`, `eslint-config-next` | `npm run lint`. | Biome: un solo binario, pero se aparta del script previsto. |
-| `tailwindcss` (v4, configuración en CSS) | Utilidades que leen los tokens. | Tailwind 3: obliga a repetir los valores en `tailwind.config.ts`. |
-| `sass` | CSS Modules cuando un efecto no quepa en utilidades. | Solo Tailwind: contradice `docs/DISENO.md`. |
+| `tailwindcss` (v4, configuración en CSS) | Utilidades que leen los tokens vía `@theme inline`. | Tailwind 3: obliga a repetir los valores en la configuración. |
 | `zod` | Validar entorno y, más adelante, formularios en el servidor. | Valibot: más liviano; Zod ya está en el stack. |
 | `vitest` | Pruebas unitarias (entorno y tokens no aplican; sí un esquema Zod). | Jest: más lento de configurar con Next. |
 | `@playwright/test` | Una prueba del login de Payload (`/admin/login`). | Solo prueba manual: no deja registro repetible. |
@@ -103,20 +102,23 @@ Alias `@/` hacia `src/`.
 
 ## Tokens
 
-Un solo archivo, `src/styles/tokens.css`, importado desde el CSS global del grupo `(frontend)`. Valores en `:root` como variables CSS. PROVISIONALES hasta medir el logo; no son la marca cerrada.
+Un solo archivo, `src/styles/tokens.css`, importado desde `globals.css` del grupo `(frontend)`. Detalle de nombres en `docs/DISENO.md` (sección «Tokens y nombres»).
 
-- Color: `--color-marca`, `--color-texto`, `--color-acento`, `--color-fondo`, `--color-exito`, `--color-error`, `--color-aviso`.
-- Tipografía: `--font-titular`, `--font-texto`, cargadas con `next/font` (sin bloqueo de render). Familias concretas: POR CONFIRMAR.
-- Espacio en pasos de 4 px: `--espacio-1` … `--espacio-16` (4 px a 64 px).
-- Radio: `--radio-s`, `--radio-m`, `--radio-l`.
-- Sombra: `--sombra-s`, `--sombra-m`.
-- Foco: `--anillo-foco` (contraste AA sobre el fondo).
+### Convención (evitar colisión con `@theme`)
 
-Tailwind v4 los consume con `@theme inline` apuntando a `var(--…)`. No se copian hex ni px al config.
+Tailwind v4 usa el mismo espacio de nombres que los tokens de color (`--color-*`). **No** definir `--color-marca` en `:root` y repetir `--color-marca: var(--color-marca)` en `@theme inline`: es circular.
 
-SCSS los consume con `var(--…)`. Prohibido duplicar el valor en variables Sass (`$color-marca: #…`). Un `*.module.scss` de prueba (por ejemplo el foco o un mixin `reducido` para `prefers-reduced-motion`) demuestra que ambas vías leen el mismo token.
+- **`:root` en `tokens.css`:** prefijo `--token-` y valores literales (comentados como **PROVISIONAL** hasta medir el logo), por ejemplo `--token-color-marca`, `--token-color-texto`, `--token-espacio-4`, `--token-radio-s`, `--token-font-titular`.
+- **`@theme inline` en `globals.css`:** solo puentes, por ejemplo `--color-marca: var(--token-color-marca);`, `--spacing-4: var(--token-espacio-4);`. Sin hex ni px sueltos en el theme.
+- **CSS Modules:** `var(--token-…)` directamente.
 
-En la portada mínima no hay colores ni tamaños sueltos.
+Catálogo semántico (nombres de diseño): color marca, texto, acento, fondo, éxito, error, aviso; tipografía titular y texto (`next/font`, familias POR CONFIRMAR); espacios `espacio-1` … `espacio-16` (4 px a 64 px); radios `radio-s`, `radio-m`, `radio-l`; sombras `sombra-s`, `sombra-m`; foco `anillo-foco` (contraste AA).
+
+### Movimiento reducido (global)
+
+En `globals.css`, regla global `@media (prefers-reduced-motion: reduce)` que acorte o desactive animaciones y transiciones por defecto. Los módulos con animación propia añaden su propio respaldo en el mismo `*.module.css`.
+
+En la portada mínima no hay colores ni tamaños sueltos fuera de tokens.
 
 ## Tareas
 
@@ -136,9 +138,13 @@ La portada nace en el grupo público de la plantilla blank: `src/app/(frontend)/
 
 ### 2. Tokens compartidos
 
-Añadir `src/styles/tokens.css`, Tailwind apuntando a esas variables y un módulo SCSS que use al menos una variable de color y una de espacio. La portada en `(frontend)` usa solo tokens. Comprobar en el navegador que un cambio en el archivo de tokens se refleja en la utilidad de Tailwind y en la clase del módulo SCSS.
+Añadir `src/styles/tokens.css` con variables `--token-*` y comentarios **PROVISIONAL** en colores. En `globals.css`: import de tokens, `@import "tailwindcss"`, `@theme inline` con puentes a `var(--token-…)` (sin autoreferencia; ver sección Tokens) y regla global `prefers-reduced-motion: reduce`.
 
-Elección de esta pantalla: Tailwind para el layout de la portada (pocas utilidades). SCSS solo para el módulo de prueba del token y del mixin de movimiento reducido.
+Añadir un módulo de prueba `*.module.css` (por ejemplo `portada.module.css`) que use al menos `var(--token-color-…)` y `var(--token-espacio-…)`, con una animación ligera de prueba y `@media (prefers-reduced-motion: reduce)` en el mismo archivo.
+
+La portada en `(frontend)` usa solo tokens (utilidades Tailwind del theme y clases del módulo). Comprobar en el navegador que un cambio en `tokens.css` se refleja en Tailwind y en el módulo CSS.
+
+Elección de esta pantalla: Tailwind para el layout (pocas utilidades); CSS Module para la prueba de token y movimiento reducido local. **No instalar `sass`.**
 
 ### 3. Entorno
 
@@ -219,7 +225,7 @@ Antes de dar la fase por cerrada:
 ## Criterios de aceptación
 
 1. El repositorio instala, compila y pasa lint y tipos en modo estricto, con Next.js 16.4.3.
-2. Existe un único archivo de tokens; Tailwind y SCSS leen las mismas variables.
+2. Existe un único archivo de tokens (`--token-*`); Tailwind (vía `@theme`) y los CSS Modules leen los mismos valores sin duplicar literales.
 3. La portada está en `(frontend)`, en español, sin datos inventados de Grovelab.
 4. Hay panel con el login de Payload, dos roles, editor sin acceso a usuarios y una ruta protegida.
 5. Hay un despliegue de prueba cuyo esquema llegó por migraciones, con la base fuera del repositorio.
