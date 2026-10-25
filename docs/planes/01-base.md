@@ -109,10 +109,10 @@ Un solo archivo, `src/styles/tokens.css`, importado desde `globals.css` del grup
 Tailwind v4 usa el mismo espacio de nombres que los tokens de color (`--color-*`). **No** definir `--color-marca` en `:root` y repetir `--color-marca: var(--color-marca)` en `@theme inline`: es circular.
 
 - **`:root` en `tokens.css`:** prefijo `--token-` y valores literales (comentados como **PROVISIONAL** hasta medir el logo), por ejemplo `--token-color-marca`, `--token-color-texto`, `--token-espacio-4`, `--token-radio-s`, `--token-font-titular`.
-- **`@theme inline` en `globals.css`:** solo puentes, por ejemplo `--color-marca: var(--token-color-marca);`, `--spacing-4: var(--token-espacio-4);`. Sin hex ni px sueltos en el theme.
+- **`@theme inline` en `globals.css`:** solo puentes Tailwind v4 (`--color-*`, `--spacing`, `--radius-*`, `--shadow-*`), por ejemplo `--color-marca: var(--token-color-marca);` y `--spacing: var(--token-espacio-1)` (base `0.25rem`; `p-8` = `2rem`). Sin hex ni px sueltos en el theme.
 - **CSS Modules:** `var(--token-…)` directamente.
 
-Catálogo semántico (nombres de diseño): color marca, texto, acento, fondo, éxito, error, aviso; tipografía titular y texto (`next/font`, familias POR CONFIRMAR); espacios `espacio-1` … `espacio-16` (4 px a 64 px); radios `radio-s`, `radio-m`, `radio-l`; sombras `sombra-s`, `sombra-m`; foco `anillo-foco` (contraste AA).
+Catálogo semántico (nombres de diseño): color marca, texto, acento, fondo, éxito, error, aviso; tipografía titular y texto (`next/font`, familias POR CONFIRMAR); espacios `espacio-1` … `espacio-16` en **rem** (paso `0.25rem`, hasta `4rem`); radios `radio-s`, `radio-m`, `radio-l`; sombras `sombra-s`, `sombra-m`; foco `anillo-foco` (contraste AA).
 
 ### Movimiento reducido (global)
 

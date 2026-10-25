@@ -1,0 +1,48 @@
+/**
+ * Tokens de diseño — única fuente de valores literales.
+ * Convención: prefijo --token-* (ver docs/DISENO.md).
+ */
+
+:root {
+  /* Colores PROVISIONAL — medir del logo antes de cerrar marca. */
+  /* Contraste AA (≥ 4.5:1) sobre --token-color-fondo, calculado con WCAG 2.1 relativo: */
+  /* texto/fondo ≈ 13.2:1 (#1a2e22 sobre #f7f5f0); marca/fondo ≈ 7.1:1 (#1b5e3f sobre #f7f5f0). */
+  --token-color-fondo: #f7f5f0; /* PROVISIONAL */
+  --token-color-texto: #1a2e22; /* PROVISIONAL */
+  --token-color-marca: #1b5e3f; /* PROVISIONAL */
+  --token-color-acento: #c45c26; /* PROVISIONAL */
+  --token-color-exito: #2d6a4f; /* PROVISIONAL */
+  --token-color-error: #b42318; /* PROVISIONAL */
+  --token-color-aviso: #b54708; /* PROVISIONAL */
+
+  /* Tipografía — familias POR CONFIRMAR (next/font en fase posterior). */
+  --token-font-titular: ui-sans-serif, system-ui, sans-serif;
+  --token-font-texto: ui-sans-serif, system-ui, sans-serif;
+
+  /* Espacio: paso base 0.25rem (--token-espacio-1). p-8 en Tailwind = calc(var(--spacing)*8) = 2rem. */
+  --token-espacio-1: 0.25rem;
+  --token-espacio-2: 0.5rem;
+  --token-espacio-3: 0.75rem;
+  --token-espacio-4: 1rem;
+  --token-espacio-5: 1.25rem;
+  --token-espacio-6: 1.5rem;
+  --token-espacio-7: 1.75rem;
+  --token-espacio-8: 2rem;
+  --token-espacio-9: 2.25rem;
+  --token-espacio-10: 2.5rem;
+  --token-espacio-11: 2.75rem;
+  --token-espacio-12: 3rem;
+  --token-espacio-13: 3.25rem;
+  --token-espacio-14: 3.5rem;
+  --token-espacio-15: 3.75rem;
+  --token-espacio-16: 4rem;
+
+  --token-radio-s: 0.25rem;
+  --token-radio-m: 0.5rem;
+  --token-radio-l: 0.75rem;
+
+  --token-sombra-s: 0 1px 3px 0 rgb(26 46 34 / 0.12);
+  --token-sombra-m: 0 4px 6px -1px rgb(26 46 34 / 0.14);
+
+  --token-anillo-foco: var(--token-color-marca);
+}

@@ -19,7 +19,7 @@ Solo **Tailwind v4 y CSS**, con un único juego de tokens:
 ## Tokens y nombres (PROVISIONAL)
 
 ### Catálogo semántico
-Colores: marca, texto, acento, fondo, éxito, error, aviso. Tipografía: titular y texto (`next/font`). Espacios en pasos de 4 px (`espacio-1` … `espacio-16`). Radios `radio-s`, `radio-m`, `radio-l`. Sombras `sombra-s`, `sombra-m`. Foco: `anillo-foco`.
+Colores: marca, texto, acento, fondo, éxito, error, aviso. Tipografía: titular y texto (`next/font`). Espacios en **rem**: paso base `0.25rem` (`--token-espacio-1` … `--token-espacio-16`, hasta `4rem`). Radios `radio-s`, `radio-m`, `radio-l`. Sombras `sombra-s`, `sombra-m`. Foco: `anillo-foco`.
 
 ### Convención en código (evitar colisión con Tailwind)
 
@@ -28,7 +28,7 @@ Tailwind v4 define utilidades a partir de variables del theme (`--color-*`, `--s
 **Dos capas:**
 
 1. **`src/styles/tokens.css` (`:root`)** — única fuente de valores literales. Prefijo **`--token-`**: `--token-color-marca`, `--token-color-texto`, `--token-espacio-4`, `--token-radio-s`, `--token-font-titular`, etc. Los comentarios del archivo marcan valores **PROVISIONAL** hasta medir el logo.
-2. **`globals.css` — `@theme inline`** — solo puentes hacia Tailwind, sin hex ni px sueltos, por ejemplo `--color-marca: var(--token-color-marca);`, `--spacing-4: var(--token-espacio-4);`, `--radius-s: var(--token-radio-s);` (ajustar nombres de theme a la utilidad que uses).
+2. **`globals.css` — `@theme inline`** — solo puentes hacia Tailwind v4 (`--color-*`, `--spacing`, `--radius-*`, `--shadow-*`), sin hex ni px sueltos. Espaciado: una variable base `--spacing: var(--token-espacio-1)` (multiplicador; `p-8` = `2rem`). Ejemplo: `--color-marca: var(--token-color-marca);`, `--radius-s: var(--token-radio-s);`, `--shadow-s: var(--token-sombra-s);`.
 3. **CSS Modules** — siempre `var(--token-…)`, no las variables del theme de Tailwind, para no acoplar el módulo al bundler.
 
 En documentación y revisiones se habla de «color marca» o «radio s»; en CSS el identificador completo es `--token-color-marca`, `--token-radio-s`.
