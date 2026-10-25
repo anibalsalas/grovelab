@@ -1,0 +1,41 @@
+# Grovelab — web corporativa y catálogo con pedido por WhatsApp
+
+Idioma de trabajo: español (Perú). Toda la interfaz, mensajes y textos van en español. El código (nombres de variables, funciones, commits) puede ir en inglés o español, pero de forma consistente.
+
+## Qué estamos construyendo
+Nueva web de Grovelab (https://grovelabperu.com.pe), empresa de productos para el sector agrícola. Reemplaza una web WordPress de 2019.
+Es un **catálogo con pedido por WhatsApp**: el visitante arma su pedido en la web y lo envía por WhatsApp. **No hay pagos en línea ni cuentas de cliente** (por ahora).
+Detalle en `docs/ALCANCE.md`.
+
+## Stack (propuesto — confirmar antes de instalar dependencias)
+- Next.js (App Router) + TypeScript estricto
+- Estilos: **Tailwind y SCSS/CSS Modules están permitidos para todo** (layout, efectos, parallax, 3D, animaciones, máscaras). Elige el más adecuado en cada caso con los criterios de `docs/DISENO.md`. Un solo juego de tokens como variables CSS compartidas por ambos.
+- Panel administrable y base de datos: POR CONFIRMAR (opción: Payload CMS + PostgreSQL gestionado)
+- Hosting: Vercel (plan Pro, cuenta a nombre del cliente)
+- Validación: Zod. Pruebas: Vitest y Playwright
+
+## Reglas de trabajo
+1. **Primero un plan, luego el código.** Para cualquier tarea que toque más de 2 archivos, propón el plan y espera confirmación.
+2. **Tareas pequeñas.** Una función o pantalla por vez. No generes módulos enteros de una sola pasada.
+3. **No agregues dependencias** sin decir cuál, para qué y qué alternativa hay.
+4. **No inventes datos.** Productos, precios, teléfonos, certificaciones y cifras salen de Grovelab. Si falta un dato, deja un marcador `POR CONFIRMAR`.
+5. **Nunca** escribas claves, tokens ni números reales en el código. Usa variables de entorno (`.env.local`, que no se sube a git).
+6. Antes de terminar una tarea: que compile, que pase lint y pruebas, y resume qué cambió y qué falta.
+7. No modifiques `docs/` ni estas reglas sin que se pida.
+
+## Diseño
+La dirección visual, los tokens y el catálogo de efectos están en `docs/DISENO.md`. **Léelo antes de tocar estilos o componentes visuales.**
+Regla de oro: **coherencia sobre espectáculo**. Cada efecto (parallax, 3D, animación) debe tener un lugar y un motivo definidos en `docs/DISENO.md`, un respaldo para celular y para quien prefiere menos movimiento. Si no está en el catálogo, pregunta antes de agregarlo.
+
+## Flujo de trabajo
+Plan → Agent → verificación. Guarda los planes en `docs/planes/` y refiérete a ellos con `@`. Cada modo empieza con contexto nuevo: no asumas lo conversado antes.
+Verificación mínima antes de cada commit: `npm run lint`, `npm run typecheck`, `npm run build` y, si hay pantallas nuevas, captura en celular y escritorio.
+
+## Fuera de alcance por ahora
+Pasarela de pagos, checkout, cuentas de usuario, boletas/facturas electrónicas desde la web.
+Si una tarea parece requerir alguno de esos, detente y avisa.
+
+## Calidad mínima
+- Accesible (etiquetas, foco visible, contraste) y pensada primero para celular.
+- Rápida: imágenes optimizadas, sin librerías pesadas innecesarias.
+- SEO: títulos y descripciones por página, URLs limpias en español.

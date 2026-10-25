@@ -1,0 +1,18 @@
+---
+description: Reglas de diseño visual, animaciones y efectos (CSS/SCSS, parallax, 3D) con coherencia y rendimiento
+globs: ["src/**/*.css", "src/**/*.scss", "src/**/*.module.scss", "src/**/*.tsx", "src/components/**"]
+alwaysApply: false
+---
+
+- Usa **solo los tokens** de `docs/DISENO.md` (colores, tipografía, espacios, radios, sombras). No escribas colores ni tamaños sueltos.
+- **Elección de estilos (libre, con criterio):** puedes usar Tailwind o SCSS (`*.module.scss`) para cualquier efecto. Usa Tailwind si el efecto cabe en pocas utilidades legibles; usa SCSS si necesita `@keyframes` propios, muchas capas, selectores o cálculos, o si las clases quedarían ilegibles. **Dentro de un mismo componente usa un solo enfoque por efecto**; no repartas un mismo efecto entre ambos. Anota la elección en una línea del PR o del plan.
+- Colores, espacios y tipografía se leen de **variables CSS** (`var(--...)`) definidas una sola vez en el archivo de tokens; tanto Tailwind como SCSS las consumen. Prohibido repetir valores sueltos.
+- En SCSS: anidación máxima de 3 niveles, mixins solo para patrones repetidos (por ejemplo `@mixin reducido`), nombres de clase en español o inglés pero consistentes.
+- Los efectos salen del catálogo de `docs/DISENO.md`. Si el efecto no está, propón agregarlo con: dónde va, por qué, costo de rendimiento y respaldo.
+- Anima con `transform` y `opacity`. Evita animar `width`, `height`, `top`, `left` o sombras pesadas.
+- Todo movimiento respeta `prefers-reduced-motion: reduce` (versión estática equivalente).
+- Parallax y 3D: primero CSS (transform, perspective, scroll-driven animations si el navegador lo soporta, con respaldo). Librerías pesadas (Three.js, GSAP) solo con aprobación y carga diferida (lazy) únicamente donde se usen.
+- En celular se simplifican o se desactivan los efectos de desplazamiento y 3D.
+- Contenido y texto real siempre presentes en el HTML (no dentro de canvas) para buscadores y lectores de pantalla.
+- Contraste mínimo AA, foco visible, áreas táctiles de al menos 44 px.
+- Presupuesto: LCP ≤ 2,5 s, CLS ≤ 0,1, INP ≤ 200 ms en celular de gama media. Imágenes con `next/image`, formatos modernos y tamaños definidos.

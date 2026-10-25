@@ -1,0 +1,12 @@
+---
+description: Convenciones generales del proyecto Grovelab (estructura, estilo, idioma)
+alwaysApply: true
+---
+
+- Interfaz y contenido en español (Perú). Sin mezcla de inglés visible ("Inicio", "Productos", no "Home", "Products").
+- TypeScript estricto. Evita `any`; si es inevitable, comenta por qué.
+- Componentes de servidor por defecto; usa componentes de cliente solo si necesitan estado o eventos.
+- Estructura sugerida: `src/app` (rutas), `src/components`, `src/lib` (utilidades y acceso a datos), `src/content` (textos estáticos).
+- Nombres de archivos en minúsculas con guiones. Un componente por archivo.
+- Estilos: Tailwind y SCSS/CSS Modules están permitidos para cualquier tarea visual, incluidos efectos. Decide con los criterios de `docs/DISENO.md` y explica la elección en una línea. No agregues otra librería de estilos sin aprobación.
+- Commits pequeños y descriptivos, en español o inglés pero consistentes.

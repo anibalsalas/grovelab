@@ -1,0 +1,14 @@
+---
+description: Reglas del catálogo de productos y del pedido por WhatsApp
+globs: ["src/app/productos/**", "src/app/pedido/**", "src/components/catalogo/**", "src/lib/pedido/**"]
+alwaysApply: false
+---
+
+- Un producto tiene: nombre, categoría, cultivos, ingrediente activo, presentaciones, descripción, tabla de dosis, registro SENASA (si aplica), ficha técnica (PDF) e imágenes.
+- La **tabla de dosis es una tabla HTML real**, no una imagen.
+- El flujo es: ficha → elegir presentación y cantidad → "Agregar a mi pedido" → lista "Mi pedido" → datos mínimos → "Enviar pedido por WhatsApp".
+- Antes de abrir WhatsApp, **guarda el pedido** (datos del visitante e ítems) para que Grovelab lo vea en el panel.
+- El enlace a WhatsApp usa `https://wa.me/<número>?text=<mensaje codificado>`. Codifica el texto con `encodeURIComponent` y mantén el mensaje corto.
+- El número de WhatsApp sale de la configuración del panel o de una variable de entorno. **Nunca** va escrito en el código.
+- No muestres precios si no están definidos: usa "Cotizar".
+- Valida en servidor (Zod) todo lo que llegue del formulario del pedido.
