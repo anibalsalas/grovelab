@@ -19,7 +19,7 @@ Detalle en `docs/ALCANCE.md`.
 2. **Tareas pequeñas.** Una función o pantalla por vez. No generes módulos enteros de una sola pasada.
 3. **No agregues dependencias** sin decir cuál, para qué y qué alternativa hay.
 4. **No inventes datos.** Productos, precios, teléfonos, certificaciones y cifras salen de Grovelab. Si falta un dato, deja un marcador `POR CONFIRMAR`.
-5. **Nunca** escribas claves, tokens ni números reales en el código. Usa variables de entorno (`.env.local`, que no se sube a git).
+5. **Nunca** escribas claves, tokens ni números reales en el código. Usa variables de entorno (`.env.local`, que no se sube a git). Para `npm run dev`, `npm run build` o un clon limpio: copia `.env.example` a `.env.local` y define al menos `NEXT_PUBLIC_SITE_URL=http://localhost:3000`. Los secretos (`DATABASE_URL`, `PAYLOAD_SECRET`, etc.) van solo en `.env.local`, sin prefijo `NEXT_PUBLIC_`.
 6. Antes de terminar una tarea: que compile, que pase lint y pruebas, y resume qué cambió y qué falta.
 7. No modifiques `docs/` ni estas reglas sin que se pida.
 
