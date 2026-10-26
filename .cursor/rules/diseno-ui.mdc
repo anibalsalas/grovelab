@@ -1,13 +1,13 @@
 ---
-description: Reglas de diseño visual, animaciones y efectos (CSS/SCSS, parallax, 3D) con coherencia y rendimiento
-globs: ["src/**/*.css", "src/**/*.scss", "src/**/*.module.scss", "src/**/*.tsx", "src/components/**"]
+description: Reglas de diseño visual, animaciones y efectos (Tailwind v4, CSS Modules, CSS nativo) con coherencia y rendimiento
+globs: ["src/**/*.css", "src/**/*.module.css", "src/**/*.tsx", "src/components/**"]
 alwaysApply: false
 ---
 
 - Usa **solo los tokens** de `docs/DISENO.md` (colores, tipografía, espacios, radios, sombras). No escribas colores ni tamaños sueltos.
-- **Elección de estilos (libre, con criterio):** puedes usar Tailwind o SCSS (`*.module.scss`) para cualquier efecto. Usa Tailwind si el efecto cabe en pocas utilidades legibles; usa SCSS si necesita `@keyframes` propios, muchas capas, selectores o cálculos, o si las clases quedarían ilegibles. **Dentro de un mismo componente usa un solo enfoque por efecto**; no repartas un mismo efecto entre ambos. Anota la elección en una línea del PR o del plan.
-- Colores, espacios y tipografía se leen de **variables CSS** (`var(--...)`) definidas una sola vez en el archivo de tokens; tanto Tailwind como SCSS las consumen. Prohibido repetir valores sueltos.
-- En SCSS: anidación máxima de 3 niveles, mixins solo para patrones repetidos (por ejemplo `@mixin reducido`), nombres de clase en español o inglés pero consistentes.
+- **Elección de estilos (libre, con criterio):** Tailwind si el efecto cabe en pocas utilidades legibles; **CSS Module** (`*.module.css`) o CSS del componente si necesita `@keyframes` propios, muchas capas, selectores o cálculos, o si las clases quedarían ilegibles. **Dentro de un mismo componente usa un solo enfoque por efecto**; no repartas un mismo efecto entre Tailwind y CSS Module. Anota la elección en una línea del PR o del plan.
+- Valores literales solo en `src/styles/tokens.css` con prefijo `--token-` (ver `docs/DISENO.md`). En CSS Modules usa `var(--token-…)`. En Tailwind, utilidades que lean el theme mapeado en `globals.css`; prohibido duplicar hex o px sueltos.
+- En CSS Modules: anidación con moderación; respaldo local con `@media (prefers-reduced-motion: reduce)` además de la regla global en `globals.css`.
 - Los efectos salen del catálogo de `docs/DISENO.md`. Si el efecto no está, propón agregarlo con: dónde va, por qué, costo de rendimiento y respaldo.
 - Anima con `transform` y `opacity`. Evita animar `width`, `height`, `top`, `left` o sombras pesadas.
 - Todo movimiento respeta `prefers-reduced-motion: reduce` (versión estática equivalente).

@@ -1,0 +1,36 @@
+/**
+ * Prueba de tokens (--token-*) y respaldo prefers-reduced-motion.
+ * Eliminar este módulo al diseñar la portada real.
+ */
+
+.contenedor {
+  padding-inline: var(--token-espacio-4);
+}
+
+.acento {
+  display: block;
+  width: var(--token-espacio-12);
+  height: var(--token-espacio-1);
+  margin-bottom: var(--token-espacio-4);
+  border-radius: var(--token-radio-s);
+  background-color: var(--token-color-marca);
+  animation: portada-pulso 2.5s ease-in-out infinite;
+}
+
+@keyframes portada-pulso {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.55;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .acento {
+    animation: none;
+    opacity: 1;
+  }
+}

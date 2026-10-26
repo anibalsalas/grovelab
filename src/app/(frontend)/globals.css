@@ -1,0 +1,44 @@
+@import "../../styles/tokens.css";
+@import "tailwindcss";
+
+/*
+ * Puentes @theme inline → utilidades Tailwind v4 (namespaces --color-*, --spacing, --radius-*, --shadow-*).
+ * Sin valores literales aquí; sin autoreferencia (--color-x: var(--color-x)).
+ */
+@theme inline {
+  --spacing: var(--token-espacio-1);
+
+  --color-marca: var(--token-color-marca);
+  --color-texto: var(--token-color-texto);
+  --color-acento: var(--token-color-acento);
+  --color-fondo: var(--token-color-fondo);
+  --color-exito: var(--token-color-exito);
+  --color-error: var(--token-color-error);
+  --color-aviso: var(--token-color-aviso);
+
+  --font-titular: var(--token-font-titular);
+  --font-texto: var(--token-font-texto);
+
+  --radius-s: var(--token-radio-s);
+  --radius-m: var(--token-radio-m);
+  --radius-l: var(--token-radio-l);
+
+  --shadow-s: var(--token-sombra-s);
+  --shadow-m: var(--token-sombra-m);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+:focus-visible {
+  outline: 2px solid var(--token-anillo-foco);
+  outline-offset: 2px;
+}

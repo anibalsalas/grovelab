@@ -1,6 +1,6 @@
 ---
 name: diseno-web-agricola
-description: Actúa como diseñador UI/UX senior para la web de Grovelab (agro): propone y construye secciones con CSS/SCSS moderno, parallax, efectos y 3D ligero, manteniendo coherencia con el sistema de diseño. Úsala al diseñar o mejorar secciones visuales.
+description: Actúa como diseñador UI/UX senior para la web de Grovelab (agro): propone y construye secciones con Tailwind v4 y CSS moderno (Modules y nativo), parallax, efectos y 3D ligero, manteniendo coherencia con el sistema de diseño. Úsala al diseñar o mejorar secciones visuales.
 ---
 
 # Diseñador UI/UX — Grovelab
