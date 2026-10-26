@@ -1,11 +1,13 @@
 import { z } from "zod";
 
-/** Obligatorio desde tarea 3. `DATABASE_URL` y `PAYLOAD_SECRET` pasan a obligatorios en tarea 4. */
+/** Obligatorio desde tarea 4: `DATABASE_URL` y `PAYLOAD_SECRET`. */
 const serverEnvSchema = z.object({
   NEXT_PUBLIC_SITE_URL: z.string().url(),
   WHATSAPP_NUMBER: z.string().min(1).optional(),
-  DATABASE_URL: z.string().min(1).optional(),
-  PAYLOAD_SECRET: z.string().min(1).optional(),
+  DATABASE_URL: z.string().min(1),
+  PAYLOAD_SECRET: z.string().min(1),
+  SEED_ADMIN_EMAIL: z.string().email().optional(),
+  SEED_ADMIN_PASSWORD: z.string().min(12).optional(),
 });
 
 export type ServerEnv = z.infer<typeof serverEnvSchema>;
@@ -26,6 +28,8 @@ export function parseEnvFromSource(
     WHATSAPP_NUMBER: emptyToUndefined(source.WHATSAPP_NUMBER),
     DATABASE_URL: emptyToUndefined(source.DATABASE_URL),
     PAYLOAD_SECRET: emptyToUndefined(source.PAYLOAD_SECRET),
+    SEED_ADMIN_EMAIL: emptyToUndefined(source.SEED_ADMIN_EMAIL),
+    SEED_ADMIN_PASSWORD: emptyToUndefined(source.SEED_ADMIN_PASSWORD),
   });
 
   if (!result.success) {

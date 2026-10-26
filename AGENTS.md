@@ -13,13 +13,14 @@ Detalle en `docs/ALCANCE.md`.
 - Panel administrable y base de datos: POR CONFIRMAR (opción: Payload CMS + PostgreSQL gestionado)
 - Hosting: Vercel (plan Pro, cuenta a nombre del cliente)
 - Validación: Zod. Pruebas: Vitest y Playwright
+- **Cache Components** (`cacheComponents` en Next.js) desactivado mientras el panel sea Payload 3.92.0 (incompatible con `generateMetadata` del admin).
 
 ## Reglas de trabajo
 1. **Primero un plan, luego el código.** Para cualquier tarea que toque más de 2 archivos, propón el plan y espera confirmación.
 2. **Tareas pequeñas.** Una función o pantalla por vez. No generes módulos enteros de una sola pasada.
 3. **No agregues dependencias** sin decir cuál, para qué y qué alternativa hay.
 4. **No inventes datos.** Productos, precios, teléfonos, certificaciones y cifras salen de Grovelab. Si falta un dato, deja un marcador `POR CONFIRMAR`.
-5. **Nunca** escribas claves, tokens ni números reales en el código. Usa variables de entorno (`.env.local`, que no se sube a git). Para `npm run dev`, `npm run build` o un clon limpio: copia `.env.example` a `.env.local` y define al menos `NEXT_PUBLIC_SITE_URL=http://localhost:3000`. Los secretos (`DATABASE_URL`, `PAYLOAD_SECRET`, etc.) van solo en `.env.local`, sin prefijo `NEXT_PUBLIC_`.
+5. **Nunca** escribas claves, tokens ni números reales en el código. Usa variables de entorno (`.env.local`, que no se sube a git). Para `npm run dev`, `npm run build` o un clon limpio: copia `.env.example` a `.env.local` y define al menos `NEXT_PUBLIC_SITE_URL=http://localhost:3000`, `DATABASE_URL` y `PAYLOAD_SECRET`. Los scripts de Payload (`migrate`, `migrate:status`, `migrate:create`, `generate:types`, `generate:importmap`, `seed:admin`) cargan `.env.local` con `node --env-file=.env.local` y usan `--disable-transpile` en el CLI (evita conflicto tsx/undici en Node 24). Tras `migrate:create`, separa `import type` para `MigrateUpArgs` / `MigrateDownArgs` y deja `sql` como import de valor. La semilla (`seed:admin`) rechaza `NODE_ENV=production`, no imprime secretos y requiere `SEED_ADMIN_EMAIL` y `SEED_ADMIN_PASSWORD` en `.env.local`. Si `migrate` falla por el pooler de Neon, usa la cadena directa (sin pooler) solo para migrar y reporta el error. Los archivos que carga el CLI de Payload deben usar imports relativos con extensión `.ts` (sin alias `@/` ni `@payload-config`).
 6. Antes de terminar una tarea: que compile, que pase lint y pruebas, y resume qué cambió y qué falta.
 7. No modifiques `docs/` ni estas reglas sin que se pida.
 
