@@ -12,6 +12,7 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run --passWithNoTests",
+    "test:e2e": "playwright test",
     "payload": "node ./node_modules/payload/bin.js --disable-transpile",
     "generate:importmap": "node --env-file=.env.local ./node_modules/payload/bin.js --disable-transpile generate:importmap",
     "generate:types": "node --env-file=.env.local ./node_modules/payload/bin.js --disable-transpile generate:types",
@@ -33,6 +34,7 @@
     "zod": "3.24.2"
   },
   "devDependencies": {
+    "@playwright/test": "1.64.1",
     "@tailwindcss/turbopack": "^4",
     "@types/node": "^22",
     "@types/react": "^19",

@@ -36,6 +36,12 @@ Verificación mínima antes de cada commit: `npm run lint`, `npm run typecheck`,
 Pasarela de pagos, checkout, cuentas de usuario, boletas/facturas electrónicas desde la web.
 Si una tarea parece requerir alguno de esos, detente y avisa.
 
+## Panel Payload (roles y pruebas)
+- Roles: `administrador` y `editor` en la colección `users`. El semilla es `administrador` (`npm run seed:admin` actualiza el rol si el usuario ya existía).
+- E2E: `npm run test:e2e` (Playwright **1.64.1**). Primera vez: `npx playwright install` (o `npx playwright install chromium`). No uses credenciales ni `.env.local` en las pruebas E2E.
+- **Editor de prueba:** inicia sesión como administrador → Usuarios → crear usuario con rol Editor y contraseña temporal. Comprueba: no aparece el grupo/colección Usuarios en el menú; no puede abrir `/api/users` con su sesión para listar a otros; en su perfil puede cambiar datos propios pero el campo Rol no es editable.
+- **Bloqueo por intentos:** en `/admin/login`, con un usuario real de prueba, envía 5 contraseñas incorrectas seguidas; el 6.º intento con la contraseña correcta debe fallar. Espera 10 minutos (o revisa en BD el campo `lock_until` del usuario) y vuelve a intentar: entonces debe permitir el acceso.
+
 ## Calidad mínima
 - Accesible (etiquetas, foco visible, contraste) y pensada primero para celular.
 - Rápida: imágenes optimizadas, sin librerías pesadas innecesarias.

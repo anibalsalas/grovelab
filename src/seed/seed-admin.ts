@@ -7,6 +7,7 @@ import { z } from "zod";
 
 import { getPayload } from "payload";
 
+import type { UserPanelRole } from "../collections/users.ts";
 import config from "../payload.config.ts";
 
 const seedSchema = z.object({
@@ -49,6 +50,7 @@ async function main() {
   const existing = await payload.find({
     collection: "users",
     limit: 1,
+    overrideAccess: true,
     where: {
       email: {
         equals: email,
@@ -57,15 +59,38 @@ async function main() {
   });
 
   if (existing.docs.length > 0) {
-    console.log("El usuario administrador ya existe; no se creó otro.");
+    const doc = existing.docs[0];
+    if (!doc) {
+      console.error("No se pudo leer el usuario administrador existente.");
+      process.exit(1);
+    }
+    const currentRole = doc.role as UserPanelRole | undefined;
+
+    if (currentRole !== "administrador") {
+      await payload.update({
+        collection: "users",
+        id: doc.id,
+        overrideAccess: true,
+        data: {
+          role: "administrador",
+        },
+      });
+      console.log(
+        "Usuario administrador existente actualizado con rol administrador.",
+      );
+    } else {
+      console.log("El usuario administrador ya existe; no se creó otro.");
+    }
     process.exit(0);
   }
 
   await payload.create({
     collection: "users",
+    overrideAccess: true,
     data: {
       email,
       password,
+      role: "administrador",
     },
   });
 
