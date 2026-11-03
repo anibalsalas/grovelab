@@ -12,6 +12,9 @@
   --color-texto: var(--token-color-texto);
   --color-acento: var(--token-color-acento);
   --color-fondo: var(--token-color-fondo);
+  --color-superficie: var(--token-color-superficie);
+  --color-fondo-banda: var(--token-color-fondo-banda);
+  --color-fondo-banda-alt: var(--token-color-fondo-banda-alt);
   --color-exito: var(--token-color-exito);
   --color-error: var(--token-color-error);
   --color-aviso: var(--token-color-aviso);
@@ -41,4 +44,9 @@
 :focus-visible {
   outline: 2px solid var(--token-anillo-foco);
   outline-offset: 2px;
+}
+
+/* Cifras de la tabla de dosis: mismo ancho por dígito, sin salto al alinear. */
+.tabla-dosis {
+  font-variant-numeric: tabular-nums;
 }

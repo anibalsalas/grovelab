@@ -14,10 +14,17 @@
   --token-color-exito: #2d6a4f; /* PROVISIONAL */
   --token-color-error: #b42318; /* PROVISIONAL */
   --token-color-aviso: #b54708; /* PROVISIONAL */
+  /* Superficies para franjas y tarjetas (derivadas de marca/fondo). */
+  --token-color-superficie: #fffcf7; /* PROVISIONAL */
+  --token-color-fondo-banda: #e8f0eb; /* PROVISIONAL — franja verde suave */
+  --token-color-fondo-banda-alt: #efe9e0; /* PROVISIONAL — franja cálida */
 
-  /* Tipografía — familias POR CONFIRMAR (next/font en fase posterior). */
-  --token-font-titular: ui-sans-serif, system-ui, sans-serif;
-  --token-font-texto: ui-sans-serif, system-ui, sans-serif;
+  /* Tipografía de trabajo. next/font define --font-archivo-* en <html>. */
+  /* Confirmar las familias contra el logo real de Grovelab. */
+  --token-font-titular: var(--font-archivo-titular), ui-sans-serif, system-ui,
+    sans-serif;
+  --token-font-texto: var(--font-archivo-texto), ui-sans-serif, system-ui,
+    sans-serif;
 
   /* Espacio: paso base 0.25rem (--token-espacio-1). p-8 en Tailwind = calc(var(--spacing)*8) = 2rem. */
   --token-espacio-1: 0.25rem;

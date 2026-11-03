@@ -33,6 +33,12 @@ Tailwind v4 define utilidades a partir de variables del theme (`--color-*`, `--s
 
 En documentación y revisiones se habla de «color marca» o «radio s»; en CSS el identificador completo es `--token-color-marca`, `--token-radio-s`.
 
+### Tipografía de trabajo
+
+Titulares: **Bricolage Grotesque**. Texto: **Inter**. Ambas con `next/font`, archivos variables, subconjunto latino, `display: swap` y pocos pesos. Se asignan a `--token-font-titular` y `--token-font-texto`. La tabla de dosis usa `tabular-nums` para que las cifras no se muevan al alinear columnas. La carga no debe producir salto de diseño (CLS).
+
+Estas familias no están medidas contra el logo. Son la elección de trabajo de la fase 2 y se confirman cuando Grovelab entregue el logo real. Si el logo pide otro par, se cambian las fuentes y se conservan los mismos tokens.
+
 ### Movimiento reducido
 Regla **global** en `globals.css` para `prefers-reduced-motion: reduce`, más ajustes **por módulo** o por efecto cuando haga falta una versión estática más fina.
 
@@ -56,3 +62,21 @@ Botón, enlace, tarjeta de producto, tarjeta de cultivo, cabecera con menú, pie
 
 ## Criterios de aceptación visual
 Revisión en celular (360 px) y escritorio (1440 px); contraste AA; foco visible; con `prefers-reduced-motion` todo se ve completo y estático; LCP ≤ 2,5 s en celular de gama media.
+
+## Metas frente a la referencia
+
+Once metas comprobables, adaptadas de la columna "Meta para Grovelab" en `docs/referencia-tqc.md` (revisión de la referencia tqc.com.pe), con su fase y su forma de verificación.
+
+| # | Fase | Meta | Cómo se verifica |
+|---|---|---|---|
+| 1 | 2 | Sin desplazar, en escritorio y celular, se lee una frase de qué hace Grovelab y hay un botón a Productos visible de inmediato | Captura a 360 px y 1440 px (`/revision-visual`) sin desplazar la página |
+| 2 | 2 | Encontrar un producto filtrando por cultivo o plaga en un solo panel, sin recargar la página; la URL conserva los filtros aplicados (se puede compartir el enlace y el botón Atrás del navegador funciona) | Prueba manual: marcar un filtro, confirmar que la grilla cambia sin recarga y que la URL refleja el filtro; compartir ese enlace en otra pestaña y comprobar que carga igual; usar el botón Atrás tras cambiar de filtro; operar el panel completo con teclado |
+| 3 | 2 | La tabla de dosis es HTML real (no imagen ni PDF), legible a 360 px sin que se corte (desplazamiento interno con foco, o reorganización en filas/tarjetas apiladas), con cifras alineadas (`tabular-nums`); el PDF queda como descarga opcional; un dato de dosis no confirmado dice `POR CONFIRMAR` o "Consultar con un asesor", nunca una cifra inventada | Inspección del código (debe ser `<table>` con encabezados reales, no imagen ni PDF incrustado) + captura a 360 px comprobando que no hay scroll horizontal de toda la página (solo, si hace falta, un desplazamiento interno accesible por teclado) + revisión de contenido para confirmar que no hay cifras sin respaldo |
+| 4 | 3 | Desde la ficha de producto, abrir WhatsApp con el mensaje redactado toma como máximo tres acciones: agregar al pedido, revisar con los datos mínimos y el consentimiento en la misma pantalla, enviar | Prueba manual contando las tres acciones desde la ficha de producto hasta que se abre WhatsApp con el mensaje redactado |
+| 5 | 2 | Mantener un solo lenguaje de tarjeta, color y tipografía en todo el sitio | Captura a 1440 px comparando tarjetas de Inicio, catálogo y fichas; además, búsqueda con `rg` de colores (`#[0-9a-fA-F]{3,8}`) o tamaños sueltos (`px`/`rem` fuera de `var(--token-...)`) en los componentes, excluyendo `src/styles/tokens.css`, para confirmar que no hay literales fuera de los tokens (se aceptan `0`, `1px` y `@media`; los colores con `#` deben ser cero) |
+| 6 | 2 | Si Grovelab cuenta con fotografía real de campo y de producto en uso, priorizarla sobre tomas de estudio repetitivas (depende del material que entregue Grovelab) | Revisión de contenido al incorporar cada pieza; sin fotografía real entregada, se marca `POR CONFIRMAR` en vez de usar una imagen genérica |
+| 7 | 2 | Cada efecto usado debe tener un propósito explícito | Decisión UX escrita (plantilla de `/ux-ui-2026`) antes de implementar el efecto; revisión con `/revision-calidad` antes de cada commit |
+| 8 | 2 | Todas las páginas se usan a 360 px sin desplazamiento horizontal ni pérdida de contenido, y siguen usables con zoom de texto al 200 % | Captura a 360 px (`/revision-visual`) por página; prueba de zoom del navegador al 200 % confirmando que no se corta contenido ni aparece scroll horizontal |
+| 9 | 2 | Foco visible en todo elemento interactivo, nombres accesibles correctos en cada componente reutilizado, tabla de dosis en HTML semántico | Recorrido completo por teclado (Tab/Shift+Tab) verificando foco visible y orden lógico; inspección del nombre accesible de cada componente reutilizado (p. ej. tarjetas de cultivo) |
+| 10 | Todas (se mide al cerrar cada fase) | LCP ≤ 2,5 s, CLS ≤ 0,1 e INP ≤ 200 ms en celular de gama media | Lighthouse en modo móvil sobre `npm run build` seguido de `npm run start` (no en modo desarrollo) |
+| 11 | 2 | Los estados vacíos y de error están en español, con encabezado y una salida clara (ver todos los productos, contactar a un asesor); nada se abre solo (chats, ventanas emergentes) | Probar una búsqueda sin resultados y confirmar que el mensaje está en español, tiene encabezado y ofrece una salida; revisar que ningún chat o ventana emergente se abra sin que la persona lo pida |

@@ -68,7 +68,12 @@ export interface Config {
   blocks: {};
   collections: {
     users: User;
-    'prueba-ensayo': PruebaEnsayo;
+    categorias: Categoria;
+    cultivos: Cultivo;
+    plagas: Plagas;
+    productos: Producto;
+    noticias: Noticia;
+    consultas: Consulta;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -77,7 +82,12 @@ export interface Config {
   collectionsJoins: {};
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
-    'prueba-ensayo': PruebaEnsayoSelect<false> | PruebaEnsayoSelect<true>;
+    categorias: CategoriasSelect<false> | CategoriasSelect<true>;
+    cultivos: CultivosSelect<false> | CultivosSelect<true>;
+    plagas: PlagasSelect<false> | PlagasSelect<true>;
+    productos: ProductosSelect<false> | ProductosSelect<true>;
+    noticias: NoticiasSelect<false> | NoticiasSelect<true>;
+    consultas: ConsultasSelect<false> | ConsultasSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -87,8 +97,12 @@ export interface Config {
     defaultIDType: number;
   };
   fallbackLocale: null;
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    'textos-sitio': TextosSitio;
+  };
+  globalsSelect: {
+    'textos-sitio': TextosSitioSelect<false> | TextosSitioSelect<true>;
+  };
   locale: null;
   widgets: {
     collections: CollectionsWidget;
@@ -146,11 +160,105 @@ export interface User {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "prueba-ensayo".
+ * via the `definition` "categorias".
  */
-export interface PruebaEnsayo {
+export interface Categoria {
+  id: number;
+  nombre: string;
+  /**
+   * URL en /productos (filtro por categoría).
+   */
+  slug: string;
+  /**
+   * Menor número aparece primero.
+   */
+  orden?: number | null;
+  descripcion?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "cultivos".
+ */
+export interface Cultivo {
+  id: number;
+  nombre: string;
+  slug: string;
+  resumen?: string | null;
+  destacado?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "plagas".
+ */
+export interface Plagas {
+  id: number;
+  nombre: string;
+  slug: string;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "productos".
+ */
+export interface Producto {
+  id: number;
+  nombre: string;
+  slug: string;
+  categoria: number | Categoria;
+  cultivos?: (number | Cultivo)[] | null;
+  plagas?: (number | Plagas)[] | null;
+  resumen?: string | null;
+  ingredienteActivo?: string | null;
+  formulacion?: string | null;
+  registroSenasa?: string | null;
+  destacado?: boolean | null;
+  dosis?:
+    | {
+        cultivo: number | Cultivo;
+        plaga?: (number | null) | Plagas;
+        dosis: string;
+        nota?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "noticias".
+ */
+export interface Noticia {
   id: number;
   titulo: string;
+  slug: string;
+  fecha: string;
+  resumen?: string | null;
+  cuerpo: string;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "consultas".
+ */
+export interface Consulta {
+  id: number;
+  nombre: string;
+  telefono: string;
+  mensaje?: string | null;
+  productoConsulta?: string | null;
+  aceptoPolitica: boolean;
   updatedAt: string;
   createdAt: string;
 }
@@ -183,8 +291,28 @@ export interface PayloadLockedDocument {
         value: number | User;
       } | null)
     | ({
-        relationTo: 'prueba-ensayo';
-        value: number | PruebaEnsayo;
+        relationTo: 'categorias';
+        value: number | Categoria;
+      } | null)
+    | ({
+        relationTo: 'cultivos';
+        value: number | Cultivo;
+      } | null)
+    | ({
+        relationTo: 'plagas';
+        value: number | Plagas;
+      } | null)
+    | ({
+        relationTo: 'productos';
+        value: number | Producto;
+      } | null)
+    | ({
+        relationTo: 'noticias';
+        value: number | Noticia;
+      } | null)
+    | ({
+        relationTo: 'consultas';
+        value: number | Consulta;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -254,10 +382,93 @@ export interface UsersSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "prueba-ensayo_select".
+ * via the `definition` "categorias_select".
  */
-export interface PruebaEnsayoSelect<T extends boolean = true> {
+export interface CategoriasSelect<T extends boolean = true> {
+  nombre?: T;
+  slug?: T;
+  orden?: T;
+  descripcion?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "cultivos_select".
+ */
+export interface CultivosSelect<T extends boolean = true> {
+  nombre?: T;
+  slug?: T;
+  resumen?: T;
+  destacado?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "plagas_select".
+ */
+export interface PlagasSelect<T extends boolean = true> {
+  nombre?: T;
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "productos_select".
+ */
+export interface ProductosSelect<T extends boolean = true> {
+  nombre?: T;
+  slug?: T;
+  categoria?: T;
+  cultivos?: T;
+  plagas?: T;
+  resumen?: T;
+  ingredienteActivo?: T;
+  formulacion?: T;
+  registroSenasa?: T;
+  destacado?: T;
+  dosis?:
+    | T
+    | {
+        cultivo?: T;
+        plaga?: T;
+        dosis?: T;
+        nota?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "noticias_select".
+ */
+export interface NoticiasSelect<T extends boolean = true> {
   titulo?: T;
+  slug?: T;
+  fecha?: T;
+  resumen?: T;
+  cuerpo?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "consultas_select".
+ */
+export interface ConsultasSelect<T extends boolean = true> {
+  nombre?: T;
+  telefono?: T;
+  mensaje?: T;
+  productoConsulta?: T;
+  aceptoPolitica?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -300,6 +511,122 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * Checklist Grovelab: contacto (teléfono, correo, dirección, mapa); Nosotros (lead + bloques cortos); Servicios (lead + ítems); certificaciones solo si están confirmadas; política de privacidad antes de activar el formulario. Semilla local: npm run seed:textos-sitio.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "textos-sitio".
+ */
+export interface TextosSitio {
+  id: number;
+  /**
+   * Pendiente de confirmación con el logo y marca de Grovelab.
+   */
+  titularPortada?: string | null;
+  subtituloPortada?: string | null;
+  contacto?: {
+    telefono?: string | null;
+    correo?: string | null;
+    direccion?: string | null;
+    urlMapa?: string | null;
+  };
+  nosotros?: {
+    descripcionLead?: string | null;
+    bloques?:
+      | {
+          titulo: string;
+          cuerpo: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  /**
+   * Texto bajo el título en /servicios.
+   */
+  serviciosLead?: string | null;
+  servicios?:
+    | {
+        titulo: string;
+        descripcion?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Solo se muestran en la web las filas marcadas como confirmadas por Grovelab.
+   */
+  certificaciones?:
+    | {
+        etiqueta: string;
+        valor: string;
+        confirmada?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  testimonio?: {
+    titulo?: string | null;
+    urlVideo?: string | null;
+  };
+  /**
+   * Sin texto aprobado no hay formulario de contacto ni ruta /privacidad pública.
+   */
+  textoPoliticaPrivacidad?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "textos-sitio_select".
+ */
+export interface TextosSitioSelect<T extends boolean = true> {
+  titularPortada?: T;
+  subtituloPortada?: T;
+  contacto?:
+    | T
+    | {
+        telefono?: T;
+        correo?: T;
+        direccion?: T;
+        urlMapa?: T;
+      };
+  nosotros?:
+    | T
+    | {
+        descripcionLead?: T;
+        bloques?:
+          | T
+          | {
+              titulo?: T;
+              cuerpo?: T;
+              id?: T;
+            };
+      };
+  serviciosLead?: T;
+  servicios?:
+    | T
+    | {
+        titulo?: T;
+        descripcion?: T;
+        id?: T;
+      };
+  certificaciones?:
+    | T
+    | {
+        etiqueta?: T;
+        valor?: T;
+        confirmada?: T;
+        id?: T;
+      };
+  testimonio?:
+    | T
+    | {
+        titulo?: T;
+        urlVideo?: T;
+      };
+  textoPoliticaPrivacidad?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
