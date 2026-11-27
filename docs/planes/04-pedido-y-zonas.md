@@ -70,7 +70,7 @@ Cada punto tiene una recomendación. Si se acepta tal cual, se puede empezar. Lo
   Cultivo: Palto · 12 ha
   ```
 
-  No incluye el teléfono, porque WhatsApp ya lo muestra. El número de pedido aparece solo si el pedido se guardó, y sirve para cruzarlo con el panel. Con 20 filas el texto queda muy por debajo del límite práctico de la URL.
+  No incluye el teléfono, porque WhatsApp ya lo muestra. El número de pedido aparece solo si el pedido se guardó, y sirve para cruzarlo con el panel. Peor caso medido (20 filas, nombre largo, cantidad 9999): unos 2 300 caracteres de URL, porque `•`, `—` y `×` se codifican en 9 caracteres cada uno. Un pedido real es mucho más corto, pero la tarea 8 lo comprueba a mano con 20 filas en un celular antes de darse por buena, y si falla se pasa a separadores ASCII.
 - Destino, en este orden: el WhatsApp de la zona elegida, si existe y está autorizado; si no, `WHATSAPP_NUMBER`. **Si no hay ningún destino, la función de pedido no aparece en ninguna parte del sitio** (sin botón «Agregar», sin contador ni `/pedido`), igual que hoy se oculta el botón de WhatsApp.
 
 ### Antiabuso sin servicios nuevos
