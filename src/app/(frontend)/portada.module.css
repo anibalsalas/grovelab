@@ -1,36 +1,233 @@
 /**
- * Prueba de tokens (--token-*) y respaldo prefers-reduced-motion.
- * Eliminar este módulo al diseñar la portada real.
+ * Portada: parallax suave de dos capas (campo + hoja). Respaldo estático sin scroll-driven.
  */
 
-.contenedor {
-  padding-inline: var(--token-espacio-4);
+.hero {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(
+    125deg,
+    color-mix(in srgb, var(--token-color-marca) 38%, var(--token-color-fondo-banda)),
+    var(--token-color-fondo) 48%,
+    color-mix(in srgb, var(--token-color-exito) 18%, var(--token-color-fondo))
+  );
+  padding-block: var(--token-espacio-12);
+  min-height: 22rem;
 }
 
-.acento {
-  display: block;
-  width: var(--token-espacio-12);
-  height: var(--token-espacio-1);
-  margin-bottom: var(--token-espacio-4);
-  border-radius: var(--token-radio-s);
-  background-color: var(--token-color-marca);
-  animation: portada-pulso 2.5s ease-in-out infinite;
+@media (min-width: 40rem) {
+  .hero {
+    min-height: 26rem;
+    padding-block: var(--token-espacio-14);
+  }
 }
 
-@keyframes portada-pulso {
-  0%,
-  100% {
-    opacity: 1;
+@media (min-width: 56rem) {
+  .hero {
+    min-height: 28rem;
+    padding-block: var(--token-espacio-16);
+  }
+}
+
+.heroGrid {
+  position: relative;
+  z-index: 1;
+}
+
+@media (min-width: 40rem) {
+  .hero {
+    display: block;
   }
 
-  50% {
-    opacity: 0.55;
+  .heroGrid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    align-items: center;
+    gap: var(--token-espacio-8);
+  }
+}
+
+.capaCampo,
+.capaHoja {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.45;
+}
+
+.capaCampo {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--token-color-marca) 40%, transparent),
+    transparent 70%
+  );
+  transform: translateY(0);
+}
+
+.capaHoja {
+  top: 8%;
+  right: -8%;
+  width: 50%;
+  height: 60%;
+  border-radius: 80% 20% 70% 30%;
+  background: color-mix(in srgb, var(--token-color-exito) 62%, transparent);
+  transform: translateY(0) rotate(-8deg);
+}
+
+.contenidoHero {
+  position: relative;
+  z-index: 1;
+  max-width: 38rem;
+  padding: var(--token-espacio-6);
+  border-radius: var(--token-radio-l);
+  border: 1px solid color-mix(in srgb, var(--token-color-superficie) 65%, var(--token-color-marca));
+  background: color-mix(in srgb, var(--token-color-superficie) 72%, transparent);
+  box-shadow:
+    var(--token-sombra-m),
+    inset 0 1px 0 color-mix(in srgb, var(--token-color-superficie) 90%, transparent);
+  backdrop-filter: blur(14px) saturate(1.12);
+  -webkit-backdrop-filter: blur(14px) saturate(1.12);
+}
+
+@media (min-width: 40rem) {
+  .contenidoHero {
+    max-width: none;
+  }
+}
+
+.decoracionHero {
+  display: none;
+  min-height: 14rem;
+}
+
+@media (min-width: 40rem) {
+  .decoracionHero {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 18rem;
+  }
+}
+
+.manchaHero {
+  width: min(100%, 20rem);
+  aspect-ratio: 1;
+  border-radius: 42% 58% 62% 38% / 48% 42% 58% 52%;
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--token-color-marca) 55%, transparent),
+    color-mix(in srgb, var(--token-color-acento) 35%, transparent)
+  );
+  box-shadow: var(--token-sombra-m);
+  opacity: 0.85;
+}
+
+.etiquetaMarca {
+  display: inline-block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--token-color-marca);
+}
+
+.pasos {
+  display: grid;
+  gap: var(--token-espacio-4);
+}
+
+@media (min-width: 40rem) {
+  .pasos {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.paso {
+  position: relative;
+  border: 1px solid color-mix(in srgb, var(--token-color-marca) 20%, transparent);
+  border-radius: var(--token-radio-m);
+  padding: var(--token-espacio-8) var(--token-espacio-4) var(--token-espacio-4);
+  background: var(--token-color-superficie);
+  box-shadow: var(--token-sombra-s);
+}
+
+.pasoNumero {
+  position: absolute;
+  top: var(--token-espacio-3);
+  left: var(--token-espacio-4);
+  font-family: var(--token-font-titular);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--token-color-acento);
+}
+
+.tarjetas {
+  display: grid;
+  gap: var(--token-espacio-4);
+}
+
+@media (min-width: 40rem) {
+  .tarjetas {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 56rem) {
+  .tarjetas {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@supports (animation-timeline: scroll()) {
+  .hero {
+    view-timeline-name: --portada-hero;
+    view-timeline-axis: block;
+  }
+
+  .capaCampo {
+    animation: portada-campo linear both;
+    animation-timeline: --portada-hero;
+    animation-range: entry 0% cover 50%;
+  }
+
+  .capaHoja {
+    animation: portada-hoja linear both;
+    animation-timeline: --portada-hero;
+    animation-range: entry 0% cover 50%;
+  }
+}
+
+@keyframes portada-campo {
+  from {
+    transform: translateY(12%);
+  }
+
+  to {
+    transform: translateY(-6%);
+  }
+}
+
+@keyframes portada-hoja {
+  from {
+    transform: translateY(18%) rotate(-8deg);
+  }
+
+  to {
+    transform: translateY(-10%) rotate(-4deg);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .acento {
-    animation: none;
-    opacity: 1;
+  .capaCampo,
+  .capaHoja {
+    animation: none !important;
+    transform: none;
+  }
+
+  .contenidoHero {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: var(--token-color-superficie);
   }
 }

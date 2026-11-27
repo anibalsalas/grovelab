@@ -1,0 +1,155 @@
+/*
+ * Cabecera que se compacta al desplazarse + línea «surco» de progreso de lectura
+ * (catálogo de efectos, docs/DISENO.md). CSS Module: capas, scroll timelines y
+ * @supports no caben legibles en Tailwind.
+ *
+ * El alto en el flujo nunca cambia (CLS 0): solo se animan transform y opacity.
+ * Sin animation-timeline (p. ej. Firefox sin flag) queda como antes: fija y translúcida.
+ */
+
+.cabecera {
+  /* La franja que queda libre al compactar deja pasar los clics al contenido. */
+  pointer-events: none;
+}
+
+.fondo {
+  position: absolute;
+  inset: 0;
+  transform-origin: top;
+  background: color-mix(in srgb, var(--token-color-fondo) 92%, transparent);
+  border-bottom: 1px solid
+    color-mix(in srgb, var(--token-color-marca) 15%, transparent);
+}
+
+@supports (backdrop-filter: blur(1px)) {
+  .fondo {
+    backdrop-filter: blur(8px);
+  }
+}
+
+/* Capa sólida con sombra: aparece por opacidad al compactar. */
+.fondo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--token-color-fondo);
+  box-shadow: var(--token-sombra-s);
+  opacity: 0;
+}
+
+/*
+ * Ojo: .contenido NO se transforma. Un ancestro con transform encierra al panel
+ * del menú móvil (position: fixed). Se mueven solo el logo y los controles.
+ */
+.contenido {
+  position: relative;
+  pointer-events: auto;
+}
+
+.logo {
+  transform-origin: left center;
+}
+
+.bordeInferior {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: var(--token-grosor-surco);
+  display: none;
+}
+
+.progreso {
+  height: 100%;
+  background: var(--token-color-marca);
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .fondo,
+    .fondo::after,
+    .desplazable,
+    .logo,
+    .bordeInferior {
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: scroll(root);
+      animation-range: 0 var(--token-cabecera-rango-compactar);
+    }
+
+    .fondo {
+      animation-name: cabecera-fondo;
+    }
+
+    .fondo::after {
+      animation-name: cabecera-solida;
+    }
+
+    .desplazable {
+      animation-name: cabecera-contenido;
+    }
+
+    .logo {
+      animation-name: cabecera-logo;
+    }
+
+    .bordeInferior {
+      display: block;
+      animation-name: cabecera-borde;
+    }
+
+    .progreso {
+      animation: cabecera-progreso linear both;
+      animation-timeline: scroll(root);
+    }
+  }
+}
+
+@keyframes cabecera-fondo {
+  to {
+    transform: scaleY(var(--token-cabecera-escala-fondo));
+  }
+}
+
+@keyframes cabecera-solida {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes cabecera-contenido {
+  to {
+    transform: translateY(calc(var(--token-cabecera-recorte) / -2));
+  }
+}
+
+@keyframes cabecera-logo {
+  to {
+    transform: translateY(calc(var(--token-cabecera-recorte) / -2))
+      scale(var(--token-cabecera-escala-logo));
+  }
+}
+
+@keyframes cabecera-borde {
+  to {
+    transform: translateY(calc(var(--token-cabecera-recorte) * -1));
+  }
+}
+
+@keyframes cabecera-progreso {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fondo,
+  .fondo::after,
+  .desplazable,
+  .logo,
+  .bordeInferior,
+  .progreso {
+    animation: none;
+  }
+}

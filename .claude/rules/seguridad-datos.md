@@ -1,0 +1,5 @@
+- No escribas secretos en el chat. Documenta los nombres de las variables de entorno en `.env.example` (sin valores reales).
+- El formulario del pedido recoge nombre y teléfono: debe incluir aceptación de la política de privacidad y no pedir más datos de los necesarios.
+- No registres datos personales en logs.
+- Sanitiza y valida toda entrada de usuario en el servidor. No confíes en la validación del navegador.
+- El panel administrable exige autenticación y permisos por rol.

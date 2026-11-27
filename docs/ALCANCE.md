@@ -29,9 +29,9 @@ Idea por confirmar: dirigir el pedido al WhatsApp del asesor de la zona elegida.
 Producto, Presentación, Categoría, Cultivo, Plaga, ZonaComercial (con asesor y WhatsApp), Pedido, ItemPedido, Noticia, Usuario del panel.
 
 ## Fases
-1. Base: proyecto, reglas, despliegue de prueba, panel con login.
-2. Catálogo: categorías, cultivos, fichas, tabla de dosis, buscador.
-3. Pedido por WhatsApp con registro en el panel.
+1. Base: proyecto, reglas, despliegue de prueba, panel con login. La web pública solo muestra la portada provisional.
+2. Sitio público y catálogo: portada real (reemplaza el texto provisional), Nosotros, Servicios, Blog/Noticias y Contacto; más categorías, cultivos, fichas, tabla de dosis y buscador.
+3. Pedido por WhatsApp con registro en el panel, y la página de Zonas comerciales (el pedido usa la zona y el WhatsApp del asesor).
 4. SEO, redirecciones y migración de productos.
 5. Experiencia "Del suelo a la cosecha".
 

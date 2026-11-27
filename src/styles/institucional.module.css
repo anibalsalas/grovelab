@@ -1,0 +1,128 @@
+.revelarContenedor {
+  opacity: 1;
+  transform: none;
+}
+
+.revelarEntrada {
+  opacity: 0;
+  transform: translateY(0.75rem);
+  transition:
+    opacity 0.45s ease,
+    transform 0.45s ease;
+}
+
+.revelarVisible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .revelarEntrada {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+.franjaRespaldo {
+  display: grid;
+  gap: var(--token-espacio-4);
+  padding: var(--token-espacio-10) var(--token-espacio-6);
+  border-radius: var(--token-radio-l);
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--token-color-marca) 16%, var(--token-color-superficie)),
+    var(--token-color-superficie)
+  );
+  border: 1px solid color-mix(in srgb, var(--token-color-marca) 22%, transparent);
+  box-shadow: var(--token-sombra-m);
+}
+
+@media (min-width: 40rem) {
+  .franjaRespaldo {
+    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+    text-align: center;
+  }
+}
+
+.cifraRespaldo {
+  font-family: var(--token-font-titular);
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--token-color-marca);
+  font-variant-numeric: tabular-nums;
+}
+
+.etiquetaRespaldo {
+  margin-top: var(--token-espacio-2);
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: color-mix(in srgb, var(--token-color-texto) 85%, transparent);
+}
+
+.bloqueNosotros {
+  padding: var(--token-espacio-6);
+  border-radius: var(--token-radio-m);
+  border: 1px solid color-mix(in srgb, var(--token-color-marca) 18%, transparent);
+  background: var(--token-color-superficie);
+  box-shadow: var(--token-sombra-s);
+}
+
+.tarjetaServicio {
+  height: 100%;
+  padding: var(--token-espacio-6);
+  border-radius: var(--token-radio-m);
+  border: 1px solid color-mix(in srgb, var(--token-color-marca) 18%, transparent);
+  background: var(--token-color-superficie);
+  box-shadow: var(--token-sombra-s);
+}
+
+.cuerpoNoticia {
+  max-width: 42rem;
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
+.tarjetaContacto {
+  padding: var(--token-espacio-5);
+  border-radius: var(--token-radio-m);
+  border: 1px solid color-mix(in srgb, var(--token-color-marca) 15%, transparent);
+  background: color-mix(in srgb, var(--token-color-marca) 4%, var(--token-color-fondo));
+}
+
+.videoContenedor {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--token-radio-m);
+  overflow: hidden;
+  background: color-mix(in srgb, var(--token-color-texto) 8%, var(--token-color-fondo));
+}
+
+.videoPoster {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--token-color-marca) 25%, var(--token-color-fondo)),
+    var(--token-color-fondo)
+  );
+  color: var(--token-color-marca);
+  font-weight: 600;
+  min-height: 11rem;
+}
+
+.videoPoster:focus-visible {
+  outline: 2px solid var(--token-color-marca);
+  outline-offset: 2px;
+}
+
+.videoIframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+}

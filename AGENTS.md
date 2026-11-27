@@ -37,7 +37,7 @@ Pasarela de pagos, checkout, cuentas de usuario, boletas/facturas electrónicas 
 Si una tarea parece requerir alguno de esos, detente y avisa.
 
 ## Panel Payload (roles y pruebas)
-- Roles: `administrador` y `editor` en la colección `users`. El semilla es `administrador` (`npm run seed:admin` actualiza el rol si el usuario ya existía).
+- Roles: `administrador`, `editor` y `ventas` en la colección `users`. `ventas` solo lee y atiende Pedidos y lee Zonas: no edita el catálogo ni ve Usuarios; el editor no ve Pedidos (llevan datos personales). El semilla es `administrador` (`npm run seed:admin` actualiza el rol si el usuario ya existía).
 - E2E: `npm run test:e2e` (Playwright **1.64.1**). Primera vez: `npx playwright install` (o `npx playwright install chromium`). No uses credenciales ni `.env.local` en las pruebas E2E.
 - **Editor de prueba:** inicia sesión como administrador → Usuarios → crear usuario con rol Editor y contraseña temporal. Comprueba: no aparece el grupo/colección Usuarios en el menú; no puede abrir `/api/users` con su sesión para listar a otros; en su perfil puede cambiar datos propios pero el campo Rol no es editable.
 - **Bloqueo por intentos:** en `/admin/login`, con un usuario real de prueba, envía 5 contraseñas incorrectas seguidas; el 6.º intento con la contraseña correcta debe fallar. Espera 10 minutos (o revisa en BD el campo `lock_until` del usuario) y vuelve a intentar: entonces debe permitir el acceso.
@@ -46,3 +46,13 @@ Si una tarea parece requerir alguno de esos, detente y avisa.
 - Accesible (etiquetas, foco visible, contraste) y pensada primero para celular.
 - Rápida: imágenes optimizadas, sin librerías pesadas innecesarias.
 - SEO: títulos y descripciones por página, URLs limpias en español.
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+## This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->

@@ -1,0 +1,40 @@
+.contenedor {
+  width: 100%;
+  max-width: 42rem;
+  margin-inline: auto;
+}
+
+.formulario {
+  display: grid;
+  gap: var(--token-espacio-4);
+}
+
+@media (min-width: 48rem) {
+  .formulario {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .campoAncho {
+    grid-column: 1 / -1;
+  }
+
+  .acciones {
+    grid-column: 1 / -1;
+  }
+}
+
+.acciones {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--token-espacio-3);
+  padding-top: var(--token-espacio-4);
+  border-top: 1px solid color-mix(in srgb, var(--token-color-marca) 15%, transparent);
+}
+
+.etiqueta {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--token-color-texto);
+}

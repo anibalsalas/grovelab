@@ -23,5 +23,8 @@ export default defineConfig({
     url: baseURL,
     reuseExistingServer: true,
     timeout: 120_000,
+    // Número ficticio solo para las pruebas: activa la función de pedido sin tocar
+    // ni depender del WHATSAPP_NUMBER real de .env.local (la variable de proceso manda).
+    env: { WHATSAPP_NUMBER: "900000000" },
   },
 });

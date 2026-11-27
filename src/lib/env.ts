@@ -4,6 +4,7 @@ import { z } from "zod";
 const serverEnvSchema = z.object({
   NEXT_PUBLIC_SITE_URL: z.string().url(),
   WHATSAPP_NUMBER: z.string().min(1).optional(),
+  BLOB_READ_WRITE_TOKEN: z.string().min(1).optional(),
   DATABASE_URL: z.string().min(1),
   PAYLOAD_SECRET: z.string().min(1),
   SEED_ADMIN_EMAIL: z.string().email().optional(),
@@ -26,6 +27,7 @@ export function parseEnvFromSource(
   const result = serverEnvSchema.safeParse({
     NEXT_PUBLIC_SITE_URL: source.NEXT_PUBLIC_SITE_URL,
     WHATSAPP_NUMBER: emptyToUndefined(source.WHATSAPP_NUMBER),
+    BLOB_READ_WRITE_TOKEN: emptyToUndefined(source.BLOB_READ_WRITE_TOKEN),
     DATABASE_URL: emptyToUndefined(source.DATABASE_URL),
     PAYLOAD_SECRET: emptyToUndefined(source.PAYLOAD_SECRET),
     SEED_ADMIN_EMAIL: emptyToUndefined(source.SEED_ADMIN_EMAIL),

@@ -2,7 +2,7 @@ import type { Access, CollectionConfig } from "payload";
 
 import type { User } from "../payload-types.ts";
 
-export type UserPanelRole = "administrador" | "editor";
+export type UserPanelRole = "administrador" | "editor" | "ventas";
 
 function isAdministrador(user: User | null | undefined): boolean {
   return user?.role === "administrador";
@@ -84,6 +84,10 @@ export const Users: CollectionConfig = {
         {
           label: "Editor",
           value: "editor",
+        },
+        {
+          label: "Ventas",
+          value: "ventas",
         },
       ],
       access: {
