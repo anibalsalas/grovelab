@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 
 import { NombreCompartido } from "@/components/animacion/nombre-compartido";
 import { TransicionPagina } from "@/components/animacion/transicion-pagina";
+import { AgregarAlPedido } from "@/components/pedido/agregar-al-pedido";
 import { BotonEnlace } from "@/components/ui/boton-enlace";
 import { Migas } from "@/components/ui/migas";
 import {
@@ -16,6 +17,8 @@ import { TarjetaProducto } from "@/components/ui/tarjeta-producto";
 import { clasesMain, idContenidoPrincipal } from "@/lib/clases-sitio";
 import { medioPopulado, primeraImagen } from "@/lib/medio-populado.ts";
 import { nombreTransicionProducto } from "@/lib/nombres-transicion.ts";
+import { PRESENTACION_A_CONSULTAR } from "@/lib/pedido/esquema.ts";
+import { hayDestinoPedido } from "@/lib/pedido/hay-destino-pedido.ts";
 import { getPayloadClient } from "@/lib/payload-client";
 import { enlaceWhatsAppInformacion } from "@/lib/url-contacto.ts";
 import ficha from "@/styles/ficha-producto.module.css";
@@ -154,6 +157,15 @@ export default async function ProductoPage({ params }: PageProps) {
 
   const whatsapp = enlaceWhatsAppInformacion(producto.nombre);
 
+  // El bloque de pedido reemplaza a las etiquetas de presentaciones (no hay dos listas iguales).
+  // Sin presentaciones cargadas se ofrece «A consultar con el asesor», nunca una inventada.
+  const puedePedir =
+    producto.admitePedido !== false && (await hayDestinoPedido());
+  const opcionesPedido =
+    presentaciones.length > 0
+      ? presentaciones.map((p) => p.etiqueta)
+      : [PRESENTACION_A_CONSULTAR];
+
   const migas = [
     { etiqueta: "Productos", href: "/productos" },
     ...(categoria
@@ -217,7 +229,15 @@ export default async function ProductoPage({ params }: PageProps) {
           </ul>
         ) : null}
 
-        {presentaciones.length > 0 ? (
+        {puedePedir ? (
+          <div className="mt-6">
+            <AgregarAlPedido
+              slug={producto.slug}
+              nombre={producto.nombre}
+              presentaciones={opcionesPedido}
+            />
+          </div>
+        ) : presentaciones.length > 0 ? (
           <section className="mt-6" aria-labelledby="presentaciones-titulo">
             <h2
               id="presentaciones-titulo"

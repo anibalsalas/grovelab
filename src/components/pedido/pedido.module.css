@@ -1,0 +1,195 @@
+/* Layout general en Tailwind (clases en el TSX); aquí solo lo que Tailwind no resuelve
+   con claridad: radios con aspecto de chip, selector de cantidad y contador.
+   Todo con var(--token-*). Sin movimiento: la confirmación es texto en aria-live. */
+
+.bloque {
+  display: grid;
+  gap: var(--token-espacio-4);
+  max-width: 28rem;
+  border: 1px solid color-mix(in srgb, var(--token-color-marca) 25%, transparent);
+  border-radius: var(--token-radio-m);
+  background: var(--token-color-superficie);
+  padding: var(--token-espacio-5);
+}
+
+.grupo {
+  min-width: 0;
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.leyenda {
+  /* Bloque: la etiqueta «Cantidad» es un <label> y, en línea, se pegaba al botón −. */
+  display: block;
+  padding: 0;
+  margin-bottom: var(--token-espacio-2);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--token-color-marca);
+}
+
+.opciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--token-espacio-2);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* El input queda en el flujo (no display:none) para que el radio sea operable con teclado. */
+.opcion {
+  position: relative;
+}
+
+.opcion input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.opcionTexto {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  border: 1px solid color-mix(in srgb, var(--token-color-marca) 40%, transparent);
+  border-radius: var(--token-radio-s);
+  background: var(--token-color-fondo);
+  padding: 0 var(--token-espacio-4);
+  font-size: 0.9375rem;
+  color: var(--token-color-texto);
+}
+
+.opcion input:checked + .opcionTexto {
+  border-color: var(--token-color-marca);
+  background: var(--token-color-marca);
+  color: var(--token-color-fondo);
+}
+
+.opcion input:focus-visible + .opcionTexto {
+  outline: 2px solid var(--token-anillo-foco);
+  outline-offset: 2px;
+}
+
+.cantidad {
+  display: inline-flex;
+  align-items: stretch;
+}
+
+.pasoCantidad,
+.campoCantidad {
+  min-height: 2.75rem;
+  border: 1px solid color-mix(in srgb, var(--token-color-marca) 40%, transparent);
+  background: var(--token-color-fondo);
+  color: var(--token-color-texto);
+  font: inherit;
+}
+
+.pasoCantidad {
+  min-width: 2.75rem;
+  cursor: pointer;
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.pasoCantidad:first-child {
+  border-radius: var(--token-radio-s) 0 0 var(--token-radio-s);
+}
+
+.pasoCantidad:last-child {
+  border-radius: 0 var(--token-radio-s) var(--token-radio-s) 0;
+}
+
+.campoCantidad {
+  width: 4.5rem;
+  border-inline: 0;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.pasoCantidad:hover {
+  background: color-mix(in srgb, var(--token-color-marca) 8%, var(--token-color-fondo));
+}
+
+.pasoCantidad:focus-visible,
+.campoCantidad:focus-visible {
+  outline: 2px solid var(--token-anillo-foco);
+  outline-offset: 2px;
+  position: relative;
+}
+
+.error {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--token-color-error);
+}
+
+.estado {
+  min-height: 1.5rem;
+  margin: 0;
+  font-size: 0.9375rem;
+  color: var(--token-color-texto);
+}
+
+.aviso {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--token-color-aviso);
+}
+
+.enlaceEstado {
+  color: var(--token-color-marca);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+/* Contador de la cabecera */
+.contador {
+  display: inline-flex;
+  min-height: 2.75rem;
+  min-width: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  gap: var(--token-espacio-2);
+  border: 1px solid var(--token-color-marca);
+  border-radius: var(--token-radio-m);
+  padding: 0 var(--token-espacio-3);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--token-color-marca);
+  text-decoration: none;
+}
+
+.contador:hover {
+  background: color-mix(in srgb, var(--token-color-marca) 8%, transparent);
+}
+
+.cifra {
+  display: inline-flex;
+  min-width: 1.5rem;
+  height: 1.5rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: var(--token-color-marca);
+  padding: 0 var(--token-espacio-2);
+  font-variant-numeric: tabular-nums;
+  color: var(--token-color-fondo);
+}
+
+/* En pantallas muy angostas se deja solo la cifra; el nombre accesible no cambia. */
+.etiquetaContador {
+  display: none;
+}
+
+@media (min-width: 30rem) {
+  .etiquetaContador {
+    display: inline;
+  }
+}

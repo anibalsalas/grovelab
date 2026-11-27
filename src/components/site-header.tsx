@@ -2,14 +2,19 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { MenuPrincipal } from "@/components/layout/menu-principal";
+import { ContadorPedido } from "@/components/pedido/contador-pedido";
 import { anchoContenedor } from "@/lib/clases-sitio";
 import { hayCultivosPublicados } from "@/lib/hay-cultivos-publicados.ts";
+import { hayDestinoPedido } from "@/lib/pedido/hay-destino-pedido.ts";
 import logoGrovelab from "@/images/grovelab-logo.png";
 
 import estilos from "./site-header.module.css";
 
 export async function SiteHeader() {
-  const mostrarCultivos = await hayCultivosPublicados();
+  const [mostrarCultivos, pedidoActivo] = await Promise.all([
+    hayCultivosPublicados(),
+    hayDestinoPedido(),
+  ]);
 
   return (
     <header
@@ -28,10 +33,15 @@ export async function SiteHeader() {
         >
           <Image src={logoGrovelab} alt="Grovelab" className="h-9 w-auto" priority />
         </Link>
-        <MenuPrincipal
-          mostrarCultivos={mostrarCultivos}
-          claseDesplazable={estilos.desplazable}
-        />
+        <div className="flex items-center gap-3">
+          <MenuPrincipal
+            mostrarCultivos={mostrarCultivos}
+            claseDesplazable={estilos.desplazable}
+          />
+          {pedidoActivo ? (
+            <ContadorPedido className={estilos.desplazable} />
+          ) : null}
+        </div>
       </div>
       <div className={estilos.bordeInferior} aria-hidden="true">
         <div className={estilos.progreso} />
