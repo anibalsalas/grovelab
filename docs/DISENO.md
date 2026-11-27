@@ -78,7 +78,7 @@ Regla **global** en `globals.css` para `prefers-reduced-motion: reduce`, más aj
 
 El visor 3D solo se hace si Grovelab entrega fotos o modelos suficientes; si no, queda fuera.
 
-Los efectos que **responden a una acción** de la persona (menú, cabecera, transición entre páginas) no cuentan como el momento "wow" de la página: comunican estado o continuidad. El borde «surco» es estático. Todos comparten un solo motivo, la línea del surco en color marca, y los tokens de movimiento de `tokens.css` (`--token-movimiento-rapido` 150 ms, `--token-movimiento-base` 300 ms, `--token-curva-salida`, sin rebotes).
+Los efectos que **responden a una acción** de la persona (menú, cabecera, transición entre páginas) no cuentan como el momento "wow" de la página: comunican estado o continuidad. El borde «surco» es estático. `/pedido` y `/zonas-comerciales` no llevan ningún efecto: son un formulario y una lista de contactos, y la claridad es el efecto; agregar o quitar productos del pedido no se anima. Todos comparten un solo motivo, la línea del surco en color marca, y los tokens de movimiento de `tokens.css` (`--token-movimiento-rapido` 150 ms, `--token-movimiento-base` 300 ms, `--token-curva-salida`, sin rebotes).
 
 ## Componentes base (en orden)
 Botón, enlace, tarjeta de producto, tarjeta de cultivo, cabecera con menú, pie con contacto, buscador, tabla de dosis, botón y lista "Mi pedido", formulario del pedido, tarjeta de noticia.

@@ -283,3 +283,20 @@ Sin interfaz. Es lo que más conviene probar aislado.
 - Analítica de eventos (`pedido_agregado`, `pedido_enviado`): se suma a la de la fase 5.
 - Mapa interactivo de zonas.
 - Migración de los ~70 productos y redirecciones (fase 4). El flujo de pedido funciona igual con más productos.
+
+## Estado de cierre (2026-11-27)
+
+Pasos 1 a 8 construidos y verificados en la base de desarrollo. Cambios respecto del plan: el pedido sin política **sí se guarda**, pero sin nombre ni teléfono (regla de `catalogo-pedido`); el rol `ventas` obligó a que `escrituraPanel` y la lectura de borradores pasen a «administrador o editor» en todas las colecciones; y si guardar el pedido falla, igual sale por WhatsApp.
+
+No verificado: Lighthouse móvil (meta 10), el pedido de 20 filas en un celular real, un envío real a WhatsApp, y la revisión manual de los roles desde la interfaz del panel (se probó con la API local y usuarios temporales).
+
+### Para Grovelab (POR CONFIRMAR)
+
+1. **Zonas y asesores vigentes**: qué zonas siguen activas, qué cubre cada una, nombre y cargo del asesor. La colección está vacía; sin zonas publicadas, `/zonas-comerciales` no existe y el pedido sale al número general.
+2. **Números de asesor que se pueden publicar**, por escrito. Cada zona lleva la marca «Número autorizado para publicar»; sin ella el número no sale del servidor.
+3. **Número de WhatsApp general** (`WHATSAPP_NUMBER`): sin él ni zonas autorizadas, la función de pedido no aparece en el sitio.
+4. **Texto de la política de privacidad**: hasta entonces el pedido no pide nombre ni teléfono. Al publicarla, el formulario los pide solo.
+5. **Presentaciones reales** de NOT FLY y TODYM (hoy se ofrece «A consultar con el asesor»).
+6. **Conservación de los datos** de los pedidos (cuánto tiempo se guardan nombre y teléfono).
+7. **Qué productos admiten pedido**: el interruptor «Admite pedido» está activo en todos.
+8. **Crear los usuarios del rol `ventas`** que atenderán los pedidos.
