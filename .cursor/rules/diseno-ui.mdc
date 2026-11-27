@@ -15,4 +15,6 @@ alwaysApply: false
 - En celular se simplifican o se desactivan los efectos de desplazamiento y 3D.
 - Contenido y texto real siempre presentes en el HTML (no dentro de canvas) para buscadores y lectores de pantalla.
 - Contraste mínimo AA, foco visible, áreas táctiles de al menos 44 px.
+- **Tipografía dual:** titulares `font-titular` (Fraunces, peso ≥ 700 en H1); cuerpo y UI `font-texto` (Inter). No usar una sola familia en toda la página.
+- **Marco 2026 (resumen):** sistemas adaptativos vía Payload; service design (catálogo → contacto/WhatsApp); accesibilidad desde arquitectura; design system con tokens; glass translúcido solo en paneles acotados (`backdrop-filter` + respaldo sólido con `prefers-reduced-motion`). Detalle en skill `diseno-web-agricola`.
 - Presupuesto: LCP ≤ 2,5 s, CLS ≤ 0,1, INP ≤ 200 ms en celular de gama media. Imágenes con `next/image`, formatos modernos y tamaños definidos.

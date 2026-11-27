@@ -29,3 +29,8 @@ playwright-report/
 test-results/
 *.tsbuildinfo
 next-env.d.ts
+
+# Locales de herramientas
+.tmp/
+.playwright-mcp/
+.claude/scheduled_tasks.lock

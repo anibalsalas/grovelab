@@ -1,0 +1,18 @@
+---
+paths: ["src/**/*.css", "src/**/*.module.css", "src/**/*.tsx", "src/components/**"]
+---
+
+- Usa **solo los tokens** de `docs/DISENO.md` (colores, tipografía, espacios, radios, sombras). No escribas colores ni tamaños sueltos.
+- **Elección de estilos (libre, con criterio):** Tailwind si el efecto cabe en pocas utilidades legibles; **CSS Module** (`*.module.css`) o CSS del componente si necesita `@keyframes` propios, muchas capas, selectores o cálculos, o si las clases quedarían ilegibles. **Dentro de un mismo componente usa un solo enfoque por efecto**; no repartas un mismo efecto entre Tailwind y CSS Module. Anota la elección en una línea del PR o del plan.
+- Valores literales solo en `src/styles/tokens.css` con prefijo `--token-` (ver `docs/DISENO.md`). En CSS Modules usa `var(--token-…)`. En Tailwind, utilidades que lean el theme mapeado en `globals.css`; prohibido duplicar hex o px sueltos.
+- En CSS Modules: anidación con moderación; respaldo local con `@media (prefers-reduced-motion: reduce)` además de la regla global en `globals.css`.
+- Los efectos salen del catálogo de `docs/DISENO.md`. Si el efecto no está, propón agregarlo con: dónde va, por qué, costo de rendimiento y respaldo.
+- Anima con `transform` y `opacity`. Evita animar `width`, `height`, `top`, `left` o sombras pesadas.
+- Todo movimiento respeta `prefers-reduced-motion: reduce` (versión estática equivalente).
+- Parallax y 3D: primero CSS (transform, perspective, scroll-driven animations si el navegador lo soporta, con respaldo). Librerías pesadas (Three.js, GSAP) solo con aprobación y carga diferida (lazy) únicamente donde se usen.
+- En celular se simplifican o se desactivan los efectos de desplazamiento y 3D.
+- Contenido y texto real siempre presentes en el HTML (no dentro de canvas) para buscadores y lectores de pantalla.
+- Contraste mínimo AA, foco visible, áreas táctiles de al menos 44 px.
+- **Tipografía dual:** titulares `font-titular` (Fraunces, peso ≥ 700 en H1); cuerpo y UI `font-texto` (Inter). No usar una sola familia en toda la página.
+- **Marco 2026 (resumen):** sistemas adaptativos vía Payload; service design (catálogo → contacto/WhatsApp); accesibilidad desde arquitectura; design system con tokens; glass translúcido solo en paneles acotados (`backdrop-filter` + respaldo sólido con `prefers-reduced-motion`). Detalle en skill `diseno-web-agricola`.
+- Presupuesto: LCP ≤ 2,5 s, CLS ≤ 0,1, INP ≤ 200 ms en celular de gama media. Imágenes con `next/image`, formatos modernos y tamaños definidos.

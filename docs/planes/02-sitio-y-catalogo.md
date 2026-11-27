@@ -1,8 +1,20 @@
 # Plan 02 — Fase 2: sitio público y catálogo
 
-Estado: propuesta. El almacenamiento de fotos y PDF queda decidido: Vercel Blob. No se instala nada ni se escribe código hasta aprobar este documento. Las demás respuestas de «Confirmar antes de empezar» siguen abiertas y no bloquean esa decisión.
+Estado: propuesta. El almacenamiento de fotos y PDF queda decidido: Vercel Blob. El alcance del filtro de `/productos` también queda decidido: panel único de categoría, cultivo, plaga y texto libre; `/buscar` pasa a ser una redirección a `/productos` con los mismos filtros, lo que fusiona la tarea 10 dentro de la tarea 8. El visor 3D del envase y la analítica de eventos puntuales (como `cultivo_visitado`) quedan fuera de esta fase: se revisitan en las fases 4 y 5 respectivamente. No se instala nada ni se escribe código hasta aprobar este documento. Las demás respuestas de «Confirmar antes de empezar» siguen abiertas y no bloquean estas decisiones.
 
 Referencias: `AGENTS.md`, `docs/ALCANCE.md`, `docs/DISENO.md`, `docs/referencia/propuesta-cliente.md`, `docs/planes/01-base.md`.
+
+## Revisión frente a la web antigua (2026-11-04)
+
+Se recorrió https://grovelabperu.com.pe (WordPress + WooCommerce) para ver qué tiene y qué le falta a esta fase. Solo lectura; no se copió nada al código.
+
+**Lo que la web antigua tiene y el modelo actual no puede guardar.** Cada ficha antigua muestra presentaciones («100 g y 25 kg», «1L»), una foto de envase, un PDF (hoy siempre el mismo portafolio general) y, en los nutricionales, una composición en porcentajes (N, P₂O₅, K₂O, microelementos, extracto de algas) que no es un «ingrediente activo». La colección Productos no tiene campos para ninguno de los cuatro. Decisión: se agregan en esta fase (tarea 5, después de la tarea 1), porque el pedido de la fase 3 elige una presentación y no conviene llegar a esa fase sin el campo.
+
+**Contenido de referencia para el panel.** La web antigua tiene textos de Nosotros, dos servicios con descripción («Importación directa» y «Asesoría y logística en importaciones», ambos citan la Ley 30.190 y SENASA), datos de la sede de Lima, seis zonas comerciales con asesor (RTC), celular y ciudades, y tres noticias. Sirven como borrador para cargar en el panel, **no** como dato confirmado: Grovelab valida que siguen vigentes antes de publicarlos. Las zonas se guardan para la fase 3. Las categorías antiguas son diez (Plaguicidas → Insecticidas, Fungicidas, Herbicidas; Reguladores de crecimiento; Bioestimulantes; Nutricionales; Fitoprotectores; Adyuvantes; Sólidos; Acondicionadores de suelo), pero la asignación de productos está desordenada (p. ej. un nutricional dentro de Insecticidas): la lista por producto la valida Grovelab, no se copia.
+
+**`/buscar`.** La web antigua no tenía página de búsqueda, solo un campo en la cabecera. Aquí `/buscar` ya es una redirección a `/productos`, pero el menú y el sitemap la siguen mostrando como página propia: dos entradas al mismo sitio. Decisión: «Buscar» sale del menú y del sitemap; la redirección se conserva para enlaces ya compartidos; el buscador de Inicio y el de la cabecera (si se agrega) envían directo a `/productos`.
+
+**`/cultivos`.** La web antigua no tenía página de cultivos, pero `docs/ALCANCE.md` la incluye y es la entrada natural del agricultor («¿qué uso en mi palto?»). Se mantiene, con una condición: depende de que Grovelab entregue la relación producto–cultivo–dosis, que no existe en la web antigua. Mientras no haya al menos un cultivo publicado, el enlace «Cultivos» no aparece en el menú ni en el sitemap, y los botones de Inicio que llevan a cultivos no se renderizan.
 
 ## Para qué es esta fase
 
@@ -26,13 +38,15 @@ La experiencia completa «Del suelo a la cosecha» (la planta que crece al despl
 - Zonas comerciales y el flujo «Mi pedido» (fase 3).
 - Carga masiva de los ~70 productos, redirecciones de la web vieja y SEO de migración (fase 4). En esta fase el panel permite cargar un lote corto de muestra, no el catálogo histórico completo.
 - La planta que crece al hacer scroll y el selector de cultivo de esa experiencia (fase 5).
-- Visor 3D del envase, salvo que Grovelab entregue modelos. Si no hay modelos, la ficha usa galería de fotos.
+- Visor 3D del envase: fuera de esta fase. Se revisita en la fase 4, y solo si Grovelab entrega modelos reales. Mientras tanto la ficha usa galería de fotos.
 - Chat en línea de un proveedor externo, precios publicados, pagos, cuentas de cliente y comprobantes.
 - Datos inventados: cifras, certificaciones, teléfonos, nombres de productos o textos de ficha. Si falta el dato, la sección no se muestra o lleva el marcador `POR CONFIRMAR`.
 
 ## Confirmar antes de empezar
 
 Fotos y PDF ya no están en esta lista: van a Vercel Blob. El paquete, cuando se implemente, es `@payloadcms/storage-vercel-blob` en **3.92.0**, igual que el resto de Payload. El token del almacén vive solo en el servidor (nombre previsto `BLOB_READ_WRITE_TOKEN` en `.env.example`, sin valor real). No se agrega otra librería de estilos ni se usa S3 en esta fase.
+
+El alcance del filtro de `/productos` tampoco está ya en esta lista: queda resuelto como panel único con categoría, cultivo y plaga (además de texto libre), como pedía la referencia de `docs/referencia-tqc.md`. `/buscar` deja de tener panel propio: pasa a ser una redirección (307) a `/productos` que traslada los mismos parámetros, para no romper enlaces ya compartidos ni el buscador de Inicio. Esto fusiona la tarea 10 (Buscador) dentro de la tarea 8.
 
 La tipografía de trabajo ya está elegida (tarea 3): Bricolage Grotesque para titulares e Inter para texto. No es la fuente definitiva de marca: se confirma al medir el logo real de Grovelab. Si el logo pide otro par, se cambian las familias sin cambiar los tokens.
 
@@ -42,7 +56,6 @@ Sin las respuestas siguientes no se redactan textos definitivos ni se enciende e
 2. **Contacto real:** teléfono, correo, dirección y redes. Número de WhatsApp solo si autorizan el botón. Si no llega, el pie muestra «POR CONFIRMAR» y no un número falso.
 3. **Texto de política de privacidad.** Hace falta antes de guardar el formulario de Contacto (nombre y teléfono). Sin ese texto se construye la página de contacto con los datos públicos, y el formulario queda apagado.
 4. **Cifras y certificaciones de Nosotros.** Solo se publican las que Grovelab entregue por escrito. Si no hay cifra, esa franja no aparece.
-5. **Alcance del filtro de `/productos`.** ¿Solo categoría (como hoy en la tarea 8) o también cultivo y plaga en el mismo panel, como en la referencia de `docs/referencia-tqc.md`? Mientras no se confirme, el listado se construye con filtro de categoría únicamente y el filtrado por cultivo o plaga queda en `/buscar` (tarea 10).
 
 ## Cómo se siente cada página
 
@@ -52,7 +65,7 @@ Máximo un efecto del catálogo por página. Técnica en CSS (Modules o nativo);
 |---|---|---|---|
 | Inicio | «Formulan para mi cultivo», no un distribuidor genérico | Parallax suave de dos capas (campo y hoja) en la portada | Imagen fija, mismo titular y mismos botones |
 | Productos | El catálogo está ordenado y se encuentra rápido | Aparición al entrar en pantalla | Todo visible de entrada |
-| Ficha | Ficha técnica de verdad: cultivo, dosis, SENASA, PDF | Ninguno en la primera versión. El visor 3D solo si hay modelo, y solo al pulsar «Ver en 3D» | Galería de fotos |
+| Ficha | Ficha técnica de verdad: cultivo, dosis, SENASA, PDF | Ninguno en esta fase. El visor 3D se evalúa en la fase 4, solo con modelos reales de Grovelab | Galería de fotos |
 | Cultivo | «Esto es lo que uso en este cultivo» | Inclinación 3D muy leve en las tarjetas, solo con puntero fino | Tarjeta plana |
 | Nosotros | Respaldo y cercanía, sin un muro de texto | Aparición de secciones | Texto e imágenes estáticos |
 | Servicios | Tres ofertas claras, no dos párrafos perdidos | Ninguno. La claridad es el efecto | — |
@@ -65,7 +78,7 @@ Prohibido en todas: carrusel automático, texto ilegible sobre foto, video con r
 
 1. Portada. Titular grande, una frase y dos acciones: «Ver cultivos» y «Contactar». El titular definitivo lo escribe Grovelab; mientras tanto no se publica una frase inventada como si fuera de marca: se usa un titular marcado en el panel, con valor inicial pendiente de confirmación.
 2. Tres pasos estáticos de la historia (suelo, crecimiento, cosecha), con enlace a cultivos. No es la experiencia de la fase 5.
-3. Buscador: cultivo, plaga o categoría. Un solo campo principal y filtros claros. Resultados en `/buscar`.
+3. Buscador: cultivo, plaga o categoría. Un solo campo principal y filtros claros. Envía directo a `/productos` con los filtros (panel único, tarea 8).
 4. Cultivos destacados (los que el panel marque).
 5. Productos destacados.
 6. Franja de respaldo solo si hay certificaciones o cifras confirmadas.
@@ -92,10 +105,11 @@ Orden de lectura, pensado para celular:
 
 ### Buscador
 
-- Ruta `/buscar`. Filtros: texto libre, cultivo, plaga, categoría. Todos opcionales.
-- La consulta se valida en el servidor con Zod. No se confía en el navegador.
+- Ruta `/buscar`: no tiene panel ni listado propio. Redirige (307) a `/productos` trasladando los filtros recibidos (cultivo, plaga, categoría, texto libre) como `searchParams`. Mantiene compatibles los enlaces antiguos y el buscador de Inicio.
+- El panel único de filtros vive en `/productos` (categoría, cultivo, plaga y texto libre); ver tarea 8.
+- La consulta se valida en el servidor con Zod, en `/productos`. No se confía en el navegador.
 - Sin resultados: mensaje en español y un enlace a cultivos, no una página en blanco.
-- La URL refleja los filtros para poder compartirla.
+- La URL de `/productos` refleja los filtros para poder compartirla.
 
 ## Direcciones
 
@@ -113,7 +127,7 @@ Español, sin mezcla visible de inglés.
 | `/noticias` | Listado |
 | `/noticias/[slug]` | Noticia |
 | `/contacto` | Contacto |
-| `/buscar` | Resultados |
+| `/buscar` | Redirección a `/productos` con los mismos filtros. No aparece en el menú ni en el sitemap |
 
 Cada ruta tiene `title` y `description` propios. Las redirecciones desde las URL de WordPress quedan en la fase 4.
 
@@ -153,14 +167,14 @@ Aplicadas con `/ux-ui-2026`. Cada una indica qué metas de la sección «Metas f
 
 ### Listado de productos (`/productos`)
 
-- **Tarea:** encontrar rápido los productos de una categoría, sin perderse en una lista larga.
-- **Contexto móvil:** celular, conexión variable; filtro de categoría colapsado en 360 px, visible en una fila en 1440 px.
-- **Patrón:** grilla de tarjetas (foto, nombre, categoría, cultivos como etiquetas) con filtro de categoría; la selección cambia la URL (`/productos?categoria=slug`) y se refresca sin recarga completa (Server Component + `searchParams`).
-- **Texto clave:** «Categoría» (de uso común); etiqueta «Cotizar» en vez de precio; vacío: «Aún no hay productos publicados en esta categoría.»
-- **Estados:** carga (indicador discreto en la grilla, sin bloquear el filtro) · vacío (mensaje + enlaces a «Ver todos los productos» y a `/buscar`) · error de servidor («No se pudo cargar el catálogo en este momento» + reintentar) · sin precio («Cotizar», nunca un precio inventado) · sin conexión (mismo patrón que error).
+- **Tarea:** encontrar rápido un producto por categoría, cultivo, plaga o palabra libre, desde un solo panel de filtros, sin perderse en una lista larga.
+- **Contexto móvil:** celular, conexión variable; panel de filtros colapsado en 360 px (acordeón o botón «Filtrar»), visible en una fila en 1440 px; el campo de texto no debe bloquear el dictado por voz.
+- **Patrón:** grilla de tarjetas (foto, nombre, categoría, cultivos como etiquetas) con panel único de categoría, cultivo, plaga y texto libre; la selección cambia la URL (`/productos?categoria=slug&cultivo=slug&plaga=slug&q=texto`) y se refresca sin recarga completa (Server Component + `searchParams`, validado con Zod). Botón «Quitar filtros» que limpia panel y URL a la vez. `/buscar` redirige aquí trasladando los mismos parámetros.
+- **Texto clave:** «Categoría», «Cultivo», «Plaga objetivo», «Buscar por palabra» (de uso común); etiqueta «Cotizar» en vez de precio; vacío: «Aún no hay productos publicados en esta categoría» o, sin resultados por combinación de filtros, «No encontramos productos con estos filtros».
+- **Estados:** carga (indicador discreto en la grilla, sin bloquear el panel) · vacío (mensaje + enlaces a «Ver todos los productos» y a contacto — WhatsApp si `WHATSAPP_NUMBER` está confirmado, si no `/contacto`) · error de servidor («No se pudo cargar el catálogo en este momento» + reintentar) · sin precio («Cotizar», nunca un precio inventado) · sin conexión (mismo patrón que error).
 - **Efectos:** «Aparición al desplazarse» en las tarjetas (único efecto de la página, ya definido en el catálogo de `docs/DISENO.md`). Respaldo: `prefers-reduced-motion: reduce` → tarjetas visibles sin animar; igual en móvil y sin JavaScript.
-- **Medición:** evento `categoria_filtrada` (valor: slug), sin datos personales.
-- **Metas de DISENO.md:** 5, 6, 7, 8, 9, 10.
+- **Medición:** `categoria_filtrada` (valor: slug), `filtro_buscador_aplicado` y `busqueda_sin_resultados` (valor: filtros estructurados, nunca el texto libre), sin datos personales.
+- **Metas de DISENO.md:** 2, 5, 6, 7, 8, 9, 10, 11.
 
 ### Ficha de producto (`/productos/[slug]`)
 
@@ -169,9 +183,9 @@ Aplicadas con `/ux-ui-2026`. Cada una indica qué metas de la sección «Metas f
 - **Patrón:** orden fijo de «Ficha de producto» arriba — nombre/categoría/cultivos → galería → descripción corta → ingrediente activo/formulación/SENASA si existen → tabla de dosis HTML → PDFs → productos relacionados → acción de contacto.
 - **Texto clave:** «Ingrediente activo», «Formulación», «Registro SENASA» y «Periodo de carencia» explicados la primera vez en la propia página; dato no confirmado → `POR CONFIRMAR` o «Consultar con un asesor», nunca una cifra inventada; cada PDF muestra su peso aproximado junto al nombre («Ficha técnica (PDF, 420 KB)»).
 - **Estados:** carga (la página se renderiza con los datos listos; solo la galería puede mostrar un marcador de carga) · vacío por campo (se muestra `POR CONFIRMAR`, no se oculta la fila) · error (producto no encontrado o no publicado → 404 en español con enlace a «Ver todos los productos») · sin precio (solo «Pedir información» y WhatsApp si está configurado) · sin conexión (igual que error, con reintento).
-- **Efectos:** ninguno en esta primera versión; el visor 3D queda fuera salvo modelos de Grovelab.
+- **Efectos:** ninguno en esta fase; el visor 3D se evalúa en la fase 4, solo con modelos reales de Grovelab.
 - **Medición:** evento `ficha_tecnica_descargada` (valor: slug del producto).
-- **Etiquetas de cultivo y plaga:** cultivo → `/cultivos/[slug]`; plaga → `/buscar?plaga=slug` (no hay ruta de plagas); categoría → `/productos?categoria=slug`. El nombre accesible de cada etiqueta incluye el texto visible completo (p. ej. «Cultivo: papa»), pasado como prop explícita en cada uso, para evitar el bug de nombre accesible visto en `docs/referencia-tqc.md`.
+- **Etiquetas de cultivo y plaga:** cultivo → `/cultivos/[slug]`; plaga → `/productos?plaga=slug` (no hay ruta de plagas; el panel único vive en `/productos`); categoría → `/productos?categoria=slug`. El nombre accesible de cada etiqueta incluye el texto visible completo (p. ej. «Cultivo: papa»), pasado como prop explícita en cada uso, para evitar el bug de nombre accesible visto en `docs/referencia-tqc.md`.
 - **Metas de DISENO.md:** 3, 5, 6, 8, 9, 10. (La meta 4 —pedido en tres acciones— es de la fase 3: aquí la ficha solo ofrece «Pedir información» y el enlace de WhatsApp condicionado a `WHATSAPP_NUMBER`.)
 
 ### Cultivos (`/cultivos` y `/cultivos/[slug]`)
@@ -182,37 +196,38 @@ Aplicadas con `/ux-ui-2026`. Cada una indica qué metas de la sección «Metas f
 - **Texto clave:** nombre del cultivo como encabezado; vacío: «Aún no hay cultivos publicados» / «Aún no hay productos publicados para este cultivo» con enlace a `/productos`.
 - **Estados:** carga (igual que el listado) · vacío (mensaje + enlace a `/productos` o `/buscar`) · error (cultivo no encontrado → 404 en español) · sin precio («Cotizar») · sin conexión (mismo patrón de reintento).
 - **Efectos:** inclinación 3D muy leve en las tarjetas, solo con puntero fino (`@media (pointer: fine)`). Respaldo: tarjeta plana en dedo/táctil o con `prefers-reduced-motion: reduce`.
-- **Medición:** evento `cultivo_visitado` (valor: slug) — a confirmar si aporta algo que la analítica de página no dé ya, antes de implementarlo.
+- **Medición:** el evento `cultivo_visitado` queda fuera de esta fase; se revisita en la fase 5 junto con el resto de la analítica, para no sumar medición puntual antes de tener el conjunto completo.
 - **Nombre accesible:** cada tarjeta de cultivo recibe su `aria-label` o texto visible como prop explícita en cada uso (listado, página de cultivo, etiquetas de la ficha de producto), nunca un valor heredado por defecto de otro componente — el bug visto en `docs/referencia-tqc.md`.
 - **Metas de DISENO.md:** 5, 6, 7, 8, 9, 10.
 
 ### Buscador (`/buscar`)
 
-- **Tarea:** encontrar un producto por cultivo, plaga, categoría o palabra libre desde cualquier parte del sitio, y poder compartir o volver a ese resultado.
-- **Contexto móvil:** filtros plegados por defecto en 360 px (acordeón o botón «Filtrar»), visibles en una fila en 1440 px; el campo de texto no debe bloquear el dictado por voz del celular.
-- **Patrón:** panel con texto libre, cultivo, plaga y categoría (todos opcionales); cualquier cambio actualiza la URL y refresca los resultados sin recarga completa, validado con Zod en el servidor; botón «Quitar filtros» que limpia panel y URL a la vez.
-- **Texto clave:** etiquetas visibles «Cultivo», «Plaga objetivo», «Categoría», «Buscar por palabra»; botón «Quitar filtros»; «X productos encontrados».
-- **Estados:** carga (indicador discreto sin bloquear el panel) · vacío (mensaje en español con encabezado propio, «No encontramos productos con estos filtros», y dos salidas: «Ver todos los productos» y un enlace de contacto; WhatsApp solo si `WHATSAPP_NUMBER` está confirmado, si no, enlace a `/contacto`) · error («No se pudo buscar en este momento» + reintentar) · sin precio (no aplica directo, reutiliza la tarjeta con «Cotizar») · sin conexión (mismo patrón que error).
-- **Efectos:** ninguno; la claridad es el efecto.
-- **Medición:** `busqueda_sin_resultados` (valor: filtros estructurados, nunca el texto libre) y `filtro_buscador_aplicado`.
-- **Metas de DISENO.md:** 2, 7, 8, 9, 11.
+- **Tarea:** no perder un enlace ya compartido ni el buscador de Inicio ahora que el panel de filtros se unificó en `/productos` (ver esa sección arriba).
+- **Patrón:** `/buscar` no tiene panel propio; es una redirección (307) a `/productos` que traslada los mismos parámetros (texto libre, cultivo, plaga, categoría) como `searchParams`.
+- **Estados:** sin estado propio; hereda el de `/productos` tras la redirección.
+- **Efectos:** ninguno.
+- **Metas de DISENO.md:** cumplidas por `/productos`; aquí solo se evita romper enlaces.
 
 ## Tareas
 
 Una tarea por vez. Cada una termina con lint, typecheck, test y build. Si toca pantalla, revisión en 360 px y 1440 px. No se mezcla con la tarea 6 de la fase 1 (despliegue); se puede construir en local mientras no exista la cuenta de Vercel.
 
-Orden de commits dentro de las tareas 8, 9 y 10 (filtros y buscador primero, ficha después, cultivos al final):
+La tarea 10 (Buscador) queda fusionada dentro de la tarea 8: el panel único de filtros y la redirección de `/buscar` se construyen ahí. El número de tarea 10 se conserva como referencia cruzada (ver su entrada más abajo) para no renumerar el resto del plan.
+
+Orden de commits dentro de las tareas 8 y 9 (filtros y buscador unificado primero, ficha después, cultivos al final):
 
 | Commit | Qué entra | Tarea del plan | Verificación |
 |---|---|---|---|
 | a | Filtro de categoría en `/productos` | 8 (listado) | lint, typecheck, test, build; captura 360/1440 px con y sin filtro; filtro operable con teclado, foco visible |
-| b | Panel de `/buscar` con URL y botón «Quitar filtros» | 10 | lint, typecheck, test (Vitest: filtros vacíos, combinación, texto largo), build, `test:e2e`; captura 360/1440 con el panel abierto y cerrado; recorrido por teclado del panel y el botón «Quitar filtros» |
-| c | Estado vacío del buscador con sus dos salidas | 10 | lint, typecheck, test (Playwright: filtro sin resultados), build; captura 360/1440 del estado vacío; comprobar que nada se abre solo |
+| b | Panel único (categoría, cultivo, plaga, texto libre) con URL y botón «Quitar filtros»; `/buscar` redirige a `/productos` | 8 (fusiona la 10) | lint, typecheck, test (Vitest: filtros vacíos, combinación, texto largo), build, `test:e2e`; captura 360/1440 con el panel abierto y cerrado; recorrido por teclado del panel y el botón «Quitar filtros» |
+| c | Estado vacío del panel con sus dos salidas | 8 (fusiona la 10) | lint, typecheck, test (Playwright: filtro sin resultados, redirección de `/buscar`), build; captura 360/1440 del estado vacío; comprobar que nada se abre solo |
 | d | Tabla de dosis HTML real en la ficha | 8 (ficha) | lint, typecheck, test, build; captura 360/1440; en 360 px la tabla no exige scroll horizontal de toda la página; recorrido por teclado de la tabla y los PDF |
 | e | Peso visible en los PDF y etiquetas que enlazan al catálogo filtrado | 8 (ficha) | lint, typecheck, build; revisión manual del peso mostrado contra el archivo subido; nombre accesible de cada etiqueta con el texto visible completo |
 | f | `/cultivos` y `/cultivos/[slug]` | 9 | lint, typecheck, test, build; captura 360/1440 de ambas páginas; cada tarjeta anuncia su propio nombre; la inclinación 3D desaparece con `prefers-reduced-motion` o en pantallas táctiles |
 
 **Estado de implementación:** los commits a, b, c, d y f ya estaban o quedaron aplicados en el código (filtro de categoría, panel de `/buscar` con botón «Quitar filtros», estado vacío con dos salidas, tabla de dosis, páginas de cultivo). El commit e solo trae la parte de las etiquetas (plaga enlazando a `/buscar?plaga=`, cultivo a `/cultivos/[slug]`, nombre accesible explícito en ambas): el peso visible del PDF **queda pendiente**, porque todavía no existe la colección Medios ni los campos `fichaTecnica`/`hojaSeguridad` en Productos — eso depende de la tarea 1, que no se ha empezado. `npm run lint`, `npm run typecheck`, `npm run test` y `npm run build` corrieron en verde con estos cambios; las capturas a 360/1440 px y el recorrido manual por teclado quedan pendientes de revisión.
+
+Nota de esta revisión: el código hoy todavía tiene a `/buscar` como página propia con panel propio (commit b/c, hecho antes de esta decisión) y a `/productos` con filtro de categoría únicamente. Falta el commit que unifica ambos paneles en `/productos` y convierte `/buscar` en redirección — ver la tarea 8 más abajo.
 
 ### 1. Medios fuera de la base
 
@@ -236,21 +251,35 @@ Colección Productos relacionada con las anteriores. Tabla de dosis en la ficha.
 
 **Pendiente:** la colección Productos hoy no tiene campos de galería ni de PDF (ficha técnica, hoja de seguridad); se agregan con su propia migración cuando exista la colección Medios de la tarea 1.
 
+**Ampliación (revisión frente a la web antigua):** en la misma migración, o en una inmediatamente posterior, se suman:
+
+- `presentaciones`: lista de filas con un texto corto (p. ej. «100 g», «25 kg», «1 L»). En la ficha se muestran como etiquetas bajo el nombre. Es el campo que usará «Agregar a mi pedido» en la fase 3.
+- `composicion`: lista de filas elemento + porcentaje, para nutricionales y bioestimulantes. Se muestra en una tabla HTML con `tabular-nums`, separada de «Ingrediente activo». Si está vacía, la sección no aparece.
+- Foto principal y PDF ya quedan cubiertos por galería y ficha técnica.
+
+Verificación: lint, typecheck, test, build; `migrate:status` al día; captura 360/1440 de una ficha con y sin presentaciones y composición.
+
 ### 6. Cabecera y pie
 
-Menú en español a las rutas de esta fase. En celular, menú que se abre y se cierra con teclado, foco atrapado mientras está abierto, y botón de cierre visible. Pie con los datos confirmados. Enlace a WhatsApp solo si existe `WHATSAPP_NUMBER`.
+Menú en español a las rutas de esta fase, sin «Buscar» (es una redirección, no una página). «Cultivos» solo aparece si hay al menos un cultivo publicado. En celular, menú que se abre y se cierra con teclado, foco atrapado mientras está abierto, y botón de cierre visible. Pie con los datos confirmados. Enlace a WhatsApp solo si existe `WHATSAPP_NUMBER`.
 
 ### 7. Portada
 
-Sustituir el texto provisional. Parallax de dos capas según el catálogo, con imagen fija de respaldo. Secciones 1 a 10 de este plan, ocultando las que no tengan contenido. El buscador de la portada lleva a `/buscar`.
+Sustituir el texto provisional. Parallax de dos capas según el catálogo, con imagen fija de respaldo. Secciones 1 a 10 de este plan, ocultando las que no tengan contenido. El buscador de la portada lleva directo a `/productos` con los filtros. Los botones hacia cultivos solo se muestran si hay cultivos publicados.
 
-### 8. Listado de productos y ficha
+### 8. Listado de productos, buscador unificado y ficha
 
-Filtro por categoría en `/productos`, con la URL reflejando la categoría elegida (`/productos?categoria=slug`) y resultado sin recarga completa. Estado vacío: «Aún no hay productos publicados en esta categoría» con enlace a ver todos los productos y a `/buscar`. Evento de medición `categoria_filtrada` (valor: slug), sin datos personales. Alcance del filtro (solo categoría, o también cultivo y plaga) sigue como punto 5 pendiente de «Confirmar antes de empezar».
+Panel único de filtros en `/productos`: categoría, cultivo, plaga y texto libre (todos opcionales), validado con Zod en el servidor. La URL refleja los filtros elegidos (`/productos?categoria=slug&cultivo=slug&plaga=slug&q=texto`) y el resultado se refresca sin recarga completa. Botón «Quitar filtros» que limpia panel y URL a la vez. Esto fusiona la tarea 10 (Buscador): `/buscar` deja de tener panel propio y pasa a ser una redirección (307) que traslada los mismos parámetros a `/productos`, para no romper enlaces ya compartidos ni el buscador de Inicio.
 
-Ficha en `/productos/[slug]`: orden ya fijado en «Decisiones UX de esta fase». Las etiquetas de cultivo enlazan a `/cultivos/[slug]`, las de plaga a `/buscar?plaga=slug` y las de categoría a `/productos?categoria=slug`; el nombre accesible de cada etiqueta incluye el texto visible completo («Cultivo: papa»), pasado como prop explícita en cada uso para no heredar el nombre de otro componente. Los enlaces de PDF muestran su peso aproximado junto al nombre del archivo. Dato de dosis o SENASA no confirmado: `POR CONFIRMAR` o «Consultar con un asesor», nunca una cifra inventada. Evento de medición `ficha_tecnica_descargada` (valor: slug del producto).
+Estado vacío: «Aún no hay productos publicados en esta categoría» o, sin resultados por combinación de filtros, «No encontramos productos con estos filtros», con dos salidas: «Ver todos los productos» y un enlace de contacto (WhatsApp si `WHATSAPP_NUMBER` está confirmado; si no, `/contacto`).
+
+Eventos de medición: `categoria_filtrada` (valor: slug), `filtro_buscador_aplicado` y `busqueda_sin_resultados` (valor: filtros estructurados, nunca el texto libre), sin datos personales.
+
+Ficha en `/productos/[slug]`: orden ya fijado en «Decisiones UX de esta fase». Las etiquetas de cultivo enlazan a `/cultivos/[slug]`, las de plaga a `/productos?plaga=slug` y las de categoría a `/productos?categoria=slug`; el nombre accesible de cada etiqueta incluye el texto visible completo («Cultivo: papa»), pasado como prop explícita en cada uso para no heredar el nombre de otro componente. Los enlaces de PDF muestran su peso aproximado junto al nombre del archivo. Dato de dosis o SENASA no confirmado: `POR CONFIRMAR` o «Consultar con un asesor», nunca una cifra inventada. Evento de medición `ficha_tecnica_descargada` (valor: slug del producto).
 
 Aparición al desplazarse solo en el listado; ningún efecto en la ficha en esta primera versión. `alt` obligatorio en la foto principal.
+
+Playwright: abrir `/buscar` sin sesión y confirmar la redirección a `/productos` con el estado vacío correspondiente, sin credenciales.
 
 ### 9. Página de cultivo
 
@@ -258,15 +287,9 @@ Aparición al desplazarse solo en el listado; ningún efecto en la ficha en esta
 
 Cada tarjeta de cultivo recibe su `aria-label` o texto visible como prop explícita en cada uso (listado, página de cultivo, etiquetas de la ficha de producto), nunca un valor heredado por defecto de otro componente — el bug de nombre accesible visto en `docs/referencia-tqc.md`.
 
-### 10. Buscador
+### 10. (Fusionada con la tarea 8)
 
-`/buscar` con panel de texto libre, cultivo, plaga y categoría (todos opcionales), validación Zod y pruebas Vitest de la consulta (filtros vacíos, combinación, texto demasiado largo). La URL refleja los filtros para compartir o volver con el botón Atrás. Un botón «Quitar filtros» limpia el panel y la URL a la vez.
-
-Estado vacío: mensaje en español con encabezado propio («No encontramos productos con estos filtros») y dos salidas: «Ver todos los productos» (`/productos`) y un enlace de contacto. Si `WHATSAPP_NUMBER` está confirmado (punto 2 de «Confirmar antes de empezar»; no depende de la fase 3), el enlace abre WhatsApp con un mensaje armado; si no, lleva a `/contacto`. Nada se abre solo.
-
-Eventos de medición: `busqueda_sin_resultados` (valor: filtros estructurados, nunca el texto libre) y `filtro_buscador_aplicado`.
-
-Playwright: abrir `/buscar` sin sesión y ver el estado vacío, sin credenciales.
+El panel único de filtros, su estado vacío y sus eventos de medición se construyen dentro de la tarea 8, en `/productos`. `/buscar` pasa a ser solo una redirección a `/productos` con los filtros recibidos. Ver tarea 8.
 
 ### 11. Nosotros y Servicios
 
@@ -306,15 +329,19 @@ Sin esto la estructura se puede enseñar, pero no va a «maravillar»:
 - Texto de política de privacidad, antes del formulario.
 - Cifras o certificaciones solo si pueden publicarse.
 - URL de testimonios, si quieren video en la portada.
+- Validación de los textos de la web antigua que se quieran reutilizar (Nosotros, Servicios, contacto de Lima, noticias), incluida la vigencia de lo que dicen sobre la Ley 30.190 y SENASA.
+- Categoría correcta de cada producto (la asignación de la web antigua está desordenada).
+- Presentaciones y, en nutricionales, composición de cada producto del lote de muestra.
+- Relación producto–cultivo–dosis. Sin ella, la página de cultivos no se publica en el menú.
 
-**Qué tarea bloquea cada pendiente, dentro de las tareas 8, 9 y 10 de esta fase:**
+**Qué tarea bloquea cada pendiente, dentro de las tareas 8 y 9 de esta fase (la 10 queda fusionada en la 8):**
 
 | Pendiente | Bloquea |
 |---|---|
-| Tratamiento tú/usted confirmado | Los textos de botones y estados vacíos de las tareas 8, 9 y 10 (se usa un tratamiento provisional consistente mientras tanto) |
-| Lote de muestra (3 cultivos, 3 categorías, 6 productos con foto, cultivo, plaga, SENASA, dosis) | Tareas 8, 9 y 10 — sin datos reales no hay qué filtrar, tabular ni listar |
+| Tratamiento tú/usted confirmado | Los textos de botones y estados vacíos de las tareas 8 y 9 (se usa un tratamiento provisional consistente mientras tanto) |
+| Lote de muestra (3 cultivos, 3 categorías, 6 productos con foto, cultivo, plaga, SENASA, dosis) | Tareas 8 y 9 — sin datos reales no hay qué filtrar, tabular ni listar |
 | Fotos de campo y de envase del lote de muestra | Tareas 8 y 9 — sin ellas, las tarjetas y la galería quedan con `POR CONFIRMAR` |
-| Número de WhatsApp (`WHATSAPP_NUMBER`) | La salida de WhatsApp en la tarea 10 (estado vacío del buscador) y el enlace de la ficha en la tarea 8 |
+| Número de WhatsApp (`WHATSAPP_NUMBER`) | La salida de WhatsApp en el estado vacío del panel y el enlace de la ficha, ambos en la tarea 8 |
 | Texto de política de privacidad | No bloquea las tareas 8, 9 y 10; sigue pendiente para la tarea 13 (Contacto) |
 
 ## Verificación
@@ -339,4 +366,4 @@ Sin esto la estructura se puede enseñar, pero no va a «maravillar»:
 
 ## Después de esta fase
 
-Fase 3: zonas comerciales y pedido por WhatsApp, reutilizando la ficha y el contacto. Fase 4: los ~70 productos, las URL viejas y el SEO de migración. Fase 5: la planta que crece, en la portada, sustituyendo los tres pasos estáticos de esta fase.
+Fase 3: zonas comerciales y pedido por WhatsApp, reutilizando la ficha y el contacto. Fase 4: los ~70 productos, las URL viejas, el SEO de migración y, si Grovelab entrega modelos reales, el visor 3D del envase. Fase 5: la planta que crece en la portada, sustituyendo los tres pasos estáticos de esta fase, y la analítica de eventos puntuales (como `cultivo_visitado`) que esta fase deja pendiente.
