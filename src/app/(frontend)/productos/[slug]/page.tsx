@@ -212,8 +212,8 @@ export default async function ProductoPage({ params }: PageProps) {
                 key={medio.id}
                 className={
                   indice === 0
-                    ? "relative col-span-2 aspect-[4/3] overflow-hidden rounded-m sm:col-span-3"
-                    : "relative aspect-square overflow-hidden rounded-m"
+                    ? "relative col-span-2 aspect-[4/3] overflow-hidden rounded-m bg-superficie sm:col-span-3"
+                    : "relative aspect-square overflow-hidden rounded-m bg-superficie"
                 }
               >
                 <Image
@@ -225,7 +225,7 @@ export default async function ProductoPage({ params }: PageProps) {
                       ? "(min-width: 40rem) 36rem, 100vw"
                       : "(min-width: 40rem) 12rem, 33vw"
                   }
-                  className="object-cover"
+                  className="object-contain p-3 mix-blend-multiply"
                 />
               </li>
             ))}

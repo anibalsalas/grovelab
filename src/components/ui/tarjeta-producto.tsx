@@ -30,13 +30,15 @@ export function TarjetaProducto({
   return (
     <Link href={`/productos/${slug}`} className={sitio.tarjetaPlana}>
       {imagen ? (
-        <div className="relative -mx-4 -mt-4 mb-4 aspect-[4/3] overflow-hidden rounded-t-m">
+        // Foto de envase: se muestra completa (`contain`), nunca recortada. El fondo blanco de
+        // la foto se funde con el de la caja (`multiply`) para que no se vea un recuadro.
+        <div className="relative -mx-4 -mt-4 mb-4 aspect-square overflow-hidden rounded-t-m bg-superficie">
           <Image
             src={imagen.url}
             alt={imagen.alt?.trim() || nombre}
             fill
             sizes="(min-width: 56rem) 33vw, (min-width: 40rem) 50vw, 100vw"
-            className="object-cover"
+            className="object-contain p-4 mix-blend-multiply"
           />
         </div>
       ) : null}
