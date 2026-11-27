@@ -36,7 +36,7 @@ Cada punto tiene una recomendación. Si se acepta tal cual, se puede empezar. Lo
 
 1. **Zonas y asesores.** La web antigua lista seis zonas con su asesor (RTC), celular y ciudades. Se usan como borrador y Grovelab confirma por escrito qué zonas siguen vigentes, qué departamentos o ciudades cubre cada una, y el nombre y el cargo de cada asesor. *Recomendación:* no cargar nada sin esa confirmación. Sin zonas publicadas, el pedido sale al número general.
 2. **¿Se publica el número de cada asesor?** El plan 02 prohíbe exponer teléfonos de personas en la lectura pública. La página de zonas y el envío del pedido exponen el número de la zona por diseño, porque el enlace `wa.me/<número>` lo deja visible. *Recomendación:* publicar solo números corporativos o los que Grovelab autorice por escrito, y marcar cada zona en el panel con «Número autorizado para publicar». Una zona sin esa marca no muestra el número y su pedido sale al número general.
-3. **Pedido sin política de privacidad.** Resuelto (2026-11-27): **modo sin datos.** Se construye todo. Mientras no haya política, el pedido **no se guarda ni pide datos personales**: «Enviar por WhatsApp» arma el mensaje solo con productos, zona y cultivo, y la persona escribe su nombre en el chat. Cuando se publique la política, el mismo formulario pasa a pedir nombre y teléfono y a guardar en el panel, sin tocar código (la compuerta lee el global). Se descartaron esperar a la política y guardar sin ella.
+3. **Pedido sin política de privacidad.** Resuelto (2026-11-27): **modo sin datos.** Se construye todo. Mientras no haya política, el pedido **no pide ni guarda datos personales** (sí se guarda el pedido en sí, sin nombre ni teléfono, como pide la regla de catalogo-pedido): «Enviar por WhatsApp» arma el mensaje solo con productos, zona y cultivo, y la persona escribe su nombre en el chat. Cuando se publique la política, el mismo formulario pasa a pedir nombre y teléfono y a guardar en el panel, sin tocar código (la compuerta lee el global). Se descartaron esperar a la política y guardar sin ella.
 4. **Productos sin presentación** (hoy NOT FLY y TODYM). Resuelto (2026-11-27): se pueden agregar con la presentación «A consultar con el asesor», nunca con una inventada. Igual se le piden a Grovelab las presentaciones reales.
 5. **Productos regulados (pendiente de `docs/ALCANCE.md`).** Resuelto (2026-11-27): se reciben pedidos de todo producto publicado, porque el pedido es una cotización y no una venta. Cada producto tiene un interruptor «Admite pedido» (activo por defecto) para que Grovelab lo apague donde haga falta. Con el interruptor apagado, la ficha muestra solo «Pedir información».
 6. **Quién ve los pedidos en el panel.** Resuelto (2026-11-27): **rol nuevo `ventas`**, que ve Pedidos y cambia su estado, ve Zonas y no edita el catálogo ni ve Usuarios. El administrador ve todo y el editor **no** ve pedidos.
@@ -235,7 +235,7 @@ Sin interfaz. Es lo que más conviene probar aislado.
   2. Valida con Zod. El esquema depende de si hay política publicada (punto 3).
   3. Vuelve a leer en Payload cada producto por slug (publicado y con «Admite pedido») y comprueba que la presentación exista en el producto (o que sea «A consultar» si no tiene ninguna). Lo que no pasa se devuelve como aviso y no se envía.
   4. Resuelve el destino.
-  5. Con política, aplica el límite por teléfono y crea el Pedido. Sin política, no guarda nada.
+  5. Con política, aplica el límite por teléfono y crea el Pedido. Sin política, guarda el pedido sin nombre ni teléfono (productos, zona, ciudad, cultivo y hectáreas). Si guardar falla, el pedido sale igual por WhatsApp.
   6. Devuelve `{ ok: true, urlWhatsApp, numero? }` o errores por campo. No escribe logs con datos personales.
 - El formulario usa `useActionState`, muestra el estado «Enviado» y navega con `window.location.assign`.
 - **Vitest:** validación del esquema en sus dos variantes.
@@ -270,7 +270,7 @@ Sin interfaz. Es lo que más conviene probar aislado.
 1. Desde la ficha, en tres acciones, se abre WhatsApp con el mensaje redactado y el pedido completo (meta 4).
 2. «Mi pedido» sobrevive a recargar la página y se sincroniza entre pestañas, y lo corrupto no rompe nada.
 3. El mensaje llega al asesor de la zona elegida o, en su defecto, al número general. Sin ningún número configurado, la función no aparece.
-4. Con política publicada, cada pedido queda en el panel con sus productos, zona y estado, visible solo para los roles definidos. Sin política, no se guarda nada personal.
+4. Con política publicada, cada pedido queda en el panel con sus productos, zona y estado, visible solo para los roles definidos. Sin política, el pedido se guarda sin ningún dato personal (sin nombre ni teléfono).
 5. `/zonas-comerciales` muestra las zonas confirmadas con su WhatsApp visible de inmediato, sin mapa ni clic previo.
 6. No hay precios, pagos, stock ni cuentas de cliente.
 7. No hay datos inventados en la interfaz.

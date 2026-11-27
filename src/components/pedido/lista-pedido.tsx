@@ -12,6 +12,7 @@ import {
 import {
   consultarProductosPedido,
   type ProductoPedido,
+  type ResultadoEnvio,
 } from "@/app/(frontend)/pedido/actions";
 import { BotonEnlace } from "@/components/ui/boton-enlace";
 import { EstadoVacio } from "@/components/ui/estado-vacio";
@@ -22,6 +23,7 @@ import {
 } from "@/lib/pedido/esquema.ts";
 import { usePedido } from "@/lib/pedido/usar-pedido.ts";
 
+import { FormularioEnvio, type OpcionLista } from "./formulario-envio";
 import estilos from "./pedido.module.css";
 
 /** `false` en el servidor y durante la hidratación; evita mostrar «vacío» antes de leer el pedido guardado. */
@@ -135,9 +137,39 @@ function FilaEditable({ fila, nombre, onCantidad, onQuitar }: FilaEditableProps)
   );
 }
 
-export function ListaPedido() {
+type ListaPedidoProps = {
+  zonas: readonly OpcionLista[];
+  cultivos: readonly OpcionLista[];
+  conPolitica: boolean;
+};
+
+export function ListaPedido({ zonas, cultivos, conPolitica }: ListaPedidoProps) {
   const montado = useMontado();
   const { filas, quitar, cambiarCantidad, vaciar } = usePedido();
+  const [enviado, setEnviado] = useState<{
+    url: string | null;
+    numero: number | null;
+  } | null>(null);
+
+  function alResultadoEnvio(resultado: ResultadoEnvio) {
+    if (resultado.ok) {
+      // La lista local solo se vacía tras una respuesta correcta del servidor.
+      vaciar();
+      setEnviado({ url: resultado.url, numero: resultado.numero });
+      if (resultado.url) {
+        window.location.assign(resultado.url);
+      }
+      return;
+    }
+    if (resultado.productosNoDisponibles) {
+      const motivos: string[] = [];
+      for (const item of resultado.productosNoDisponibles) {
+        quitar(item.slug, item.presentacion);
+        motivos.push(item.motivo);
+      }
+      setAvisos((previos) => [...new Set([...previos, ...motivos])]);
+    }
+  }
   const [productos, setProductos] = useState<Map<string, ProductoPedido> | null>(
     null,
   );
@@ -215,6 +247,38 @@ export function ListaPedido() {
       </div>
     ) : null;
 
+  if (enviado) {
+    return (
+      <div role="status" className={estilos.exito}>
+        <h2 className="font-titular text-xl text-marca">
+          Listo. Te llevamos a WhatsApp…
+        </h2>
+        {enviado.numero !== null ? (
+          <p>Tu pedido es el N.º {String(enviado.numero).padStart(4, "0")}.</p>
+        ) : null}
+        {enviado.url ? (
+          <p className="text-sm text-texto/85">
+            Si WhatsApp no se abrió, usa el botón de abajo. Tu pedido ya está
+            armado en el mensaje.
+          </p>
+        ) : null}
+        <div className="flex flex-wrap gap-3">
+          {enviado.url ? (
+            <a
+              href={enviado.url}
+              className="inline-flex min-h-11 items-center rounded-m bg-marca px-5 py-2 text-fondo shadow-s hover:bg-marca/90 focus-visible:rounded-m"
+            >
+              Abrir WhatsApp otra vez
+            </a>
+          ) : null}
+          <BotonEnlace href="/productos" variante="secundario">
+            Seguir viendo productos
+          </BotonEnlace>
+        </div>
+      </div>
+    );
+  }
+
   if (filas.length === 0) {
     return (
       <>
@@ -278,6 +342,14 @@ export function ListaPedido() {
           </button>
         )}
       </div>
+
+      <FormularioEnvio
+        filas={filas}
+        zonas={zonas}
+        cultivos={cultivos}
+        conPolitica={conPolitica}
+        onResultado={alResultadoEnvio}
+      />
     </div>
   );
 }

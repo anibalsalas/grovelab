@@ -192,3 +192,128 @@ test.describe("/pedido: lista editable", () => {
     ).toBeVisible();
   });
 });
+
+/** El servidor exige unos segundos entre que carga el formulario y el envío (antiabuso). */
+const ESPERA_ANTIABUSO_MS = 3500;
+
+async function interceptarWhatsApp(page: Page) {
+  await page.route("https://wa.me/**", (route) =>
+    route.fulfill({ status: 200, contentType: "text/html", body: "<p>WhatsApp</p>" }),
+  );
+}
+
+test.describe("/pedido: envío por WhatsApp", () => {
+  test("desde la ficha, tres acciones abren WhatsApp con el pedido armado", async ({
+    page,
+  }) => {
+    await interceptarWhatsApp(page);
+    await abrirPrimeraFicha(page);
+    await page.getByRole("radio").first().check();
+
+    // Acción 1: agregar. Acción 2: revisar. Acción 3: enviar (en la misma pantalla del formulario).
+    await page.getByRole("button", { name: "Agregar a mi pedido" }).click();
+    await page.getByRole("link", { name: /^Revisar mi pedido/ }).click();
+    await expect(page).toHaveURL(/\/pedido$/);
+    await page.getByRole("list", { name: "Productos de mi pedido" }).waitFor();
+    await page.waitForTimeout(ESPERA_ANTIABUSO_MS);
+
+    const conDatos = (await page.getByLabel("Nombre", { exact: true }).count()) > 0;
+    test.skip(conDatos, "La política está publicada: este caso es el modo sin datos.");
+
+    // En el modo sin datos no se pide nombre ni teléfono.
+    await expect(page.getByLabel("Teléfono")).toHaveCount(0);
+    await page.getByRole("button", { name: "Enviar por WhatsApp" }).click();
+
+    await page.waitForURL(/^https:\/\/wa\.me\//);
+    const url = new URL(page.url());
+    // Número ficticio de pruebas (playwright.config.ts): 900000000 → 51900000000.
+    expect(url.pathname).toBe("/51900000000");
+    const texto = url.searchParams.get("text") ?? "";
+    expect(texto).toMatch(/^Hola, quiero cotizar este pedido \(N\.º \d{4,}\):/);
+    expect(texto).toMatch(/• .+ — .+ × 1/);
+    expect(texto).not.toMatch(/Nombre:/);
+  });
+
+  test("tras enviar, la lista local queda vacía", async ({ page }) => {
+    await interceptarWhatsApp(page);
+    await abrirPrimeraFicha(page);
+    await page.getByRole("radio").first().check();
+    await page.getByRole("button", { name: "Agregar a mi pedido" }).click();
+    await page.getByRole("link", { name: /^Revisar mi pedido/ }).click();
+    await page.getByRole("list", { name: "Productos de mi pedido" }).waitFor();
+    test.skip(
+      (await page.getByLabel("Nombre", { exact: true }).count()) > 0,
+      "Con política publicada se necesitan datos: lo cubre la otra prueba.",
+    );
+    await page.waitForTimeout(ESPERA_ANTIABUSO_MS);
+    await page.getByRole("button", { name: "Enviar por WhatsApp" }).click();
+    await page.waitForURL(/^https:\/\/wa\.me\//);
+
+    await page.goBack();
+    await expect(page.getByRole("list", { name: "Productos de mi pedido" })).toHaveCount(0);
+    await expect(page.getByRole("link", { name: /^Mi pedido,/ })).toHaveCount(0);
+  });
+
+  test("el campo trampa descarta el envío sin abrir WhatsApp", async ({ page }) => {
+    let tocoWhatsApp = false;
+    await page.route("https://wa.me/**", (route) => {
+      tocoWhatsApp = true;
+      return route.abort();
+    });
+    await abrirPrimeraFicha(page);
+    await page.getByRole("radio").first().check();
+    await page.getByRole("button", { name: "Agregar a mi pedido" }).click();
+    await page.getByRole("link", { name: /^Revisar mi pedido/ }).click();
+    await page.getByRole("list", { name: "Productos de mi pedido" }).waitFor();
+    test.skip(
+      (await page.getByLabel("Nombre", { exact: true }).count()) > 0,
+      "Se prueba en el modo sin datos.",
+    );
+    await page.waitForTimeout(ESPERA_ANTIABUSO_MS);
+
+    await page.locator('input[name="sitioWeb"]').evaluate((el) => {
+      (el as HTMLInputElement).value = "https://spam.example";
+    });
+    await page.getByRole("button", { name: "Enviar por WhatsApp" }).click();
+
+    await expect(
+      page.getByRole("heading", { name: /^Listo/ }),
+    ).toBeVisible();
+    expect(tocoWhatsApp).toBe(false);
+    await expect(page).toHaveURL(/\/pedido$/);
+  });
+
+  test("con política publicada pide nombre, teléfono y aceptación, y los valida", async ({
+    page,
+  }) => {
+    await interceptarWhatsApp(page);
+    await abrirPrimeraFicha(page);
+    await page.getByRole("radio").first().check();
+    await page.getByRole("button", { name: "Agregar a mi pedido" }).click();
+    await page.getByRole("link", { name: /^Revisar mi pedido/ }).click();
+    await page.getByRole("list", { name: "Productos de mi pedido" }).waitFor();
+    test.skip(
+      (await page.getByLabel("Nombre", { exact: true }).count()) === 0,
+      "Sin política publicada no se piden datos personales (se cubre en las otras pruebas).",
+    );
+    await page.waitForTimeout(ESPERA_ANTIABUSO_MS);
+
+    // Sin datos: errores por campo, y no se abre WhatsApp.
+    await page.getByRole("button", { name: "Enviar por WhatsApp" }).click();
+    await expect(page.getByText("Ingresa tu nombre.")).toBeVisible();
+    await expect(page.getByText("Ingresa un teléfono válido.")).toBeVisible();
+    await expect(page.getByText("Debes aceptar la política de privacidad.")).toBeVisible();
+
+    // Teléfono distinto en cada corrida: el servidor limita pedidos por teléfono y hora.
+    const telefono = `9${Math.floor(10_000_000 + Math.random() * 89_999_999)}`;
+    await page.getByLabel("Nombre", { exact: true }).fill("Prueba E2E");
+    await page.getByLabel("Teléfono").fill(telefono);
+    await page.getByRole("checkbox", { name: /política de privacidad/ }).check();
+    await page.getByRole("button", { name: "Enviar por WhatsApp" }).click();
+
+    await page.waitForURL(/^https:\/\/wa\.me\//);
+    const texto = new URL(page.url()).searchParams.get("text") ?? "";
+    expect(texto).toContain("Nombre: Prueba E2E");
+    expect(texto).not.toContain(telefono);
+  });
+});

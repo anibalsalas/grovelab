@@ -10,6 +10,11 @@ import {
   idContenidoPrincipal,
   scrollMargenContenido,
 } from "@/lib/clases-sitio";
+import {
+  obtenerTextosSitio,
+  politicaPrivacidadPublica,
+} from "@/lib/obtener-textos-sitio.ts";
+import { getPayloadClient } from "@/lib/payload-client";
 import { hayDestinoPedido } from "@/lib/pedido/hay-destino-pedido.ts";
 
 export const dynamic = "force-dynamic";
@@ -26,6 +31,28 @@ export default async function PedidoPage() {
     notFound();
   }
 
+  const payload = await getPayloadClient();
+  const [textos, zonas, cultivos] = await Promise.all([
+    obtenerTextosSitio(),
+    // El filtro por _status es explícito: la Local API ignora el acceso público.
+    payload.find({
+      collection: "zonas-comerciales",
+      where: { _status: { equals: "published" } },
+      sort: "orden",
+      depth: 0,
+      limit: 50,
+      pagination: false,
+    }),
+    payload.find({
+      collection: "cultivos",
+      where: { _status: { equals: "published" } },
+      sort: "nombre",
+      depth: 0,
+      limit: 100,
+      pagination: false,
+    }),
+  ]);
+
   return (
     <TransicionPagina>
       <main id={idContenidoPrincipal} className={scrollMargenContenido}>
@@ -38,7 +65,11 @@ export default async function PedidoPage() {
         </CintaSeccion>
 
         <div className={contenedorPagina}>
-          <ListaPedido />
+          <ListaPedido
+            zonas={zonas.docs.map(({ slug, nombre }) => ({ slug, nombre }))}
+            cultivos={cultivos.docs.map(({ slug, nombre }) => ({ slug, nombre }))}
+            conPolitica={politicaPrivacidadPublica(textos) !== null}
+          />
         </div>
       </main>
     </TransicionPagina>
