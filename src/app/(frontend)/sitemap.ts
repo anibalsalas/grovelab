@@ -5,6 +5,7 @@ import {
   politicaPrivacidadPublica,
 } from "@/lib/obtener-textos-sitio.ts";
 import { hayCultivosPublicados } from "@/lib/hay-cultivos-publicados.ts";
+import { hayZonasPublicadas } from "@/lib/hay-zonas-publicadas.ts";
 import { getPayloadClient } from "@/lib/payload-client";
 
 // Sin esto Next genera el sitemap una sola vez al compilar y no ve las
@@ -25,7 +26,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const ahora = new Date();
 
   const payload = await getPayloadClient();
-  const [textos, noticias, hayCultivos] = await Promise.all([
+  const [textos, noticias, hayCultivos, hayZonas] = await Promise.all([
     obtenerTextosSitio(),
     payload.find({
       collection: "noticias",
@@ -34,11 +35,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       sort: "-fecha",
     }),
     hayCultivosPublicados(),
+    hayZonasPublicadas(),
   ]);
 
-  const rutas = hayCultivos
-    ? [...rutasEstaticas, "/cultivos"]
-    : [...rutasEstaticas];
+  // Cultivos y Zonas solo se listan si hay algo publicado (si no, la ruta es 404).
+  const rutas: string[] = [...rutasEstaticas];
+  if (hayCultivos) {
+    rutas.push("/cultivos");
+  }
+  if (hayZonas) {
+    rutas.push("/zonas-comerciales");
+  }
 
   const entradas: MetadataRoute.Sitemap = rutas.map((ruta) => ({
     url: `${base}${ruta}`,

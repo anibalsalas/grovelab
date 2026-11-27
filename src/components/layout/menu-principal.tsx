@@ -19,6 +19,7 @@ export const enlacesNavegacion = [
   { href: "/productos", etiqueta: "Productos" },
   { href: "/nosotros", etiqueta: "Nosotros" },
   { href: "/servicios", etiqueta: "Servicios" },
+  { href: "/zonas-comerciales", etiqueta: "Zonas" },
   { href: "/noticias", etiqueta: "Noticias" },
   { href: "/contacto", etiqueta: "Contacto" },
 ] as const;
@@ -36,6 +37,8 @@ const claseEnlace = `min-h-11 inline-flex items-center focus-visible:rounded-sm 
 type MenuPrincipalProps = {
   /** Sin cultivos publicados, el enlace llevaría a una página vacía. */
   mostrarCultivos: boolean;
+  /** Sin zonas publicadas, el enlace llevaría a un 404. */
+  mostrarZonas: boolean;
   /**
    * Clase de la cabecera para subir los controles al compactarse. Se aplica a
    * la navegación de escritorio y al botón, nunca al contenedor del panel móvil:
@@ -46,6 +49,7 @@ type MenuPrincipalProps = {
 
 export function MenuPrincipal({
   mostrarCultivos,
+  mostrarZonas,
   claseDesplazable = "",
 }: MenuPrincipalProps) {
   const pathname = usePathname();
@@ -102,9 +106,11 @@ export function MenuPrincipal({
     };
   }, [abierto, cerrar]);
 
-  const enlaces = mostrarCultivos
-    ? enlacesNavegacion
-    : enlacesNavegacion.filter((enlace) => enlace.href !== "/cultivos");
+  const enlaces = enlacesNavegacion.filter(
+    (enlace) =>
+      (enlace.href !== "/cultivos" || mostrarCultivos) &&
+      (enlace.href !== "/zonas-comerciales" || mostrarZonas),
+  );
 
   const lista = enlaces.map((enlace, indice) => {
     const activo = rutaActiva(pathname, enlace.href);

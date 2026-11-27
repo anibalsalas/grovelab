@@ -5,14 +5,16 @@ import { MenuPrincipal } from "@/components/layout/menu-principal";
 import { ContadorPedido } from "@/components/pedido/contador-pedido";
 import { anchoContenedor } from "@/lib/clases-sitio";
 import { hayCultivosPublicados } from "@/lib/hay-cultivos-publicados.ts";
+import { hayZonasPublicadas } from "@/lib/hay-zonas-publicadas.ts";
 import { hayDestinoPedido } from "@/lib/pedido/hay-destino-pedido.ts";
 import logoGrovelab from "@/images/grovelab-logo.png";
 
 import estilos from "./site-header.module.css";
 
 export async function SiteHeader() {
-  const [mostrarCultivos, pedidoActivo] = await Promise.all([
+  const [mostrarCultivos, mostrarZonas, pedidoActivo] = await Promise.all([
     hayCultivosPublicados(),
+    hayZonasPublicadas(),
     hayDestinoPedido(),
   ]);
 
@@ -36,6 +38,7 @@ export async function SiteHeader() {
         <div className="flex items-center gap-3">
           <MenuPrincipal
             mostrarCultivos={mostrarCultivos}
+            mostrarZonas={mostrarZonas}
             claseDesplazable={estilos.desplazable}
           />
           {pedidoActivo ? (

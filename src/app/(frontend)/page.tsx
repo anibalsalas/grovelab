@@ -24,6 +24,7 @@ import {
 } from "@/lib/obtener-textos-sitio.ts";
 import { parsearUrlVideoIncrustado } from "@/lib/video-incrustado.ts";
 import { hayCultivosPublicados } from "@/lib/hay-cultivos-publicados.ts";
+import { hayZonasPublicadas } from "@/lib/hay-zonas-publicadas.ts";
 import { medioPopulado, primeraImagen } from "@/lib/medio-populado.ts";
 import { getPayloadClient } from "@/lib/payload-client";
 import sitio from "@/styles/sitio.module.css";
@@ -106,6 +107,7 @@ export default async function HomePage() {
     }),
     hayCultivosPublicados(),
   ]);
+  const hayZonas = await hayZonasPublicadas();
 
   const titular =
     textos.titularPortada?.trim() ||
@@ -419,9 +421,16 @@ export default async function HomePage() {
             <p className="mx-auto mt-3 max-w-md leading-relaxed text-fondo/95">
               Cuéntanos tu cultivo y te orientamos con el producto adecuado.
             </p>
-            <BotonEnlace href="/contacto" variante="sobreMarca" className="mt-6">
-              Ir a contacto
-            </BotonEnlace>
+            <div className="mt-6 flex flex-wrap justify-center gap-3">
+              <BotonEnlace href="/contacto" variante="sobreMarca">
+                Ir a contacto
+              </BotonEnlace>
+              {hayZonas ? (
+                <BotonEnlace href="/zonas-comerciales" variante="sobreMarca">
+                  Ver asesores por zona
+                </BotonEnlace>
+              ) : null}
+            </div>
           </section>
         </CintaSeccion>
       </main>

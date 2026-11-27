@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { z } from "zod";
 
 import { TransicionPagina } from "@/components/animacion/transicion-pagina";
@@ -11,6 +12,7 @@ import {
   idContenidoPrincipal,
   scrollMargenContenido,
 } from "@/lib/clases-sitio";
+import { hayZonasPublicadas } from "@/lib/hay-zonas-publicadas.ts";
 import sitio from "@/styles/sitio.module.css";
 import {
   obtenerTextosSitio,
@@ -40,7 +42,10 @@ function parseProductoConsulta(valor: string | undefined): string | null {
 export default async function ContactoPage({ searchParams }: PageProps) {
   const params = await searchParams;
   const producto = parseProductoConsulta(params.producto);
-  const textos = await obtenerTextosSitio();
+  const [textos, hayZonas] = await Promise.all([
+    obtenerTextosSitio(),
+    hayZonasPublicadas(),
+  ]);
   const formularioActivo = Boolean(politicaPrivacidadPublica(textos));
 
   return (
@@ -55,6 +60,17 @@ export default async function ContactoPage({ searchParams }: PageProps) {
 
         <div className={`${contenedorPagina} space-y-8`}>
           <TarjetasDatosContacto contacto={textos.contacto} />
+
+          {hayZonas ? (
+            <p>
+              <Link
+                href="/zonas-comerciales"
+                className="font-medium text-marca underline underline-offset-4"
+              >
+                Ver asesores por zona
+              </Link>
+            </p>
+          ) : null}
 
           {producto ? (
             <p className="text-sm">
