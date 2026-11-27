@@ -18,7 +18,12 @@ type BotonEnlaceProps = {
   className?: string;
 } & (
   | { href: string; prefetch?: boolean }
-  | { type: "submit" | "button"; disabled?: boolean }
+  | {
+      type: "submit" | "button";
+      disabled?: boolean;
+      /** Solo desde componentes de cliente. */
+      onClick?: () => void;
+    }
 );
 
 export function BotonEnlace({
@@ -38,9 +43,14 @@ export function BotonEnlace({
     );
   }
 
-  const { type, disabled } = rest;
+  const { type, disabled, onClick } = rest;
   return (
-    <button type={type} disabled={disabled} className={clases}>
+    <button
+      type={type}
+      disabled={disabled}
+      onClick={onClick}
+      className={clases}
+    >
       {children}
     </button>
   );

@@ -149,6 +149,47 @@
   text-underline-offset: 0.2em;
 }
 
+.pasoCantidad:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+/* Acción secundaria con aspecto de enlace (Quitar, Vaciar pedido, Entendido, Cancelar). */
+.accionTexto {
+  min-height: 2.75rem;
+  padding: 0 var(--token-espacio-2);
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--token-color-marca);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+
+.accionTexto:focus-visible {
+  outline: 2px solid var(--token-anillo-foco);
+  outline-offset: 2px;
+  border-radius: var(--token-radio-s);
+}
+
+.bloqueAvisos {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--token-espacio-3);
+  margin-bottom: var(--token-espacio-6);
+  border: 1px solid var(--token-color-aviso);
+  border-radius: var(--token-radio-m);
+  background: var(--token-color-superficie);
+  padding: var(--token-espacio-4) var(--token-espacio-5);
+  font-size: 0.9375rem;
+  color: var(--token-color-texto);
+}
+
 /* Contador de la cabecera */
 .contador {
   display: inline-flex;

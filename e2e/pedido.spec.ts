@@ -96,3 +96,99 @@ test.describe("Mi pedido: ficha y cabecera", () => {
     await expect(page.getByRole("link", { name: /^Mi pedido,/ })).toHaveCount(0);
   });
 });
+
+/** Agrega el primer producto con su primera presentación y abre /pedido desde el enlace de confirmación. */
+async function agregarYRevisar(page: Page) {
+  await abrirPrimeraFicha(page);
+  await page.getByRole("radio").first().check();
+  await page.getByRole("button", { name: "Agregar a mi pedido" }).click();
+  await page.getByRole("link", { name: /^Revisar mi pedido/ }).click();
+  await expect(page).toHaveURL(/\/pedido$/);
+  await expect(page.getByRole("list", { name: "Productos de mi pedido" })).toBeVisible();
+}
+
+test.describe("/pedido: lista editable", () => {
+  test("sin productos muestra el estado vacío con salida a Productos", async ({
+    page,
+  }) => {
+    await page.goto("/pedido");
+    await expect(
+      page.getByRole("heading", { name: "Tu pedido está vacío" }),
+    ).toBeVisible();
+    await expect(page.getByRole("link", { name: "Ver productos" })).toBeVisible();
+  });
+
+  test("un producto que ya no existe se quita con un aviso", async ({ page }) => {
+    await page.addInitScript(() => {
+      window.localStorage.setItem(
+        "grovelab.pedido.v1",
+        JSON.stringify({
+          version: 1,
+          filas: [{ slug: "producto-que-no-existe-e2e", presentacion: "1 L", cantidad: 1 }],
+        }),
+      );
+    });
+    await page.goto("/pedido");
+    await expect(page.getByRole("status")).toContainText("ya no está disponible");
+    await expect(
+      page.getByRole("heading", { name: "Tu pedido está vacío" }),
+    ).toBeVisible();
+  });
+
+  test("cambia la cantidad con los botones y escribiendo, y se guarda", async ({
+    page,
+  }) => {
+    await agregarYRevisar(page);
+
+    await page.getByRole("button", { name: /^Aumentar cantidad de/ }).click();
+    const campo = page.getByRole("textbox", { name: /^Cantidad de/ });
+    await expect(campo).toHaveValue("2");
+
+    await campo.fill("5");
+    await campo.press("Enter");
+    await expect(campo).toHaveValue("5");
+
+    const cantidad = await page.evaluate(
+      () =>
+        (
+          JSON.parse(window.localStorage.getItem("grovelab.pedido.v1") ?? "{}") as {
+            filas: { cantidad: number }[];
+          }
+        ).filas[0]?.cantidad,
+    );
+    expect(cantidad).toBe(5);
+  });
+
+  test("un valor inválido al escribir vuelve a la cantidad anterior", async ({
+    page,
+  }) => {
+    await agregarYRevisar(page);
+    const campo = page.getByRole("textbox", { name: /^Cantidad de/ });
+    await campo.fill("0");
+    await campo.press("Enter");
+    await expect(campo).toHaveValue("1");
+  });
+
+  test("quitar un producto deja el pedido vacío", async ({ page }) => {
+    await agregarYRevisar(page);
+    await page.getByRole("button", { name: /^Quitar .* del pedido$/ }).click();
+    await expect(
+      page.getByRole("heading", { name: "Tu pedido está vacío" }),
+    ).toBeVisible();
+    await expect(page.getByRole("link", { name: /^Mi pedido,/ })).toHaveCount(0);
+  });
+
+  test("vaciar pide confirmación y se puede cancelar", async ({ page }) => {
+    await agregarYRevisar(page);
+
+    await page.getByRole("button", { name: "Vaciar pedido" }).click();
+    await page.getByRole("button", { name: "Cancelar" }).click();
+    await expect(page.getByRole("list", { name: "Productos de mi pedido" })).toBeVisible();
+
+    await page.getByRole("button", { name: "Vaciar pedido" }).click();
+    await page.getByRole("button", { name: "Sí, vaciar" }).click();
+    await expect(
+      page.getByRole("heading", { name: "Tu pedido está vacío" }),
+    ).toBeVisible();
+  });
+});

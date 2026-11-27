@@ -550,6 +550,8 @@ async function main() {
         galeria: [imagenId],
         destacado: datos.destacado ?? false,
         dosis,
+        // Sin esto Payload crea en borrador (valor por defecto de _status) y el pedido no lo ve.
+        _status: "published",
       },
       draft: false,
     });
