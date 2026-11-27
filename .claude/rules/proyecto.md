@@ -1,0 +1,6 @@
+- No mezcles términos visibles en inglés (ej. "Inicio", "Productos", no "Home", "Products").
+- Evita `any` en TypeScript; si es inevitable, comenta por qué.
+- Componentes de servidor por defecto; usa componentes de cliente solo si necesitan estado o eventos.
+- Estructura sugerida: `src/app` (rutas), `src/components`, `src/lib` (utilidades y acceso a datos), `src/content` (textos estáticos).
+- Nombres de archivos en minúsculas con guiones. Un componente por archivo.
+- Commits pequeños y descriptivos.

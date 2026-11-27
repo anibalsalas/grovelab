@@ -22,7 +22,15 @@ yarn-error.log*
 *.pem
 .vercel
 coverage/
+
+# Subidas locales de la colección Medios cuando no hay BLOB_READ_WRITE_TOKEN (desarrollo sin Vercel Blob).
+/medios
 playwright-report/
 test-results/
 *.tsbuildinfo
 next-env.d.ts
+
+# Locales de herramientas
+.tmp/
+.playwright-mcp/
+.claude/scheduled_tasks.lock

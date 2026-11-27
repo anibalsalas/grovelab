@@ -12,7 +12,7 @@ La fase termina cuando un miembro del equipo entra al panel y la portada mínima
 
 ## Fuera de esta fase
 
-- Páginas de Productos, Cultivos, Nosotros, Servicios, Blog, Zonas y Contacto.
+- Páginas públicas reales. Van en la fase 2: portada, Productos, Cultivos, Nosotros, Servicios, Blog y Contacto. Zonas comerciales va en la fase 3, con el pedido.
 - Buscador, fichas, tabla de dosis y flujo de pedido por WhatsApp.
 - Carga de los ~70 productos, imágenes, PDF y textos reales.
 - Almacenamiento de fotos y PDF. Es la primera tarea de la fase 2.

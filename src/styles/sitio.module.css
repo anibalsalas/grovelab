@@ -1,0 +1,185 @@
+/**
+ * Patrones visuales compartidos (tokens --token-*). Ver docs/DISENO.md.
+ */
+
+.panelBuscador {
+  border: 1px solid color-mix(in srgb, var(--token-color-marca) 18%, transparent);
+  border-radius: var(--token-radio-m);
+  background: color-mix(in srgb, var(--token-color-fondo) 92%, var(--token-color-marca));
+  padding: var(--token-espacio-5);
+  box-shadow: var(--token-sombra-s);
+}
+
+.campo {
+  margin-top: var(--token-espacio-2);
+  width: 100%;
+  min-height: 2.75rem;
+  border-radius: var(--token-radio-s);
+  border: 1px solid color-mix(in srgb, var(--token-color-marca) 28%, transparent);
+  background: var(--token-color-fondo);
+  padding: var(--token-espacio-2) var(--token-espacio-3);
+  color: var(--token-color-texto);
+}
+
+.campo:focus-visible {
+  outline: 2px solid var(--token-anillo-foco);
+  outline-offset: 1px;
+  border-color: var(--token-color-marca);
+}
+
+.tarjetaEnlace {
+  display: block;
+  min-height: 2.75rem;
+  border-radius: var(--token-radio-m);
+  border: 1px solid color-mix(in srgb, var(--token-color-marca) 18%, transparent);
+  background: var(--token-color-superficie);
+  padding: var(--token-espacio-4);
+  box-shadow: var(--token-sombra-s);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .tarjetaEnlace:hover {
+    border-color: color-mix(in srgb, var(--token-color-marca) 45%, transparent);
+    box-shadow: var(--token-sombra-m);
+    transform: perspective(48rem) rotateX(2deg) rotateY(-2deg);
+  }
+}
+
+.tarjetaPlana {
+  border-radius: var(--token-radio-m);
+  border: 1px solid color-mix(in srgb, var(--token-color-marca) 18%, transparent);
+  background: var(--token-color-fondo);
+  padding: var(--token-espacio-4);
+  box-shadow: var(--token-sombra-s);
+}
+
+.ctaPortada {
+  margin-top: 0;
+  padding: 0;
+  border-top: none;
+  border-radius: 0;
+  text-align: center;
+  color: inherit;
+  box-shadow: none;
+}
+
+.seccion {
+  margin-top: var(--token-espacio-14);
+  padding-top: var(--token-espacio-10);
+  border-top: 1px solid color-mix(in srgb, var(--token-color-marca) 12%, transparent);
+}
+
+.seccionEnCinta {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+
+.seccionEnCinta + .seccionEnCinta {
+  margin-top: var(--token-espacio-12);
+  padding-top: var(--token-espacio-10);
+  border-top: 1px solid color-mix(in srgb, var(--token-color-marca) 10%, transparent);
+}
+
+.contenidoCinta {
+  margin-inline: auto;
+  max-width: 72rem;
+  padding: var(--token-espacio-10) var(--token-espacio-4);
+}
+
+@media (min-width: 40rem) {
+  .contenidoCinta {
+    padding: var(--token-espacio-12) var(--token-espacio-6);
+  }
+}
+
+.cintaVerde {
+  background: linear-gradient(
+    180deg,
+    var(--token-color-fondo-banda),
+    color-mix(in srgb, var(--token-color-fondo-banda) 65%, var(--token-color-fondo))
+  );
+}
+
+.cintaCrema {
+  background: linear-gradient(
+    180deg,
+    var(--token-color-fondo-banda-alt),
+    color-mix(in srgb, var(--token-color-fondo-banda-alt) 50%, var(--token-color-fondo))
+  );
+}
+
+.cintaNeutra {
+  background: var(--token-color-fondo);
+}
+
+.cintaMarca {
+  background: linear-gradient(
+    135deg,
+    var(--token-color-marca),
+    color-mix(in srgb, var(--token-color-marca) 72%, var(--token-color-exito))
+  );
+  color: var(--token-color-fondo);
+}
+
+.franjaEncabezado {
+  padding-bottom: var(--token-espacio-8);
+  border-bottom: 3px solid color-mix(in srgb, var(--token-color-acento) 55%, transparent);
+}
+
+.franjaBuscador {
+  margin-top: 0;
+  padding: var(--token-espacio-8) var(--token-espacio-5);
+  border-radius: var(--token-radio-l);
+  border: 1px solid color-mix(in srgb, var(--token-color-marca) 16%, transparent);
+  background: var(--token-color-superficie);
+  box-shadow: var(--token-sombra-m);
+}
+
+@media (min-width: 40rem) {
+  .franjaBuscador {
+    padding: var(--token-espacio-10) var(--token-espacio-8);
+  }
+}
+
+.bloqueAccesoCatalogo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--token-espacio-6);
+  padding: var(--token-espacio-8);
+  border-radius: var(--token-radio-l);
+  border: 1px solid color-mix(in srgb, var(--token-color-marca) 18%, transparent);
+  background: var(--token-color-superficie);
+  box-shadow: var(--token-sombra-s);
+}
+
+@media (min-width: 48rem) {
+  .bloqueAccesoCatalogo {
+    padding: var(--token-espacio-10) var(--token-espacio-8);
+  }
+}
+
+.saltarContenido {
+  position: absolute;
+  left: var(--token-espacio-4);
+  top: var(--token-espacio-4);
+  z-index: 100;
+  padding: var(--token-espacio-2) var(--token-espacio-4);
+  border-radius: var(--token-radio-s);
+  background: var(--token-color-marca);
+  color: var(--token-color-fondo);
+  font-weight: 600;
+  text-decoration: none;
+  transform: translateY(-200%);
+  transition: transform 0.15s ease;
+}
+
+.saltarContenido:focus {
+  transform: translateY(0);
+}

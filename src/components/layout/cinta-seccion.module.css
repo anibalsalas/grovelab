@@ -1,0 +1,29 @@
+/*
+ * Borde «surco» entre franjas (catálogo de efectos, docs/DISENO.md).
+ * Estático: no se mueve, no cuenta como efecto «wow».
+ *
+ * Cada franja dibuja su borde hacia ARRIBA, sobre el final de la anterior:
+ * como la franja siguiente se pinta después, su borde queda por encima sin
+ * pelear por z-index. El color sale del fondo de la propia franja (inherit).
+ * Sin soporte de máscaras: borde recto, como antes.
+ */
+
+.surco {
+  position: relative;
+}
+
+@supports (mask-repeat: repeat-x) or (-webkit-mask-repeat: repeat-x) {
+  .surco::before {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    bottom: 100%;
+    height: var(--token-surco-alto);
+    background: inherit;
+    pointer-events: none;
+    -webkit-mask: var(--token-surco-forma) repeat-x left bottom /
+      var(--token-surco-periodo) 100%;
+    mask: var(--token-surco-forma) repeat-x left bottom /
+      var(--token-surco-periodo) 100%;
+  }
+}

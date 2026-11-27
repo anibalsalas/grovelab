@@ -19,12 +19,16 @@
     "migrate:create": "node --env-file=.env.local ./node_modules/payload/bin.js --disable-transpile migrate:create",
     "migrate": "node --env-file=.env.local ./node_modules/payload/bin.js --disable-transpile migrate",
     "migrate:status": "node --env-file=.env.local ./node_modules/payload/bin.js --disable-transpile migrate:status",
-    "seed:admin": "node --env-file=.env.local ./node_modules/payload/bin.js --disable-transpile run src/seed/seed-admin.ts"
+    "seed:admin": "node --env-file=.env.local ./node_modules/payload/bin.js --disable-transpile run src/seed/seed-admin.ts",
+    "seed:textos-sitio": "node --env-file=.env.local ./node_modules/payload/bin.js --disable-transpile run src/seed/seed-textos-sitio.ts",
+    "seed:catalogo-real": "node --env-file=.env.local ./node_modules/payload/bin.js --disable-transpile run src/seed/seed-catalogo-real.ts",
+    "seed:productos-real": "node --env-file=.env.local ./node_modules/payload/bin.js --disable-transpile run src/seed/seed-productos-real.ts"
   },
   "dependencies": {
     "@payloadcms/db-postgres": "3.92.0",
     "@payloadcms/next": "3.92.0",
     "@payloadcms/richtext-lexical": "3.92.0",
+    "@payloadcms/storage-vercel-blob": "3.92.0",
     "@payloadcms/translations": "3.92.0",
     "graphql": "16.8.1",
     "next": "16.4.3",
