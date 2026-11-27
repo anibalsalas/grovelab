@@ -271,6 +271,10 @@ export interface Producto {
       }[]
     | null;
   destacado?: boolean | null;
+  /**
+   * Si se apaga, la ficha muestra solo «Pedir información» y el producto no se puede agregar a «Mi pedido».
+   */
+  admitePedido?: boolean | null;
   dosis?:
     | {
         cultivo: number | Cultivo;
@@ -505,6 +509,7 @@ export interface ProductosSelect<T extends boolean = true> {
         id?: T;
       };
   destacado?: T;
+  admitePedido?: T;
   dosis?:
     | T
     | {

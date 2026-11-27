@@ -8,6 +8,7 @@ import * as migration_20261028_031500 from './20261028_031500';
 import * as migration_20261104_052554_presentaciones_composicion from './20261104_052554_presentaciones_composicion';
 import * as migration_20261127_010656_medios from './20261127_010656_medios';
 import * as migration_20261127_012239_imagenes_y_pdf from './20261127_012239_imagenes_y_pdf';
+import * as migration_20261127_170042_admite_pedido from './20261127_170042_admite_pedido';
 
 export const migrations = [
   {
@@ -58,6 +59,11 @@ export const migrations = [
   {
     up: migration_20261127_012239_imagenes_y_pdf.up,
     down: migration_20261127_012239_imagenes_y_pdf.down,
-    name: '20261127_012239_imagenes_y_pdf'
+    name: '20261127_012239_imagenes_y_pdf',
+  },
+  {
+    up: migration_20261127_170042_admite_pedido.up,
+    down: migration_20261127_170042_admite_pedido.down,
+    name: '20261127_170042_admite_pedido'
   },
 ];

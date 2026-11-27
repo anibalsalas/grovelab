@@ -171,6 +171,17 @@ export const Productos: CollectionConfig = {
       defaultValue: false,
     },
     {
+      name: "admitePedido",
+      type: "checkbox",
+      label: "Admite pedido",
+      defaultValue: true,
+      admin: {
+        position: "sidebar",
+        description:
+          "Si se apaga, la ficha muestra solo «Pedir información» y el producto no se puede agregar a «Mi pedido».",
+      },
+    },
+    {
       name: "dosis",
       type: "array",
       label: "Tabla de dosis",
