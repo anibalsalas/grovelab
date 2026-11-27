@@ -21,7 +21,8 @@
     "migrate:status": "node --env-file=.env.local ./node_modules/payload/bin.js --disable-transpile migrate:status",
     "seed:admin": "node --env-file=.env.local ./node_modules/payload/bin.js --disable-transpile run src/seed/seed-admin.ts",
     "seed:textos-sitio": "node --env-file=.env.local ./node_modules/payload/bin.js --disable-transpile run src/seed/seed-textos-sitio.ts",
-    "seed:catalogo-real": "node --env-file=.env.local ./node_modules/payload/bin.js --disable-transpile run src/seed/seed-catalogo-real.ts"
+    "seed:catalogo-real": "node --env-file=.env.local ./node_modules/payload/bin.js --disable-transpile run src/seed/seed-catalogo-real.ts",
+    "seed:productos-real": "node --env-file=.env.local ./node_modules/payload/bin.js --disable-transpile run src/seed/seed-productos-real.ts"
   },
   "dependencies": {
     "@payloadcms/db-postgres": "3.92.0",
