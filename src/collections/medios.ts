@@ -1,7 +1,10 @@
 import type { CollectionConfig } from "payload";
 import { APIError } from "payload";
 
-import { escrituraPanel } from "../lib/acceso-contenido.ts";
+import {
+  escrituraPanel,
+  ocultoParaVentas,
+} from "../lib/acceso-contenido.ts";
 
 const TIPOS_PERMITIDOS = [
   "image/jpeg",
@@ -44,6 +47,7 @@ export const Medios: CollectionConfig = {
   },
   admin: {
     group: "Catálogo",
+    hidden: ocultoParaVentas,
     useAsTitle: "alt",
   },
   access: {

@@ -25,4 +25,16 @@ test.describe("Acceso al panel Payload", () => {
 
     expect([401, 403]).toContain(response.status());
   });
+
+  test("no expone ni permite crear pedidos por API sin sesión", async ({
+    request,
+  }) => {
+    const lectura = await request.get("/api/pedidos");
+    expect([401, 403]).toContain(lectura.status());
+
+    const creacion = await request.post("/api/pedidos", {
+      data: { items: [], estado: "nuevo" },
+    });
+    expect([401, 403]).toContain(creacion.status());
+  });
 });

@@ -1,6 +1,9 @@
 import type { CollectionConfig } from "payload";
 
-import { escrituraPanel } from "../lib/acceso-contenido.ts";
+import {
+  escrituraPanel,
+  ocultoParaVentas,
+} from "../lib/acceso-contenido.ts";
 
 export const Consultas: CollectionConfig = {
   slug: "consultas",
@@ -10,6 +13,7 @@ export const Consultas: CollectionConfig = {
   },
   admin: {
     group: "Contenido",
+    hidden: ocultoParaVentas,
     useAsTitle: "nombre",
     defaultColumns: ["nombre", "telefono", "createdAt"],
   },

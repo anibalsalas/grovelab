@@ -10,6 +10,7 @@ import * as migration_20261127_010656_medios from './20261127_010656_medios';
 import * as migration_20261127_012239_imagenes_y_pdf from './20261127_012239_imagenes_y_pdf';
 import * as migration_20261127_170042_admite_pedido from './20261127_170042_admite_pedido';
 import * as migration_20261127_170355_zonas_comerciales from './20261127_170355_zonas_comerciales';
+import * as migration_20261127_174858_pedidos_y_rol_ventas from './20261127_174858_pedidos_y_rol_ventas';
 
 export const migrations = [
   {
@@ -70,6 +71,11 @@ export const migrations = [
   {
     up: migration_20261127_170355_zonas_comerciales.up,
     down: migration_20261127_170355_zonas_comerciales.down,
-    name: '20261127_170355_zonas_comerciales'
+    name: '20261127_170355_zonas_comerciales',
+  },
+  {
+    up: migration_20261127_174858_pedidos_y_rol_ventas.up,
+    down: migration_20261127_174858_pedidos_y_rol_ventas.down,
+    name: '20261127_174858_pedidos_y_rol_ventas'
   },
 ];

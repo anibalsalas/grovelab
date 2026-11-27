@@ -76,6 +76,7 @@ export interface Config {
     noticias: Noticia;
     consultas: Consulta;
     'zonas-comerciales': ZonasComerciale;
+    pedidos: Pedido;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -92,6 +93,7 @@ export interface Config {
     noticias: NoticiasSelect<false> | NoticiasSelect<true>;
     consultas: ConsultasSelect<false> | ConsultasSelect<true>;
     'zonas-comerciales': ZonasComercialesSelect<false> | ZonasComercialesSelect<true>;
+    pedidos: PedidosSelect<false> | PedidosSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -141,7 +143,7 @@ export interface UserAuthOperations {
  */
 export interface User {
   id: number;
-  role: 'administrador' | 'editor';
+  role: 'administrador' | 'editor' | 'ventas';
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -360,6 +362,48 @@ export interface ZonasComerciale {
   _status?: ('draft' | 'published') | null;
 }
 /**
+ * Solicitudes de cotización enviadas desde la web. No son ventas: no llevan precios. Contienen datos personales: solo administrador y ventas.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pedidos".
+ */
+export interface Pedido {
+  id: number;
+  estado: 'nuevo' | 'contactado' | 'cotizado' | 'cerrado' | 'descartado';
+  /**
+   * Solo la ve el equipo. No se muestra en la web.
+   */
+  notaInterna?: string | null;
+  /**
+   * Nombre y presentación se copiaron al enviar el pedido, para que no cambien si luego se edita el producto.
+   */
+  items?:
+    | {
+        producto?: (number | null) | Producto;
+        nombreProducto: string;
+        presentacion: string;
+        cantidad: number;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Vacío si se envió sin datos personales (sin política publicada).
+   */
+  nombre?: string | null;
+  telefono?: string | null;
+  zona?: (number | null) | ZonasComerciale;
+  ciudad?: string | null;
+  cultivo?: (number | null) | Cultivo;
+  hectareas?: number | null;
+  /**
+   * Solo se guarda el tipo de destino, no el número.
+   */
+  destino?: ('zona' | 'general') | null;
+  aceptoPolitica?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
@@ -418,6 +462,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'zonas-comerciales';
         value: number | ZonasComerciale;
+      } | null)
+    | ({
+        relationTo: 'pedidos';
+        value: number | Pedido;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -635,6 +683,33 @@ export interface ZonasComercialesSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pedidos_select".
+ */
+export interface PedidosSelect<T extends boolean = true> {
+  estado?: T;
+  notaInterna?: T;
+  items?:
+    | T
+    | {
+        producto?: T;
+        nombreProducto?: T;
+        presentacion?: T;
+        cantidad?: T;
+        id?: T;
+      };
+  nombre?: T;
+  telefono?: T;
+  zona?: T;
+  ciudad?: T;
+  cultivo?: T;
+  hectareas?: T;
+  destino?: T;
+  aceptoPolitica?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

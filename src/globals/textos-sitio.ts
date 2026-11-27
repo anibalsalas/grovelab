@@ -1,11 +1,12 @@
 import type { GlobalConfig } from "payload";
 
-import { escrituraPanel } from "../lib/acceso-contenido.ts";
+import { escrituraPanel, ocultoParaVentas } from "../lib/acceso-contenido.ts";
 
 export const TextosSitio: GlobalConfig = {
   slug: "textos-sitio",
   label: "Textos del sitio",
   admin: {
+    hidden: ocultoParaVentas,
     description:
       "Checklist Grovelab: contacto (teléfono, correo, dirección, mapa); Nosotros (lead + bloques cortos); Servicios (lead + ítems); certificaciones solo si están confirmadas; política de privacidad antes de activar el formulario. Semilla local: npm run seed:textos-sitio.",
   },

@@ -3,6 +3,7 @@ import type { CollectionConfig } from "payload";
 import {
   escrituraPanel,
   lecturaPublicaOEditor,
+  ocultoParaVentas,
 } from "../lib/acceso-contenido.ts";
 
 export const Productos: CollectionConfig = {
@@ -13,6 +14,7 @@ export const Productos: CollectionConfig = {
   },
   admin: {
     group: "Catálogo",
+    hidden: ocultoParaVentas,
     useAsTitle: "nombre",
     defaultColumns: ["nombre", "categoria", "_status", "updatedAt"],
   },
