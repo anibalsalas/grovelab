@@ -20,7 +20,7 @@ export function EncabezadoSeccion({
       ) : null}
       <h2
         id={id}
-        className={`font-titular text-2xl font-bold tracking-tight text-marca sm:text-3xl ${destacado ? "mt-1" : ""}`}
+        className={`font-titular text-h2 font-semibold leading-[var(--token-interlineado-h2)] tracking-tight text-marca ${destacado ? "mt-1" : ""}`}
       >
         {titulo}
       </h2>

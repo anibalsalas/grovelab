@@ -2,6 +2,8 @@ import type { ReactNode } from "react";
 
 import { anchoContenedor } from "@/lib/clases-sitio";
 
+import estilos from "./cinta-seccion.module.css";
+
 const tonos = {
   verde: "bg-fondo-banda",
   crema: "bg-fondo-banda-alt",
@@ -18,6 +20,12 @@ type CintaSeccionProps = {
   className?: string;
   /** Si es false, solo la franja de color; el hijo debe aplicar {anchoContenedor} por dentro. */
   contenedor?: boolean;
+  /**
+   * `surco`: el borde superior se ondula sobre la franja anterior. Solo en la
+   * portada, para leerla como recorrido «del suelo a la cosecha». No usar en
+   * la primera franja ni en la de tono `marca` (su degradado no continúa en el borde).
+   */
+  borde?: "recto" | "surco";
 };
 
 export function CintaSeccion({
@@ -25,8 +33,10 @@ export function CintaSeccion({
   tono,
   className = "",
   contenedor = true,
+  borde = "recto",
 }: CintaSeccionProps) {
-  const clasesFranja = `${tonos[tono]} w-full ${className}`.trim();
+  const claseBorde = borde === "surco" && tono !== "marca" ? estilos.surco : "";
+  const clasesFranja = `${tonos[tono]} w-full ${claseBorde} ${className}`.trim();
 
   if (!contenedor) {
     return <div className={clasesFranja}>{children}</div>;

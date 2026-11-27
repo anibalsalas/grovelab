@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+import { TransicionPagina } from "@/components/animacion/transicion-pagina";
 import { EncabezadoPagina } from "@/components/ui/encabezado-pagina";
 import { clasesMain, idContenidoPrincipal } from "@/lib/clases-sitio";
 import {
@@ -25,12 +26,14 @@ export default async function PrivacidadPage() {
   }
 
   return (
-    <main id={idContenidoPrincipal} className={clasesMain}>
-      <EncabezadoPagina
-        titulo="Política de privacidad"
-        descripcion="Cómo tratamos los datos que nos compartes."
-      />
-      <div className={`mt-8 ${institucional.cuerpoNoticia}`}>{politica}</div>
-    </main>
+    <TransicionPagina>
+      <main id={idContenidoPrincipal} className={clasesMain}>
+        <EncabezadoPagina
+          titulo="Política de privacidad"
+          descripcion="Cómo tratamos los datos que nos compartes."
+        />
+        <div className={`mt-8 ${institucional.cuerpoNoticia}`}>{politica}</div>
+      </main>
+    </TransicionPagina>
   );
 }

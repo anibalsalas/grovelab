@@ -1,0 +1,140 @@
+/*
+ * Indicador «surco» del menú (catálogo de efectos, docs/DISENO.md).
+ * CSS Module: anchor positioning, :has() y @supports no caben legibles en Tailwind.
+ */
+
+.enlace {
+  position: relative;
+  color: var(--token-color-texto);
+  transition: color var(--token-movimiento-rapido) var(--token-curva-salida);
+}
+
+.enlace:hover,
+.enlace:focus-visible,
+.enlace[aria-current="page"] {
+  color: var(--token-color-marca);
+}
+
+/* Respaldo universal: cada enlace dibuja su propia línea, que crece de izquierda a derecha. */
+.enlace::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: var(--token-espacio-2);
+  height: var(--token-grosor-surco);
+  border-radius: var(--token-grosor-surco);
+  background: var(--token-color-marca);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--token-movimiento-base) var(--token-curva-salida);
+}
+
+.enlace:hover::after,
+.enlace:focus-visible::after,
+.enlace[aria-current="page"]::after {
+  transform: scaleX(1);
+}
+
+/*
+ * Escritorio con anchor positioning: una sola línea que se desliza hasta el
+ * enlace señalado (cursor o foco) y vuelve al de la página actual al salir.
+ * Se transicionan left/right de un elemento de 2 px fuera del flujo: no
+ * mueve nada más de la página.
+ */
+@supports (anchor-name: --a) {
+  .listaEscritorio {
+    position: relative;
+  }
+
+  .listaEscritorio .enlace::after {
+    content: none;
+  }
+
+  .listaEscritorio .enlace[aria-current="page"] {
+    anchor-name: --menu-surco;
+  }
+
+  .listaEscritorio:has(.enlace:hover, .enlace:focus-visible)
+    .enlace[aria-current="page"] {
+    anchor-name: none;
+  }
+
+  .listaEscritorio .enlace:hover,
+  .listaEscritorio .enlace:focus-visible {
+    anchor-name: --menu-surco;
+  }
+
+  .listaEscritorio::after {
+    content: "";
+    position: absolute;
+    position-anchor: --menu-surco;
+    left: anchor(left);
+    right: anchor(right);
+    top: calc(anchor(bottom) - var(--token-espacio-2) - var(--token-grosor-surco));
+    height: var(--token-grosor-surco);
+    border-radius: var(--token-grosor-surco);
+    background: var(--token-color-marca);
+    pointer-events: none;
+    transition:
+      left var(--token-movimiento-base) var(--token-curva-salida),
+      right var(--token-movimiento-base) var(--token-curva-salida),
+      opacity var(--token-movimiento-rapido) var(--token-curva-salida);
+  }
+
+  /* Sin página actual en el menú y sin nada señalado: la línea no se muestra. */
+  .listaEscritorio:not(
+      :has(.enlace[aria-current="page"], .enlace:hover, .enlace:focus-visible)
+    )::after {
+    opacity: 0;
+  }
+}
+
+/* Menú móvil: el panel se descubre desde arriba y los enlaces llegan escalonados. */
+.panel {
+  animation: menu-abrir var(--token-movimiento-base) var(--token-curva-salida)
+    both;
+}
+
+.panel .itemMovil {
+  animation: menu-item-entrar var(--token-movimiento-base)
+    var(--token-curva-salida) both;
+  animation-delay: calc(
+    var(--token-movimiento-rapido) + var(--indice, 0) *
+      var(--token-movimiento-escalon)
+  );
+}
+
+@keyframes menu-abrir {
+  from {
+    clip-path: inset(0 0 100% 0);
+  }
+
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes menu-item-entrar {
+  from {
+    opacity: 0;
+    transform: translateY(var(--token-espacio-2));
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .enlace,
+  .enlace::after,
+  .listaEscritorio::after {
+    transition: none;
+  }
+
+  .panel,
+  .panel .itemMovil {
+    animation: none;
+  }
+}

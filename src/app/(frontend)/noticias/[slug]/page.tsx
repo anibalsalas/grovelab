@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+import { TransicionPagina } from "@/components/animacion/transicion-pagina";
 import { Migas } from "@/components/ui/migas";
 import { formatearFechaNoticia } from "@/lib/formatear-fecha.ts";
 import { clasesMain, idContenidoPrincipal } from "@/lib/clases-sitio";
@@ -48,30 +49,32 @@ export default async function NoticiaPage({ params }: PageProps) {
   }
 
   return (
-    <main id={idContenidoPrincipal} className={clasesMain}>
-      <Migas
-        items={[
-          { etiqueta: "Noticias", href: "/noticias" },
-          { etiqueta: noticia.titulo },
-        ]}
-      />
-      <article className="mt-6">
-        <time
-          dateTime={noticia.fecha}
-          className="text-sm font-medium text-texto/70"
-        >
-          {formatearFechaNoticia(noticia.fecha)}
-        </time>
-        <h1 className="mt-2 font-titular text-3xl text-marca sm:text-4xl">
-          {noticia.titulo}
-        </h1>
-        {noticia.resumen ? (
-          <p className="mt-4 max-w-prose text-lg leading-relaxed text-texto/90">
-            {noticia.resumen}
-          </p>
-        ) : null}
-        <div className={`mt-8 ${institucional.cuerpoNoticia}`}>{noticia.cuerpo}</div>
-      </article>
-    </main>
+    <TransicionPagina>
+      <main id={idContenidoPrincipal} className={clasesMain}>
+        <Migas
+          items={[
+            { etiqueta: "Noticias", href: "/noticias" },
+            { etiqueta: noticia.titulo },
+          ]}
+        />
+        <article className="mt-6">
+          <time
+            dateTime={noticia.fecha}
+            className="text-sm font-medium text-texto/70"
+          >
+            {formatearFechaNoticia(noticia.fecha)}
+          </time>
+          <h1 className="mt-2 font-titular text-h1 font-bold leading-[var(--token-interlineado-h1)] tracking-tight text-marca">
+            {noticia.titulo}
+          </h1>
+          {noticia.resumen ? (
+            <p className="mt-4 max-w-prose text-lg leading-relaxed text-texto/90">
+              {noticia.resumen}
+            </p>
+          ) : null}
+          <div className={`mt-8 ${institucional.cuerpoNoticia}`}>{noticia.cuerpo}</div>
+        </article>
+      </main>
+    </TransicionPagina>
   );
 }

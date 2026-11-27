@@ -1,21 +1,40 @@
+import Image from "next/image";
 import Link from "next/link";
 
 import { MenuPrincipal } from "@/components/layout/menu-principal";
 import { anchoContenedor } from "@/lib/clases-sitio";
+import { hayCultivosPublicados } from "@/lib/hay-cultivos-publicados.ts";
+import logoGrovelab from "@/images/grovelab-logo.png";
 
-export function SiteHeader() {
+import estilos from "./site-header.module.css";
+
+export async function SiteHeader() {
+  const mostrarCultivos = await hayCultivosPublicados();
+
   return (
-    <header className="sticky top-0 z-40 border-b border-marca/15 bg-fondo/95 shadow-s backdrop-blur-sm supports-[backdrop-filter]:bg-fondo/85">
+    <header
+      className={`sticky top-0 z-40 ${estilos.cabecera}`}
+      // Ancla de la transición entre páginas: la cabecera no se mueve al navegar.
+      style={{ viewTransitionName: "cabecera-sitio" }}
+    >
+      <div className={estilos.fondo} aria-hidden="true" />
       <div
-        className={`relative flex items-center justify-between gap-4 py-4 ${anchoContenedor}`}
+        className={`flex items-center justify-between gap-4 py-4 ${anchoContenedor} ${estilos.contenido}`}
       >
         <Link
           href="/"
-          className="font-titular text-xl text-marca focus-visible:rounded-sm"
+          className={`focus-visible:rounded-sm ${estilos.logo}`}
+          aria-label="Grovelab — Inicio"
         >
-          Grovelab
+          <Image src={logoGrovelab} alt="Grovelab" className="h-9 w-auto" priority />
         </Link>
-        <MenuPrincipal />
+        <MenuPrincipal
+          mostrarCultivos={mostrarCultivos}
+          claseDesplazable={estilos.desplazable}
+        />
+      </div>
+      <div className={estilos.bordeInferior} aria-hidden="true">
+        <div className={estilos.progreso} />
       </div>
     </header>
   );

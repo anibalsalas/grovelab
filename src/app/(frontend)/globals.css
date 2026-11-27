@@ -22,6 +22,10 @@
   --font-titular: var(--token-font-titular);
   --font-texto: var(--token-font-texto);
 
+  --text-h1: var(--token-font-tamano-h1);
+  --text-h2: var(--token-font-tamano-h2);
+  --text-h3: var(--token-font-tamano-h3);
+
   --radius-s: var(--token-radio-s);
   --radius-m: var(--token-radio-m);
   --radius-l: var(--token-radio-l);
@@ -38,6 +42,69 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+/*
+ * Transición entre páginas (catálogo de efectos, docs/DISENO.md).
+ * Van aquí y no en un módulo: son pseudo-elementos del documento.
+ * Clases puestas por <TransicionPagina> (salir/entrar) y <NombreCompartido> (morph).
+ */
+
+/* Los clics durante la transición llegan a la página nueva. */
+::view-transition {
+  pointer-events: none;
+}
+
+/* La cabecera es el ancla: no se desvanece ni se mueve al navegar. */
+::view-transition-group(cabecera-sitio) {
+  animation: none;
+  z-index: 100;
+}
+
+::view-transition-old(cabecera-sitio) {
+  display: none;
+}
+
+::view-transition-new(cabecera-sitio) {
+  animation: none;
+}
+
+/* La página que se va cede rápido; la que llega se posa con un leve ascenso. */
+::view-transition-old(.salir) {
+  animation: pagina-salir var(--token-movimiento-rapido) ease-in both;
+}
+
+::view-transition-new(.entrar) {
+  animation: pagina-entrar var(--token-movimiento-base) var(--token-curva-salida)
+    var(--token-movimiento-rapido) both;
+}
+
+/* El nombre de la tarjeta viaja hasta el título de destino. */
+::view-transition-group(.morph) {
+  animation-duration: var(--token-movimiento-base);
+  animation-timing-function: var(--token-curva-salida);
+}
+
+@keyframes pagina-salir {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes pagina-entrar {
+  from {
+    opacity: 0;
+    transform: translateY(var(--token-espacio-3));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
   }
 }
 

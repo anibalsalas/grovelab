@@ -2,13 +2,21 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useCallback, useEffect, useId, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  type CSSProperties,
+} from "react";
+
+import estilos from "./menu-principal.module.css";
 
 export const enlacesNavegacion = [
   { href: "/", etiqueta: "Inicio" },
   { href: "/cultivos", etiqueta: "Cultivos" },
   { href: "/productos", etiqueta: "Productos" },
-  { href: "/buscar", etiqueta: "Buscar" },
   { href: "/nosotros", etiqueta: "Nosotros" },
   { href: "/servicios", etiqueta: "Servicios" },
   { href: "/noticias", etiqueta: "Noticias" },
@@ -22,10 +30,24 @@ function rutaActiva(pathname: string, href: string): boolean {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-const claseEnlace =
-  "min-h-11 inline-flex items-center text-texto underline-offset-4 hover:text-marca hover:underline focus-visible:rounded-sm";
+// Layout en Tailwind; color e indicador «surco» en el módulo (un enfoque por efecto).
+const claseEnlace = `min-h-11 inline-flex items-center focus-visible:rounded-sm ${estilos.enlace}`;
 
-export function MenuPrincipal() {
+type MenuPrincipalProps = {
+  /** Sin cultivos publicados, el enlace llevaría a una página vacía. */
+  mostrarCultivos: boolean;
+  /**
+   * Clase de la cabecera para subir los controles al compactarse. Se aplica a
+   * la navegación de escritorio y al botón, nunca al contenedor del panel móvil:
+   * un ancestro con transform encerraría al panel (position: fixed).
+   */
+  claseDesplazable?: string;
+};
+
+export function MenuPrincipal({
+  mostrarCultivos,
+  claseDesplazable = "",
+}: MenuPrincipalProps) {
   const pathname = usePathname();
   const [abierto, setAbierto] = useState(false);
   const panelId = useId();
@@ -80,10 +102,19 @@ export function MenuPrincipal() {
     };
   }, [abierto, cerrar]);
 
-  const lista = enlacesNavegacion.map((enlace) => {
+  const enlaces = mostrarCultivos
+    ? enlacesNavegacion
+    : enlacesNavegacion.filter((enlace) => enlace.href !== "/cultivos");
+
+  const lista = enlaces.map((enlace, indice) => {
     const activo = rutaActiva(pathname, enlace.href);
     return (
-      <li key={enlace.href}>
+      <li
+        key={enlace.href}
+        className={estilos.itemMovil}
+        // Índice para el escalonado de entrada del menú móvil.
+        style={{ "--indice": indice } as CSSProperties}
+      >
         <Link
           href={enlace.href}
           className={claseEnlace}
@@ -99,17 +130,21 @@ export function MenuPrincipal() {
   return (
     <>
       <nav
-        className="hidden min-[48rem]:block"
+        className={`hidden min-[48rem]:block ${claseDesplazable}`}
         aria-label="Principal"
       >
-        <ul className="flex flex-wrap gap-x-4 gap-y-2 text-sm">{lista}</ul>
+        <ul
+          className={`flex flex-wrap gap-x-4 gap-y-2 text-sm ${estilos.listaEscritorio}`}
+        >
+          {lista}
+        </ul>
       </nav>
 
       <div className="min-[48rem]:hidden">
         <button
           ref={botonRef}
           type="button"
-          className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-m border border-marca/25 px-3 text-sm font-medium text-marca"
+          className={`inline-flex min-h-11 min-w-11 items-center justify-center rounded-m border border-marca/25 px-3 text-sm font-medium text-marca ${claseDesplazable}`}
           aria-expanded={abierto}
           aria-controls={panelId}
           onClick={() => setAbierto((valor) => !valor)}
@@ -121,7 +156,7 @@ export function MenuPrincipal() {
           <div
             ref={panelRef}
             id={panelId}
-            className="fixed inset-0 z-50 flex flex-col bg-fondo"
+            className={`fixed inset-0 z-50 flex flex-col bg-fondo ${estilos.panel}`}
             role="dialog"
             aria-modal="true"
             aria-label="Menú de navegación"

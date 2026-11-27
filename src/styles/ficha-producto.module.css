@@ -26,6 +26,16 @@
   vertical-align: top;
 }
 
+/* Composición: dos columnas, cabe en 360 px sin desplazar. */
+.tablaComposicion {
+  min-width: 0;
+  max-width: 28rem;
+}
+
+.tablaComposicion td:last-child {
+  font-variant-numeric: tabular-nums;
+}
+
 .chip {
   display: inline-flex;
   min-height: 2rem;

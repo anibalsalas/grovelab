@@ -19,6 +19,8 @@ type FormularioBuscadorProps = {
   /** En false solo se muestra el formulario (p. ej. cuando la página ya tiene H1). */
   mostrarIntro?: boolean;
   valoresIniciales?: BuscarQuery;
+  /** Solo si hay cultivos publicados; si no, «Ver cultivos» llevaría a una página vacía. */
+  mostrarEnlaceCultivos?: boolean;
   cultivos: Opcion[];
   plagas: Opcion[];
   categorias: Opcion[];
@@ -27,10 +29,11 @@ type FormularioBuscadorProps = {
 const etiquetaCampo = "block text-sm font-semibold text-texto";
 
 export function FormularioBuscador({
-  accion = "/buscar",
+  accion = "/productos",
   titulo = "Buscar productos",
   mostrarIntro = true,
   valoresIniciales,
+  mostrarEnlaceCultivos = false,
   cultivos,
   plagas,
   categorias,
@@ -121,15 +124,17 @@ export function FormularioBuscador({
           <BotonEnlace type="submit" variante="primario">
             Buscar
           </BotonEnlace>
-          <Link
-            href="/cultivos"
-            className="inline-flex min-h-11 items-center rounded-m px-2 text-sm font-medium text-marca underline-offset-4 hover:underline"
-          >
-            Ver cultivos
-          </Link>
+          {mostrarEnlaceCultivos ? (
+            <Link
+              href="/cultivos"
+              className="inline-flex min-h-11 items-center rounded-m px-2 text-sm font-medium text-marca underline-offset-4 hover:underline"
+            >
+              Ver cultivos
+            </Link>
+          ) : null}
           {hayFiltros ? (
             <Link
-              href="/buscar"
+              href={accion}
               className="inline-flex min-h-11 items-center rounded-m px-2 text-sm font-medium text-marca underline-offset-4 hover:underline"
             >
               Quitar filtros

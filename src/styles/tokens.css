@@ -4,13 +4,18 @@
  */
 
 :root {
-  /* Colores PROVISIONAL — medir del logo antes de cerrar marca. */
-  /* Contraste AA (≥ 4.5:1) sobre --token-color-fondo, calculado con WCAG 2.1 relativo: */
-  /* texto/fondo ≈ 13.2:1 (#1a2e22 sobre #f7f5f0); marca/fondo ≈ 7.1:1 (#1b5e3f sobre #f7f5f0). */
+  /* Colores medidos del logo real (src/images/grovelab-logo.png, 363x129px) con clustering de color: */
+  /* verde de hoja ≈ #77a736 HSL(86°,51%,44%); naranja de sol ≈ #df7610 HSL(29.5°,86%,47%); tinta del wordmark ≈ #2a2b2c (gris neutro). */
+  /* Ninguno de los dos colores vivos del logo pasa AA en texto (verde ≤2.8:1, naranja ≤3.0:1 contra los fondos actuales), */
+  /* así que marca y acento quedan oscurecidos manteniendo el mismo matiz/saturación del logo hasta llegar a 4.5:1 en el fondo más exigente (fondo-banda-alt). */
+  /* Contraste AA (≥ 4.5:1), calculado con WCAG 2.1 relativo, sobre los fondos donde cada color se usa como texto: */
+  /* texto/fondo ≈ 13.0:1 (#2a2b2c sobre #f7f5f0). */
+  /* marca ≈ 4.5–5.3:1 (#527326; mínimo fondo-banda-alt ≈ 4.53:1 — margen ajustado, verificar en pantalla real). */
+  /* acento ≈ 4.5–5.3:1 (#a2550c; mínimo fondo-banda-alt ≈ 4.53:1 — margen ajustado, verificar en pantalla real). */
   --token-color-fondo: #f7f5f0; /* PROVISIONAL */
-  --token-color-texto: #1a2e22; /* PROVISIONAL */
-  --token-color-marca: #1b5e3f; /* PROVISIONAL */
-  --token-color-acento: #c45c26; /* PROVISIONAL */
+  --token-color-texto: #2a2b2c; /* medido del wordmark del logo */
+  --token-color-marca: #527326; /* medido de las hojas del logo, oscurecido a 4.5:1 AA (mismo matiz/saturación) */
+  --token-color-acento: #a2550c; /* medido del sol del logo, oscurecido a 4.5:1 AA (mismo matiz/saturación) */
   --token-color-exito: #2d6a4f; /* PROVISIONAL */
   --token-color-error: #b42318; /* PROVISIONAL */
   --token-color-aviso: #b54708; /* PROVISIONAL */
@@ -19,8 +24,8 @@
   --token-color-fondo-banda: #e8f0eb; /* PROVISIONAL — franja verde suave */
   --token-color-fondo-banda-alt: #efe9e0; /* PROVISIONAL — franja cálida */
 
-  /* Tipografía de trabajo. next/font define --font-archivo-* en <html>. */
-  /* Confirmar las familias contra el logo real de Grovelab. */
+  /* Tipografía. next/font define --font-archivo-* en <html>. */
+  /* Titular: Fraunces (serif orgánica, sentido agrícola). Texto: Inter. */
   --token-font-titular: var(--font-archivo-titular), ui-sans-serif, system-ui,
     sans-serif;
   --token-font-texto: var(--font-archivo-texto), ui-sans-serif, system-ui,
@@ -52,4 +57,37 @@
   --token-sombra-m: 0 4px 6px -1px rgb(26 46 34 / 0.14);
 
   --token-anillo-foco: var(--token-color-marca);
+
+  /* Escala tipográfica fluida (H1-H3), rango de viewport 360px-1440px (ver docs/DISENO.md). */
+  /* Texto y rótulos se quedan en los tamaños fijos de Tailwind (text-base, text-sm): no necesitan fluidez. */
+  --token-font-tamano-h1: clamp(1.875rem, 1.55rem + 1.45vw, 2.85rem);
+  --token-font-tamano-h2: clamp(1.5rem, 1.375rem + 0.56vw, 1.875rem);
+  --token-font-tamano-h3: clamp(1.125rem, 1.04rem + 0.37vw, 1.375rem);
+  /* Interlineado aparte (no como --text-*--line-height): Tailwind v4.3.3 descarta la clave --text-*
+     completa en @theme inline cuando se declara junto a su pareja --text-*--line-height. Se aplica con leading-[...]. */
+  --token-interlineado-h1: 1.1;
+  --token-interlineado-h2: 1.2;
+  --token-interlineado-h3: 1.3;
+
+  /* Movimiento de interfaz (ver «Catálogo de efectos» en docs/DISENO.md). */
+  /* Una sola curva para todo el sitio: arranca rápido y se posa suave, sin rebote. */
+  --token-movimiento-rapido: 150ms;
+  --token-movimiento-base: 300ms;
+  --token-movimiento-escalon: 30ms;
+  --token-curva-salida: cubic-bezier(0.2, 0.7, 0.2, 1);
+  /* Línea «surco»: indicador del menú, progreso de lectura y bordes de franja. */
+  --token-grosor-surco: 2px;
+
+  /* Cabecera compacta: el alto real no cambia (sin CLS); se encoge el fondo y sube el contenido. */
+  /* Alto natural ≈ 4.25rem (py-4 + logo h-9). Compacta ≈ 3.5rem. */
+  --token-cabecera-rango-compactar: 5rem; /* scroll en el que ocurre el cambio */
+  --token-cabecera-recorte: 0.75rem; /* cuánto «pierde» de alto visual */
+  --token-cabecera-escala-fondo: 0.82; /* 3.5 / 4.25 */
+  --token-cabecera-escala-logo: 0.8;
+
+  /* Borde «surco» entre franjas: lomos suaves de tierra arada, vistos de lado. */
+  /* Forma en SVG (máscara, el color lo pone la franja). Un periodo = 96×12. */
+  --token-surco-forma: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 12' preserveAspectRatio='none'%3E%3Cpath d='M0 12V7C8 7 12 2 24 2s16 5 24 5 12-5 24-5 16 5 24 5v5z'/%3E%3C/svg%3E");
+  --token-surco-alto: 0.875rem;
+  --token-surco-periodo: 11rem; /* lomos anchos: con menos se lee como festón decorativo */
 }

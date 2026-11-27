@@ -1,16 +1,18 @@
-import { Bricolage_Grotesque, Inter } from "next/font/google";
+import { Fraunces, Inter } from "next/font/google";
 
 /**
  * Una fuente variable por familia (subconjunto latino, swap).
  * La interfaz usa solo los pesos 400 y 600; el archivo variable cubre ambos
  * sin descargar un archivo estático por peso.
- * Familias de trabajo: se confirman contra el logo real de Grovelab.
+ * Titular: Fraunces — serif orgánica con detalles suaves, da un sentido
+ * agrícola/artesanal distinto al redondeado de Fredoka, manteniendo legibilidad
+ * en fichas técnicas y tablas de dosis.
  */
-export const fuenteTitular = Bricolage_Grotesque({
+export const fuenteTitular = Fraunces({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-archivo-titular",
-  weight: ["600", "700", "800"],
+  weight: ["600", "700"],
   adjustFontFallback: true,
   preload: true,
 });

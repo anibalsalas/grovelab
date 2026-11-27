@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { TransicionPagina } from "@/components/animacion/transicion-pagina";
 import { RevelarAlScroll } from "@/components/animacion/revelar-al-scroll";
 import { CintaSeccion } from "@/components/layout/cinta-seccion";
 import { EncabezadoPagina } from "@/components/ui/encabezado-pagina";
@@ -36,37 +37,39 @@ export default async function NosotrosPage() {
     ) ?? [];
 
   return (
-    <main id={idContenidoPrincipal} className={scrollMargenContenido}>
-      <CintaSeccion tono="crema">
-        <EncabezadoPagina titulo="Nosotros" descripcion={lead} />
-      </CintaSeccion>
+    <TransicionPagina>
+      <main id={idContenidoPrincipal} className={scrollMargenContenido}>
+        <CintaSeccion tono="crema">
+          <EncabezadoPagina titulo="Nosotros" descripcion={lead} />
+        </CintaSeccion>
 
-      <div className={contenedorPagina}>
-        {bloques.length === 0 ? (
-          <EstadoVacio
-            titulo="Estamos actualizando esta página"
-            mensaje="Pronto publicaremos más sobre Grovelab y nuestro trabajo en el agro peruano. Mientras tanto, con gusto te orientamos por contacto."
-            enlace={{ href: "/contacto", etiqueta: "Contactar" }}
-          />
-        ) : (
-          <ul className="grid gap-6">
-            {bloques.map((bloque) => (
-              <li key={bloque.id ?? bloque.titulo}>
-                <RevelarAlScroll>
-                  <article className={institucional.bloqueNosotros}>
-                    <h2 className="font-titular text-xl text-marca">
-                      {bloque.titulo}
-                    </h2>
-                    <p className="mt-3 whitespace-pre-wrap leading-relaxed">
-                      {bloque.cuerpo}
-                    </p>
-                  </article>
-                </RevelarAlScroll>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-    </main>
+        <div className={contenedorPagina}>
+          {bloques.length === 0 ? (
+            <EstadoVacio
+              titulo="Estamos actualizando esta página"
+              mensaje="Pronto publicaremos más sobre Grovelab y nuestro trabajo en el agro peruano. Mientras tanto, con gusto te orientamos por contacto."
+              enlace={{ href: "/contacto", etiqueta: "Contactar" }}
+            />
+          ) : (
+            <ul className="grid gap-6">
+              {bloques.map((bloque) => (
+                <li key={bloque.id ?? bloque.titulo}>
+                  <RevelarAlScroll>
+                    <article className={institucional.bloqueNosotros}>
+                      <h2 className="font-titular text-xl text-marca">
+                        {bloque.titulo}
+                      </h2>
+                      <p className="mt-3 whitespace-pre-wrap leading-relaxed">
+                        {bloque.cuerpo}
+                      </p>
+                    </article>
+                  </RevelarAlScroll>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </main>
+    </TransicionPagina>
   );
 }
