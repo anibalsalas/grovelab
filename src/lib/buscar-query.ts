@@ -1,10 +1,13 @@
 import { z } from "zod";
 
+export const PRODUCTOS_POR_PAGINA = 12;
+
 export type BuscarQuery = {
   q?: string;
   cultivo?: string;
   plaga?: string;
   categoria?: string;
+  pagina?: number;
 };
 
 const slugSchema = z
@@ -39,6 +42,17 @@ function parseTexto(valor: string): string | undefined {
   return parsed.success ? parsed.data : undefined;
 }
 
+function parsePagina(valor: string): number | undefined {
+  if (valor === "") {
+    return undefined;
+  }
+  const numero = Number.parseInt(valor, 10);
+  if (!Number.isFinite(numero) || numero < 1) {
+    return undefined;
+  }
+  return numero;
+}
+
 export function parseBuscarQuery(
   source: Record<string, string | string[] | undefined>,
 ): BuscarQuery {
@@ -47,6 +61,7 @@ export function parseBuscarQuery(
     cultivo: parseSlug(primerValor(source, "cultivo")),
     plaga: parseSlug(primerValor(source, "plaga")),
     categoria: parseSlug(primerValor(source, "categoria")),
+    pagina: parsePagina(primerValor(source, "pagina")),
   };
 }
 

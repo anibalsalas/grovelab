@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   parseBuscarQuery,
+  PRODUCTOS_POR_PAGINA,
   tieneFiltrosBuscar,
 } from "./buscar-query.ts";
 
@@ -18,6 +19,7 @@ describe("parseBuscarQuery", () => {
       cultivo: "vid",
       plaga: "trips",
       categoria: "bioestimulantes",
+      pagina: undefined,
     });
     expect(tieneFiltrosBuscar(query)).toBe(true);
   });
@@ -44,5 +46,25 @@ describe("parseBuscarQuery", () => {
       q: "a".repeat(250),
     });
     expect(tieneFiltrosBuscar(query)).toBe(false);
+  });
+
+  it("acepta página válida", () => {
+    expect(parseBuscarQuery({ pagina: "2" }).pagina).toBe(2);
+  });
+
+  it("ignora página inválida sin afectar los demás filtros", () => {
+    const query = parseBuscarQuery({ pagina: "0", categoria: "nutricion" });
+    expect(query.pagina).toBeUndefined();
+    expect(query.categoria).toBe("nutricion");
+  });
+
+  it("la página no cuenta como filtro de búsqueda", () => {
+    expect(tieneFiltrosBuscar({ pagina: 3 })).toBe(false);
+  });
+});
+
+describe("PRODUCTOS_POR_PAGINA", () => {
+  it("es 12", () => {
+    expect(PRODUCTOS_POR_PAGINA).toBe(12);
   });
 });

@@ -15,12 +15,6 @@
   }
 }
 
-.filtroActivo {
-  border-color: var(--token-color-marca);
-  background: color-mix(in srgb, var(--token-color-marca) 12%, var(--token-color-fondo));
-  font-weight: 600;
-}
-
 @supports (animation-timeline: view()) {
   .revelarItem {
     animation: listado-revelar linear both;

@@ -67,6 +67,20 @@ export const Productos: CollectionConfig = {
       label: "Resumen",
     },
     {
+      name: "galeria",
+      type: "relationship",
+      relationTo: "medios",
+      label: "Galería",
+      hasMany: true,
+      filterOptions: {
+        mimeType: { contains: "image/" },
+      },
+      admin: {
+        description:
+          "Foto principal primero. El texto alternativo de cada foto se edita en Medios.",
+      },
+    },
+    {
       name: "ingredienteActivo",
       type: "text",
       label: "Ingrediente activo",
@@ -80,6 +94,75 @@ export const Productos: CollectionConfig = {
       name: "registroSenasa",
       type: "text",
       label: "Registro SENASA",
+    },
+    {
+      name: "fichaTecnica",
+      type: "relationship",
+      relationTo: "medios",
+      label: "Ficha técnica (PDF)",
+      filterOptions: {
+        mimeType: { equals: "application/pdf" },
+      },
+    },
+    {
+      name: "hojaSeguridad",
+      type: "relationship",
+      relationTo: "medios",
+      label: "Hoja de seguridad (PDF)",
+      filterOptions: {
+        mimeType: { equals: "application/pdf" },
+      },
+    },
+    {
+      name: "presentaciones",
+      type: "array",
+      label: "Presentaciones",
+      admin: {
+        description:
+          "Formatos en que se vende el producto (p. ej. 1 L, 25 kg). Solo los que Grovelab confirme.",
+      },
+      labels: {
+        singular: "Presentación",
+        plural: "Presentaciones",
+      },
+      fields: [
+        {
+          name: "etiqueta",
+          type: "text",
+          label: "Presentación",
+          required: true,
+          maxLength: 40,
+        },
+      ],
+    },
+    {
+      name: "composicion",
+      type: "array",
+      label: "Composición",
+      admin: {
+        description:
+          "Para nutricionales y bioestimulantes: elemento y porcentaje o concentración. Solo datos de la etiqueta.",
+      },
+      labels: {
+        singular: "Componente",
+        plural: "Componentes",
+      },
+      fields: [
+        {
+          name: "elemento",
+          type: "text",
+          label: "Elemento",
+          required: true,
+          maxLength: 80,
+        },
+        {
+          name: "valor",
+          type: "text",
+          label: "Porcentaje o concentración",
+          required: true,
+          maxLength: 40,
+        },
+      ],
     },
     {
       name: "destacado",

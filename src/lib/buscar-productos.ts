@@ -1,14 +1,30 @@
 import type { Payload, Where } from "payload";
 
-import type { BuscarQuery } from "./buscar-query.ts";
+import { PRODUCTOS_POR_PAGINA, type BuscarQuery } from "./buscar-query.ts";
+import { primeraImagen } from "./medio-populado.ts";
+import type { ImagenTarjeta } from "@/components/ui/tarjeta-producto";
+
+type ProductoResultado = {
+  id: number;
+  nombre: string;
+  slug: string;
+  resumen?: string | null;
+  categoria?: string | null;
+  imagen?: ImagenTarjeta | null;
+};
 
 type BuscarProductosResultado = {
-  docs: Array<{
-    id: number;
-    nombre: string;
-    slug: string;
-    resumen?: string | null;
-  }>;
+  docs: ProductoResultado[];
+  totalDocs: number;
+  totalPages: number;
+  pagina: number;
+};
+
+const SIN_RESULTADOS: BuscarProductosResultado = {
+  docs: [],
+  totalDocs: 0,
+  totalPages: 0,
+  pagina: 1,
 };
 
 async function idPorSlug(
@@ -49,7 +65,7 @@ export async function buscarProductos(
   if (query.cultivo) {
     const cultivoId = await idPorSlug(payload, "cultivos", query.cultivo);
     if (cultivoId === null) {
-      return { docs: [] };
+      return SIN_RESULTADOS;
     }
     condiciones.push({
       cultivos: { in: [cultivoId] },
@@ -59,7 +75,7 @@ export async function buscarProductos(
   if (query.plaga) {
     const plagaId = await idPorSlug(payload, "plagas", query.plaga);
     if (plagaId === null) {
-      return { docs: [] };
+      return SIN_RESULTADOS;
     }
     condiciones.push({
       plagas: { in: [plagaId] },
@@ -73,22 +89,24 @@ export async function buscarProductos(
       query.categoria,
     );
     if (categoriaId === null) {
-      return { docs: [] };
+      return SIN_RESULTADOS;
     }
     condiciones.push({
       categoria: { equals: categoriaId },
     });
   }
 
-  const where: Where =
-    condiciones.length > 0 ? { and: condiciones } : { id: { equals: -1 } };
+  const where: Where | undefined =
+    condiciones.length > 0 ? { and: condiciones } : undefined;
+  const pagina = query.pagina ?? 1;
 
   const resultado = await payload.find({
     collection: "productos",
-    limit: 50,
+    limit: PRODUCTOS_POR_PAGINA,
+    page: pagina,
     sort: "nombre",
-    depth: 0,
-    where,
+    depth: 1,
+    ...(where ? { where } : {}),
   });
 
   return {
@@ -97,6 +115,24 @@ export async function buscarProductos(
       nombre: doc.nombre,
       slug: doc.slug,
       resumen: doc.resumen,
+      categoria:
+        typeof doc.categoria === "object" && doc.categoria
+          ? doc.categoria.nombre
+          : null,
+      imagen: (() => {
+        const medio = primeraImagen(doc.galeria);
+        return medio
+          ? {
+              url: medio.url ?? "",
+              alt: medio.alt,
+              width: medio.width,
+              height: medio.height,
+            }
+          : null;
+      })(),
     })),
+    totalDocs: resultado.totalDocs,
+    totalPages: resultado.totalPages,
+    pagina: resultado.page ?? pagina,
   };
 }

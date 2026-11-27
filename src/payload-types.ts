@@ -72,6 +72,7 @@ export interface Config {
     cultivos: Cultivo;
     plagas: Plagas;
     productos: Producto;
+    medios: Medio;
     noticias: Noticia;
     consultas: Consulta;
     'payload-kv': PayloadKv;
@@ -86,6 +87,7 @@ export interface Config {
     cultivos: CultivosSelect<false> | CultivosSelect<true>;
     plagas: PlagasSelect<false> | PlagasSelect<true>;
     productos: ProductosSelect<false> | ProductosSelect<true>;
+    medios: MediosSelect<false> | MediosSelect<true>;
     noticias: NoticiasSelect<false> | NoticiasSelect<true>;
     consultas: ConsultasSelect<false> | ConsultasSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
@@ -174,9 +176,32 @@ export interface Categoria {
    */
   orden?: number | null;
   descripcion?: string | null;
+  imagen?: (number | null) | Medio;
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "medios".
+ */
+export interface Medio {
+  id: number;
+  /**
+   * Describe la imagen para accesibilidad. No hace falta en PDF.
+   */
+  alt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -187,6 +212,7 @@ export interface Cultivo {
   nombre: string;
   slug: string;
   resumen?: string | null;
+  imagen?: (number | null) | Medio;
   destacado?: boolean | null;
   updatedAt: string;
   createdAt: string;
@@ -216,9 +242,34 @@ export interface Producto {
   cultivos?: (number | Cultivo)[] | null;
   plagas?: (number | Plagas)[] | null;
   resumen?: string | null;
+  /**
+   * Foto principal primero. El texto alternativo de cada foto se edita en Medios.
+   */
+  galeria?: (number | Medio)[] | null;
   ingredienteActivo?: string | null;
   formulacion?: string | null;
   registroSenasa?: string | null;
+  fichaTecnica?: (number | null) | Medio;
+  hojaSeguridad?: (number | null) | Medio;
+  /**
+   * Formatos en que se vende el producto (p. ej. 1 L, 25 kg). Solo los que Grovelab confirme.
+   */
+  presentaciones?:
+    | {
+        etiqueta: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Para nutricionales y bioestimulantes: elemento y porcentaje o concentración. Solo datos de la etiqueta.
+   */
+  composicion?:
+    | {
+        elemento: string;
+        valor: string;
+        id?: string | null;
+      }[]
+    | null;
   destacado?: boolean | null;
   dosis?:
     | {
@@ -307,6 +358,10 @@ export interface PayloadLockedDocument {
         value: number | Producto;
       } | null)
     | ({
+        relationTo: 'medios';
+        value: number | Medio;
+      } | null)
+    | ({
         relationTo: 'noticias';
         value: number | Noticia;
       } | null)
@@ -389,6 +444,7 @@ export interface CategoriasSelect<T extends boolean = true> {
   slug?: T;
   orden?: T;
   descripcion?: T;
+  imagen?: T;
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
@@ -401,6 +457,7 @@ export interface CultivosSelect<T extends boolean = true> {
   nombre?: T;
   slug?: T;
   resumen?: T;
+  imagen?: T;
   destacado?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -428,9 +485,25 @@ export interface ProductosSelect<T extends boolean = true> {
   cultivos?: T;
   plagas?: T;
   resumen?: T;
+  galeria?: T;
   ingredienteActivo?: T;
   formulacion?: T;
   registroSenasa?: T;
+  fichaTecnica?: T;
+  hojaSeguridad?: T;
+  presentaciones?:
+    | T
+    | {
+        etiqueta?: T;
+        id?: T;
+      };
+  composicion?:
+    | T
+    | {
+        elemento?: T;
+        valor?: T;
+        id?: T;
+      };
   destacado?: T;
   dosis?:
     | T
@@ -444,6 +517,24 @@ export interface ProductosSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "medios_select".
+ */
+export interface MediosSelect<T extends boolean = true> {
+  alt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -545,6 +636,9 @@ export interface TextosSitio {
    * Texto bajo el título en /servicios.
    */
   serviciosLead?: string | null;
+  /**
+   * Texto público. Referencias a normas, SENASA o trámites deben revisarse con Grovelab antes de publicar.
+   */
   servicios?:
     | {
         titulo: string;

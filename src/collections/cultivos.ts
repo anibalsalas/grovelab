@@ -46,6 +46,15 @@ export const Cultivos: CollectionConfig = {
       label: "Resumen",
     },
     {
+      name: "imagen",
+      type: "relationship",
+      relationTo: "medios",
+      label: "Imagen",
+      filterOptions: {
+        mimeType: { contains: "image/" },
+      },
+    },
+    {
       name: "destacado",
       type: "checkbox",
       label: "Destacado en inicio",

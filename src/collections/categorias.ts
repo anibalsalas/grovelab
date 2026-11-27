@@ -57,5 +57,14 @@ export const Categorias: CollectionConfig = {
       type: "textarea",
       label: "Descripción",
     },
+    {
+      name: "imagen",
+      type: "relationship",
+      relationTo: "medios",
+      label: "Imagen",
+      filterOptions: {
+        mimeType: { contains: "image/" },
+      },
+    },
   ],
 };
