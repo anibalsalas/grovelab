@@ -9,6 +9,7 @@ import * as migration_20261104_052554_presentaciones_composicion from './2026110
 import * as migration_20261127_010656_medios from './20261127_010656_medios';
 import * as migration_20261127_012239_imagenes_y_pdf from './20261127_012239_imagenes_y_pdf';
 import * as migration_20261127_170042_admite_pedido from './20261127_170042_admite_pedido';
+import * as migration_20261127_170355_zonas_comerciales from './20261127_170355_zonas_comerciales';
 
 export const migrations = [
   {
@@ -64,6 +65,11 @@ export const migrations = [
   {
     up: migration_20261127_170042_admite_pedido.up,
     down: migration_20261127_170042_admite_pedido.down,
-    name: '20261127_170042_admite_pedido'
+    name: '20261127_170042_admite_pedido',
+  },
+  {
+    up: migration_20261127_170355_zonas_comerciales.up,
+    down: migration_20261127_170355_zonas_comerciales.down,
+    name: '20261127_170355_zonas_comerciales'
   },
 ];

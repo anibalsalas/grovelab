@@ -75,6 +75,7 @@ export interface Config {
     medios: Medio;
     noticias: Noticia;
     consultas: Consulta;
+    'zonas-comerciales': ZonasComerciale;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -90,6 +91,7 @@ export interface Config {
     medios: MediosSelect<false> | MediosSelect<true>;
     noticias: NoticiasSelect<false> | NoticiasSelect<true>;
     consultas: ConsultasSelect<false> | ConsultasSelect<true>;
+    'zonas-comerciales': ZonasComercialesSelect<false> | ZonasComercialesSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -318,6 +320,46 @@ export interface Consulta {
   createdAt: string;
 }
 /**
+ * Cada zona con su asesor. Los datos salen de lo que Grovelab confirme por escrito; no se copian de la web antigua sin validar.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "zonas-comerciales".
+ */
+export interface ZonasComerciale {
+  id: number;
+  nombre: string;
+  slug: string;
+  /**
+   * Departamentos o ciudades que atiende la zona, en el orden en que se muestran.
+   */
+  cobertura?:
+    | {
+        lugar: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Opcional. Sin nombre se muestra «Asesor comercial».
+   */
+  asesorNombre?: string | null;
+  /**
+   * Opcional (por ejemplo, RTC).
+   */
+  asesorCargo?: string | null;
+  /**
+   * Celular de 9 dígitos o con código de país (+51…). Solo se muestra en la web si marcas «Número autorizado para publicar».
+   */
+  whatsapp?: string | null;
+  /**
+   * Márcalo solo con autorización escrita de Grovelab y de la persona. Sin la marca, el número no sale del servidor y el pedido de esta zona va al número general.
+   */
+  numeroAutorizado?: boolean | null;
+  orden?: number | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
@@ -372,6 +414,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'consultas';
         value: number | Consulta;
+      } | null)
+    | ({
+        relationTo: 'zonas-comerciales';
+        value: number | ZonasComerciale;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -567,6 +613,28 @@ export interface ConsultasSelect<T extends boolean = true> {
   aceptoPolitica?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "zonas-comerciales_select".
+ */
+export interface ZonasComercialesSelect<T extends boolean = true> {
+  nombre?: T;
+  slug?: T;
+  cobertura?:
+    | T
+    | {
+        lugar?: T;
+        id?: T;
+      };
+  asesorNombre?: T;
+  asesorCargo?: T;
+  whatsapp?: T;
+  numeroAutorizado?: T;
+  orden?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

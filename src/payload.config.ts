@@ -15,6 +15,7 @@ import { Noticias } from "./collections/noticias.ts";
 import { Plagas } from "./collections/plagas.ts";
 import { Productos } from "./collections/productos.ts";
 import { Users } from "./collections/users.ts";
+import { ZonasComerciales } from "./collections/zonas-comerciales.ts";
 import { TextosSitio } from "./globals/textos-sitio.ts";
 import { normalizarDatabaseUrl } from "./lib/normalizar-database-url.ts";
 
@@ -37,6 +38,7 @@ export default buildConfig({
     Medios,
     Noticias,
     Consultas,
+    ZonasComerciales,
   ],
   globals: [TextosSitio],
   editor: lexicalEditor(),
