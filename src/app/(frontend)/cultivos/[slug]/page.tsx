@@ -24,6 +24,7 @@ export async function generateMetadata({
   const { slug } = await params;
   const payload = await getPayloadClient();
   const resultado = await payload.find({
+    overrideAccess: false,
     collection: "cultivos",
     limit: 1,
     where: { slug: { equals: slug } },
@@ -44,6 +45,7 @@ export default async function CultivoPage({ params }: PageProps) {
   const payload = await getPayloadClient();
 
   const cultivoResult = await payload.find({
+    overrideAccess: false,
     collection: "cultivos",
     limit: 1,
     where: { slug: { equals: slug } },
@@ -55,6 +57,7 @@ export default async function CultivoPage({ params }: PageProps) {
   }
 
   const productosResult = await payload.find({
+    overrideAccess: false,
     collection: "productos",
     limit: 50,
     where: {

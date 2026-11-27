@@ -24,6 +24,7 @@ export const metadata: Metadata = {
 export default async function CultivosPage() {
   const payload = await getPayloadClient();
   const resultado = await payload.find({
+    overrideAccess: false,
     collection: "cultivos",
     limit: 100,
     sort: "nombre",

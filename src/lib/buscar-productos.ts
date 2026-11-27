@@ -33,6 +33,7 @@ async function idPorSlug(
   slug: string,
 ): Promise<number | null> {
   const resultado = await payload.find({
+    overrideAccess: false,
     collection: coleccion,
     limit: 1,
     depth: 0,
@@ -101,6 +102,7 @@ export async function buscarProductos(
   const pagina = query.pagina ?? 1;
 
   const resultado = await payload.find({
+    overrideAccess: false,
     collection: "productos",
     limit: PRODUCTOS_POR_PAGINA,
     page: pagina,

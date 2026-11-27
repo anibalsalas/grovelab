@@ -25,6 +25,7 @@ export async function leerProductosPedido(
   }
   const payload = await getPayloadClient();
   const resultado = await payload.find({
+    overrideAccess: false,
     collection: "productos",
     where: {
       and: [

@@ -29,6 +29,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [textos, noticias, hayCultivos, hayZonas] = await Promise.all([
     obtenerTextosSitio(),
     payload.find({
+      overrideAccess: false,
       collection: "noticias",
       limit: 500,
       depth: 0,

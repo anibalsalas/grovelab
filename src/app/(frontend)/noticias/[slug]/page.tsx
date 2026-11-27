@@ -18,6 +18,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { slug } = await params;
   const payload = await getPayloadClient();
   const resultado = await payload.find({
+    overrideAccess: false,
     collection: "noticias",
     limit: 1,
     where: { slug: { equals: slug } },
@@ -37,6 +38,7 @@ export default async function NoticiaPage({ params }: PageProps) {
   const { slug } = await params;
   const payload = await getPayloadClient();
   const resultado = await payload.find({
+    overrideAccess: false,
     collection: "noticias",
     limit: 1,
     where: { slug: { equals: slug } },

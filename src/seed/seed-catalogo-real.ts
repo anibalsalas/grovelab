@@ -105,7 +105,13 @@ async function main() {
     }
     await payload.create({
       collection: "categorias",
-      data: { nombre, slug: slugificar(nombre), orden: indice },
+      data: {
+        nombre,
+        slug: slugificar(nombre),
+        orden: indice,
+        // Sin esto Payload crea en borrador y la web pública no lo muestra.
+        _status: "published",
+      },
       draft: false,
     });
     categoriasCreadas++;
@@ -141,6 +147,7 @@ async function main() {
         nombre,
         slug: slugificar(nombre),
         ...(imagenId ? { imagen: imagenId } : {}),
+        _status: "published",
       },
       draft: false,
     });
@@ -160,7 +167,7 @@ async function main() {
     }
     await payload.create({
       collection: "plagas",
-      data: { nombre, slug: slugificar(nombre) },
+      data: { nombre, slug: slugificar(nombre), _status: "published" },
       draft: false,
     });
     plagasCreadas++;

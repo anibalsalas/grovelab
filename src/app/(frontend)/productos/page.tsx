@@ -52,9 +52,10 @@ export default async function ProductosPage({ searchParams }: PageProps) {
   const payload = await getPayloadClient();
 
   const [cultivos, plagas, categorias, hayCultivos] = await Promise.all([
-    payload.find({ collection: "cultivos", limit: 200, sort: "nombre", depth: 0 }),
-    payload.find({ collection: "plagas", limit: 200, sort: "nombre", depth: 0 }),
+    payload.find({ overrideAccess: false, collection: "cultivos", limit: 200, sort: "nombre", depth: 0 }),
+    payload.find({ overrideAccess: false, collection: "plagas", limit: 200, sort: "nombre", depth: 0 }),
     payload.find({
+      overrideAccess: false,
       collection: "categorias",
       limit: 200,
       sort: "orden",

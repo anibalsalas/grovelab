@@ -73,19 +73,22 @@ export default async function HomePage() {
   ] = await Promise.all([
     obtenerTextosSitio(),
     payload.find({
+      overrideAccess: false,
       collection: "cultivos",
       limit: 200,
       sort: "nombre",
       depth: 0,
     }),
-    payload.find({ collection: "plagas", limit: 200, sort: "nombre", depth: 0 }),
+    payload.find({ overrideAccess: false, collection: "plagas", limit: 200, sort: "nombre", depth: 0 }),
     payload.find({
+      overrideAccess: false,
       collection: "categorias",
       limit: 200,
       sort: "orden",
       depth: 0,
     }),
     payload.find({
+      overrideAccess: false,
       collection: "cultivos",
       limit: 6,
       where: { destacado: { equals: true } },
@@ -93,6 +96,7 @@ export default async function HomePage() {
       depth: 1,
     }),
     payload.find({
+      overrideAccess: false,
       collection: "productos",
       limit: 6,
       where: { destacado: { equals: true } },
@@ -100,6 +104,7 @@ export default async function HomePage() {
       depth: 1,
     }),
     payload.find({
+      overrideAccess: false,
       collection: "noticias",
       limit: 3,
       sort: "-fecha",

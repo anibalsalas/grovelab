@@ -66,6 +66,7 @@ export async function generateMetadata({
   const { slug } = await params;
   const payload = await getPayloadClient();
   const resultado = await payload.find({
+    overrideAccess: false,
     collection: "productos",
     limit: 1,
     where: { slug: { equals: slug } },
@@ -85,6 +86,7 @@ export default async function ProductoPage({ params }: PageProps) {
   const { slug } = await params;
   const payload = await getPayloadClient();
   const resultado = await payload.find({
+    overrideAccess: false,
     collection: "productos",
     limit: 1,
     where: { slug: { equals: slug } },
@@ -136,6 +138,7 @@ export default async function ProductoPage({ params }: PageProps) {
 
   const relacionados = primerCultivoId
     ? await payload.find({
+        overrideAccess: false,
         collection: "productos",
         limit: 4,
         where: {

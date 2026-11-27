@@ -39,6 +39,7 @@ export default async function NoticiasPage({ searchParams }: PageProps) {
   const payload = await getPayloadClient();
 
   const resultado = await payload.find({
+    overrideAccess: false,
     collection: "noticias",
     limit: NOTICIAS_POR_PAGINA,
     page: pagina,
