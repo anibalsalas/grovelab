@@ -1,6 +1,7 @@
 import { cache } from "react";
 
 import { getPayloadClient } from "@/lib/payload-client";
+import { reintentarConsulta } from "@/lib/reintentar-consulta.ts";
 
 /**
  * Indica si existe al menos una zona comercial publicada. Mientras no haya
@@ -11,9 +12,11 @@ import { getPayloadClient } from "@/lib/payload-client";
  */
 export const hayZonasPublicadas = cache(async (): Promise<boolean> => {
   const payload = await getPayloadClient();
-  const { totalDocs } = await payload.count({
-    collection: "zonas-comerciales",
-    where: { _status: { equals: "published" } },
-  });
+  const { totalDocs } = await reintentarConsulta(() =>
+    payload.count({
+      collection: "zonas-comerciales",
+      where: { _status: { equals: "published" } },
+    }),
+  );
   return totalDocs > 0;
 });

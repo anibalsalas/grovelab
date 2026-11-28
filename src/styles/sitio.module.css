@@ -50,6 +50,9 @@
 }
 
 .tarjetaPlana {
+  /* Bloque: cuando la tarjeta es un <a> (en línea por defecto), el navegador partía
+     borde, fondo y sombra por cada línea de texto y dibujaba «barritas» en las esquinas. */
+  display: block;
   border-radius: var(--token-radio-m);
   border: 1px solid color-mix(in srgb, var(--token-color-marca) 18%, transparent);
   background: var(--token-color-fondo);
