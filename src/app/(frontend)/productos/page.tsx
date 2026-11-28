@@ -1,28 +1,19 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
 import { TransicionPagina } from "@/components/animacion/transicion-pagina";
-import { AnuncioResultados } from "@/components/ui/anuncio-resultados";
+import { CatalogoProductos } from "@/components/catalogo/catalogo-productos";
+import { CintaSeccion } from "@/components/layout/cinta-seccion";
 import { EncabezadoPagina } from "@/components/ui/encabezado-pagina";
 import { EstadoVacio } from "@/components/ui/estado-vacio";
-import { TarjetaProducto } from "@/components/ui/tarjeta-producto";
-import { PanelFiltrosProductos } from "@/components/panel-filtros-productos";
-import { buscarProductos } from "@/lib/buscar-productos.ts";
+import { cargarCatalogoProductos } from "@/lib/cargar-catalogo-productos.ts";
 import {
-  parseBuscarQuery,
-  tieneFiltrosBuscar,
-  type BuscarQuery,
-} from "@/lib/buscar-query.ts";
-import { hayCultivosPublicados } from "@/lib/hay-cultivos-publicados.ts";
-import { enlaceWhatsAppConsulta } from "@/lib/url-contacto.ts";
-import { CintaSeccion } from "@/components/layout/cinta-seccion";
-import {
-  contenedorPagina,
+  anchoContenedor,
   idContenidoPrincipal,
   scrollMargenContenido,
 } from "@/lib/clases-sitio";
+import { hayCultivosPublicados } from "@/lib/hay-cultivos-publicados.ts";
 import { getPayloadClient } from "@/lib/payload-client";
-import listado from "@/styles/listado.module.css";
+import { enlaceWhatsAppConsulta } from "@/lib/url-contacto.ts";
 
 export const dynamic = "force-dynamic";
 
@@ -31,92 +22,41 @@ export const metadata: Metadata = {
   description: "Catálogo de productos para el agro.",
 };
 
-type PageProps = {
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
-};
-
-function urlProductos(query: BuscarQuery, pagina?: number): string {
-  const params = new URLSearchParams();
-  if (query.q) params.set("q", query.q);
-  if (query.cultivo) params.set("cultivo", query.cultivo);
-  if (query.plaga) params.set("plaga", query.plaga);
-  if (query.categoria) params.set("categoria", query.categoria);
-  if (pagina && pagina > 1) params.set("pagina", String(pagina));
-  const qs = params.toString();
-  return qs ? `/productos?${qs}` : "/productos";
-}
-
-export default async function ProductosPage({ searchParams }: PageProps) {
-  const params = await searchParams;
-  const query = parseBuscarQuery(params);
+/**
+ * Catálogo de productos. El servidor entrega todos los productos publicados una sola vez;
+ * la búsqueda y los filtros (que llegan por la URL: `q`, `categoria`, `cultivo`, `plaga`,
+ * `pagina`, también desde el buscador de Inicio) se resuelven en <CatalogoProductos>.
+ * La primera respuesta HTML ya viene filtrada según la URL.
+ */
+export default async function ProductosPage() {
   const payload = await getPayloadClient();
+  const productos = await cargarCatalogoProductos(payload);
+  // Solo hace falta si no hay productos (ofrece «Explorar cultivos»): una consulta menos por visita.
+  const hayCultivos = productos.length === 0 && (await hayCultivosPublicados());
 
-  const [cultivos, plagas, categorias, hayCultivos] = await Promise.all([
-    payload.find({ overrideAccess: false, collection: "cultivos", limit: 200, sort: "nombre", depth: 0 }),
-    payload.find({ overrideAccess: false, collection: "plagas", limit: 200, sort: "nombre", depth: 0 }),
-    payload.find({
-      overrideAccess: false,
-      collection: "categorias",
-      limit: 200,
-      sort: "orden",
-      depth: 0,
-    }),
-    hayCultivosPublicados(),
-  ]);
-
-  const resultado = await buscarProductos(payload, query);
-  const conFiltros = tieneFiltrosBuscar(query);
-  const whatsappSinResultados = enlaceWhatsAppConsulta(
+  const enlaceConsulta = enlaceWhatsAppConsulta(
     "Hola, busqué productos en la web y no encontré resultados. ¿Me ayudan?",
   );
 
   return (
     <TransicionPagina>
       <main id={idContenidoPrincipal} className={scrollMargenContenido}>
-        <CintaSeccion tono="verde">
-          <EncabezadoPagina
-            destacado="Catálogo"
-            titulo="Productos"
-            descripcion="Catálogo de formulaciones Grovelab."
-          />
+        {/* Encabezado compacto: deja el catálogo a la vista sin desplazarse. */}
+        <CintaSeccion tono="verde" contenedor={false}>
+          <div
+            className={`${anchoContenedor} flex flex-col gap-1 py-4 sm:flex-row sm:items-end sm:justify-between sm:gap-8 sm:py-5`}
+          >
+            <EncabezadoPagina destacado="Catálogo" titulo="Productos" />
+            <p className="font-texto leading-relaxed text-texto/85 sm:pb-1">
+              Catálogo de formulaciones Grovelab.
+            </p>
+          </div>
         </CintaSeccion>
 
-        <div className={contenedorPagina}>
-          <PanelFiltrosProductos
-            cultivos={cultivos.docs.map((c) => ({ slug: c.slug, nombre: c.nombre }))}
-            plagas={plagas.docs.map((p) => ({ slug: p.slug, nombre: p.nombre }))}
-            categorias={categorias.docs.map((c) => ({
-              slug: c.slug,
-              nombre: c.nombre,
-            }))}
-            valoresIniciales={{
-              q: query.q,
-              cultivo: query.cultivo,
-              plaga: query.plaga,
-              categoria: query.categoria,
-            }}
-          />
-
-          <AnuncioResultados total={resultado.totalDocs} />
-
-          {resultado.docs.length === 0 && conFiltros ? (
-            <EstadoVacio
-              titulo="No encontramos productos con estos filtros"
-              mensaje="Prueba otra combinación o revisa el catálogo completo."
-              enlace={{ href: "/productos", etiqueta: "Ver todos los productos" }}
-              enlaceSecundario={
-                whatsappSinResultados
-                  ? {
-                      href: whatsappSinResultados,
-                      etiqueta: "Preguntar por WhatsApp",
-                      externo: true,
-                    }
-                  : { href: "/contacto", etiqueta: "Contactar" }
-              }
-            />
-          ) : null}
-
-          {resultado.docs.length === 0 && !conFiltros ? (
+        <div className={`${anchoContenedor} py-6 sm:py-8`}>
+          {productos.length > 0 ? (
+            <CatalogoProductos productos={productos} enlaceConsulta={enlaceConsulta} />
+          ) : (
             <EstadoVacio
               titulo="Aún no hay productos publicados"
               mensaje={
@@ -130,52 +70,7 @@ export default async function ProductosPage({ searchParams }: PageProps) {
                   : { href: "/contacto", etiqueta: "Contactar" }
               }
             />
-          ) : null}
-
-          {resultado.docs.length > 0 ? (
-            <>
-              <ul className={`mt-6 ${listado.gridListado}`}>
-                {resultado.docs.map((producto) => (
-                  <li key={producto.id} className={listado.revelarItem}>
-                    <TarjetaProducto
-                      slug={producto.slug}
-                      nombre={producto.nombre}
-                      resumen={producto.resumen}
-                      categoria={producto.categoria}
-                      imagen={producto.imagen}
-                    />
-                  </li>
-                ))}
-              </ul>
-
-              {resultado.totalPages > 1 ? (
-                <nav
-                  className="mt-10 flex flex-wrap items-center justify-center gap-2"
-                  aria-label="Paginación"
-                >
-                  {resultado.pagina > 1 ? (
-                    <Link
-                      href={urlProductos(query, resultado.pagina - 1)}
-                      className="inline-flex min-h-11 items-center rounded-m border border-marca/20 px-4 text-sm text-marca"
-                    >
-                      Anterior
-                    </Link>
-                  ) : null}
-                  <span className="px-2 text-sm text-texto/80">
-                    Página {resultado.pagina} de {resultado.totalPages}
-                  </span>
-                  {resultado.pagina < resultado.totalPages ? (
-                    <Link
-                      href={urlProductos(query, resultado.pagina + 1)}
-                      className="inline-flex min-h-11 items-center rounded-m border border-marca/20 px-4 text-sm text-marca"
-                    >
-                      Siguiente
-                    </Link>
-                  ) : null}
-                </nav>
-              ) : null}
-            </>
-          ) : null}
+          )}
         </div>
       </main>
     </TransicionPagina>

@@ -1,0 +1,691 @@
+/**
+ * Catálogo de /productos (buscador, filtros, chips, cuadrícula y tarjetas).
+ * Elección de estilos: CSS Module, porque hay estados (:has, :checked, [data-abierto]),
+ * @keyframes y selectores entre elementos que en utilidades quedarían ilegibles.
+ * Tipografía y colores de texto sueltos van con utilidades Tailwind en el TSX.
+ * Solo se anima `transform` y `opacity`. Colores, espacios, radios y sombras: tokens.
+ */
+
+.catalogo {
+  display: grid;
+  gap: var(--token-espacio-6);
+}
+
+/* ---------- Búsqueda ---------- */
+
+.busqueda {
+  display: flex;
+  align-items: center;
+  gap: var(--token-espacio-2);
+  padding: var(--token-espacio-1);
+  border: 1px solid color-mix(in srgb, var(--token-color-marca) 30%, transparent);
+  border-radius: var(--token-radio-l);
+  background: var(--token-color-superficie);
+  box-shadow: var(--token-sombra-s);
+  transition:
+    border-color var(--token-movimiento-base) var(--token-curva-salida),
+    box-shadow var(--token-movimiento-base) var(--token-curva-salida);
+}
+
+.busqueda:hover {
+  border-color: color-mix(in srgb, var(--token-color-marca) 55%, transparent);
+}
+
+/* El anillo de foco lo dibuja el contenedor, no la caja interior. */
+.busqueda:has(.entrada:focus-visible) {
+  border-color: var(--token-color-marca);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--token-color-marca) 24%, transparent);
+}
+
+.entrada {
+  flex: 1;
+  min-width: 0;
+  min-height: var(--token-espacio-12);
+  padding-inline: var(--token-espacio-4);
+  border: 0;
+  background: transparent;
+  color: var(--token-color-texto);
+  font: inherit;
+  outline: none;
+}
+
+.entrada::placeholder {
+  color: color-mix(in srgb, var(--token-color-texto) 72%, transparent);
+}
+
+/* La «×» nativa del navegador es azul y de 16 px: se sustituye por el botón `.borrar`. */
+.entrada::-webkit-search-cancel-button {
+  display: none;
+}
+
+.borrar {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: var(--token-espacio-11);
+  height: var(--token-espacio-11);
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: color-mix(in srgb, var(--token-color-texto) 75%, transparent);
+  cursor: pointer;
+  transition:
+    background-color var(--token-movimiento-rapido) var(--token-curva-salida),
+    color var(--token-movimiento-rapido) var(--token-curva-salida),
+    transform var(--token-movimiento-rapido) var(--token-curva-salida);
+}
+
+.borrar:hover {
+  background: color-mix(in srgb, var(--token-color-marca) 10%, transparent);
+  color: var(--token-color-marca);
+}
+
+.borrar:active {
+  transform: scale(0.92);
+}
+
+.borrar svg {
+  width: var(--token-espacio-3);
+  height: var(--token-espacio-3);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+}
+
+.lupa {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: var(--token-espacio-12);
+  height: var(--token-espacio-12);
+  border: 0;
+  border-radius: var(--token-radio-m);
+  background: var(--token-color-marca);
+  color: var(--token-color-fondo);
+  cursor: pointer;
+  transition:
+    background-color var(--token-movimiento-rapido) var(--token-curva-salida),
+    transform var(--token-movimiento-rapido) var(--token-curva-salida);
+}
+
+.lupa:hover {
+  background: color-mix(in srgb, var(--token-color-marca) 86%, var(--token-color-texto));
+}
+
+.lupa svg {
+  width: var(--token-espacio-5);
+  height: var(--token-espacio-5);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  transition: transform var(--token-movimiento-base) var(--token-curva-salida);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .lupa:hover svg {
+    transform: scale(1.14) rotate(-8deg);
+  }
+
+  .lupa:active {
+    transform: scale(0.95);
+  }
+}
+
+/* ---------- Disposición: filtros a la izquierda, resultados a la derecha ---------- */
+
+.disposicion {
+  display: grid;
+  gap: var(--token-espacio-5);
+  align-items: start;
+}
+
+@media (min-width: 56rem) {
+  .disposicion {
+    grid-template-columns: calc(var(--token-espacio-16) * 4) minmax(0, 1fr);
+    gap: var(--token-espacio-8);
+  }
+}
+
+.lateral {
+  min-width: 0;
+}
+
+/* Botón del panel desplegable: solo en celular. */
+.botonFiltros {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--token-espacio-2);
+  min-height: var(--token-espacio-11);
+  padding-inline: var(--token-espacio-4);
+  border: 1px solid color-mix(in srgb, var(--token-color-marca) 40%, transparent);
+  border-radius: var(--token-radio-m);
+  background: var(--token-color-superficie);
+  color: var(--token-color-marca);
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color var(--token-movimiento-rapido) var(--token-curva-salida),
+    transform var(--token-movimiento-rapido) var(--token-curva-salida);
+}
+
+.botonFiltros:hover {
+  background: color-mix(in srgb, var(--token-color-marca) 8%, var(--token-color-superficie));
+}
+
+.botonFiltros:active {
+  transform: scale(0.97);
+}
+
+.insignia {
+  display: inline-grid;
+  place-items: center;
+  min-width: var(--token-espacio-6);
+  height: var(--token-espacio-6);
+  padding-inline: var(--token-espacio-2);
+  border-radius: 999px;
+  background: var(--token-color-acento);
+  color: var(--token-color-fondo);
+  font-size: 0.875rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.chevron {
+  width: var(--token-espacio-4);
+  height: var(--token-espacio-4);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform var(--token-movimiento-base) var(--token-curva-salida);
+}
+
+.botonFiltros[aria-expanded="true"] .chevron {
+  transform: rotate(180deg);
+}
+
+@media (min-width: 56rem) {
+  .botonFiltros {
+    display: none;
+  }
+}
+
+.panelFiltros {
+  display: none;
+  margin-top: var(--token-espacio-3);
+  padding: var(--token-espacio-5);
+  border: 1px solid color-mix(in srgb, var(--token-color-marca) 18%, transparent);
+  border-radius: var(--token-radio-l);
+  background: var(--token-color-superficie);
+  box-shadow: var(--token-sombra-s);
+}
+
+.panelFiltros[data-abierto="true"] {
+  display: block;
+  animation: catalogo-entrada var(--token-movimiento-base) var(--token-curva-salida) both;
+}
+
+@media (min-width: 56rem) {
+  .panelFiltros {
+    display: block;
+    margin-top: 0;
+  }
+}
+
+.verResultados {
+  width: 100%;
+  margin-top: var(--token-espacio-5);
+  justify-content: center;
+}
+
+/* Solo en celular: en escritorio los resultados ya están a la vista. */
+@media (min-width: 56rem) {
+  .panelFiltros .verResultados {
+    display: none;
+  }
+}
+
+/* ---------- Grupos de filtros ---------- */
+
+.faceta {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* El separador va en el contenedor: un borde en el fieldset se dibuja a través de su leyenda. */
+.grupo + .grupo {
+  margin-top: var(--token-espacio-5);
+  padding-top: var(--token-espacio-5);
+  border-top: 1px solid color-mix(in srgb, var(--token-color-marca) 14%, transparent);
+}
+
+/*
+ * `position: relative` es imprescindible: los textos `sr-only` de cada opción son absolutos y,
+ * sin un ancestro posicionado, el scroll interno no los recorta y estiran la altura de toda la página.
+ */
+.lista {
+  position: relative;
+  max-height: calc(var(--token-espacio-11) * 6.5);
+  margin: 0 calc(-1 * var(--token-espacio-2));
+  padding: 0 var(--token-espacio-2);
+  list-style: none;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.opcion {
+  display: flex;
+  align-items: center;
+  gap: var(--token-espacio-3);
+  min-height: var(--token-espacio-11);
+  padding-inline: var(--token-espacio-2);
+  border-radius: var(--token-radio-m);
+  cursor: pointer;
+  transition: background-color var(--token-movimiento-rapido) var(--token-curva-salida);
+}
+
+.opcion:hover {
+  background: color-mix(in srgb, var(--token-color-marca) 8%, transparent);
+}
+
+.opcion:has(.radio:checked) {
+  background: color-mix(in srgb, var(--token-color-marca) 13%, transparent);
+  color: var(--token-color-marca);
+}
+
+.opcion:has(.radio:disabled) {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.opcion:has(.radio:disabled):hover {
+  background: transparent;
+}
+
+.radio {
+  appearance: none;
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: var(--token-espacio-5);
+  height: var(--token-espacio-5);
+  margin: 0;
+  border: 2px solid color-mix(in srgb, var(--token-color-marca) 60%, transparent);
+  border-radius: 50%;
+  background: var(--token-color-fondo);
+  cursor: inherit;
+  transition: border-color var(--token-movimiento-rapido) var(--token-curva-salida);
+}
+
+.radio::after {
+  content: "";
+  width: var(--token-espacio-2);
+  height: var(--token-espacio-2);
+  border-radius: 50%;
+  background: var(--token-color-marca);
+  transform: scale(0);
+  transition: transform var(--token-movimiento-rapido) var(--token-curva-salida);
+}
+
+.radio:checked {
+  border-color: var(--token-color-marca);
+}
+
+.radio:checked::after {
+  transform: scale(1);
+}
+
+.nombreOpcion {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.conteo {
+  font-size: 0.875rem;
+  font-variant-numeric: tabular-nums;
+  color: color-mix(in srgb, var(--token-color-texto) 75%, transparent);
+}
+
+/* ---------- Resultados: contador, chips y cuadrícula ---------- */
+
+.resultados {
+  min-width: 0;
+}
+
+/* Encabezado solo para lectores de pantalla; recibe el foco al quitar filtros o cambiar de página. */
+.tituloResultados {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.tituloResultados:focus {
+  outline: none;
+}
+
+.barraEstado {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--token-espacio-2) var(--token-espacio-3);
+  min-height: var(--token-espacio-11);
+  margin-bottom: var(--token-espacio-4);
+}
+
+.contador {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--token-color-texto);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--token-espacio-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--token-espacio-2);
+  min-height: var(--token-espacio-11);
+  padding-inline: var(--token-espacio-4) var(--token-espacio-3);
+  border: 1px solid color-mix(in srgb, var(--token-color-marca) 38%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--token-color-marca) 10%, var(--token-color-fondo));
+  color: var(--token-color-marca);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  animation: catalogo-chip var(--token-movimiento-base) var(--token-curva-salida) both;
+  transition:
+    background-color var(--token-movimiento-rapido) var(--token-curva-salida),
+    transform var(--token-movimiento-rapido) var(--token-curva-salida);
+}
+
+.chip:hover {
+  background: color-mix(in srgb, var(--token-color-marca) 20%, var(--token-color-fondo));
+}
+
+.chip:active {
+  transform: scale(0.96);
+}
+
+.chipCerrar {
+  width: var(--token-espacio-3);
+  height: var(--token-espacio-3);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  transition: transform var(--token-movimiento-base) var(--token-curva-salida);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .chip:hover .chipCerrar {
+    transform: rotate(90deg);
+  }
+}
+
+.limpiar {
+  min-height: var(--token-espacio-11);
+  padding-inline: var(--token-espacio-2);
+  border: 0;
+  background: transparent;
+  color: var(--token-color-marca);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+  cursor: pointer;
+}
+
+.limpiar:hover {
+  color: var(--token-color-acento);
+}
+
+.rejilla {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--token-espacio-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Hasta cuatro columnas según el ancho disponible (entre 2 y 4 con el panel lateral visible). */
+@media (min-width: 40rem) {
+  .rejilla {
+    grid-template-columns: repeat(
+      auto-fill,
+      minmax(calc(var(--token-espacio-16) * 2.75), 1fr)
+    );
+    gap: var(--token-espacio-4);
+  }
+}
+
+/*
+ * Aparición escalonada (GSAP, ver rejilla-productos.tsx). Mientras GSAP no ha tomado el
+ * control, las tarjetas se mantienen ocultas para que no haya un destello de contenido que
+ * se esconde y reaparece. Solo con JavaScript y sin «menos movimiento»; si GSAP nunca llega,
+ * un respaldo CSS las muestra a los 4 s.
+ */
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  .rejilla:not([data-listo]) [data-aparece] {
+    opacity: 0;
+    animation: catalogo-segura 0s linear 4s forwards;
+  }
+}
+
+/* ---------- Tarjeta de producto ---------- */
+
+.tarjeta {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--token-color-marca) 18%, transparent);
+  border-radius: var(--token-radio-l);
+  background: var(--token-color-superficie);
+  box-shadow: var(--token-sombra-s);
+  color: inherit;
+  text-decoration: none;
+  transition:
+    transform var(--token-movimiento-base) var(--token-curva-salida),
+    box-shadow var(--token-movimiento-base) var(--token-curva-salida),
+    border-color var(--token-movimiento-base) var(--token-curva-salida);
+}
+
+.imagen {
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--token-color-fondo-banda) 55%, var(--token-color-superficie));
+}
+
+/* Envase completo, sin recortar; el fondo blanco de la foto se funde con el de la caja. */
+.foto {
+  padding: var(--token-espacio-4);
+  object-fit: contain;
+  mix-blend-mode: multiply;
+  transition: transform calc(var(--token-movimiento-base) * 1.5) var(--token-curva-salida);
+}
+
+.cuerpo {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--token-espacio-1);
+  padding: var(--token-espacio-3) var(--token-espacio-3) var(--token-espacio-4);
+}
+
+.accion {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--token-espacio-1);
+  margin-top: auto;
+  padding-top: var(--token-espacio-2);
+  color: var(--token-color-marca);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.flecha {
+  width: var(--token-espacio-4);
+  height: var(--token-espacio-4);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform var(--token-movimiento-base) var(--token-curva-salida);
+}
+
+@media (hover: hover) {
+  .tarjeta:hover {
+    border-color: color-mix(in srgb, var(--token-color-marca) 50%, transparent);
+    box-shadow: var(--token-sombra-m);
+  }
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .tarjeta:hover {
+    transform: translateY(calc(-1 * var(--token-espacio-1)));
+  }
+
+  .tarjeta:hover .foto {
+    transform: scale(1.06);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .tarjeta:hover .flecha,
+  .tarjeta:focus-visible .flecha {
+    transform: translateX(var(--token-espacio-1));
+  }
+}
+
+/* ---------- Sin resultados y paginación ---------- */
+
+.sinResultados {
+  padding: var(--token-espacio-6);
+  border: 1px solid color-mix(in srgb, var(--token-color-marca) 18%, transparent);
+  border-radius: var(--token-radio-l);
+  background: var(--token-color-superficie);
+  box-shadow: var(--token-sombra-s);
+  animation: catalogo-entrada var(--token-movimiento-base) var(--token-curva-salida) both;
+}
+
+.botonPrimario,
+.botonSecundario,
+.paginaEnlace {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--token-espacio-11);
+  padding: var(--token-espacio-2) var(--token-espacio-5);
+  border-radius: var(--token-radio-m);
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color var(--token-movimiento-rapido) var(--token-curva-salida),
+    transform var(--token-movimiento-rapido) var(--token-curva-salida);
+}
+
+.botonPrimario {
+  border: 0;
+  background: var(--token-color-marca);
+  color: var(--token-color-fondo);
+  box-shadow: var(--token-sombra-s);
+}
+
+.botonPrimario:hover {
+  background: color-mix(in srgb, var(--token-color-marca) 88%, var(--token-color-texto));
+}
+
+.botonSecundario,
+.paginaEnlace {
+  border: 1px solid var(--token-color-marca);
+  background: var(--token-color-fondo);
+  color: var(--token-color-marca);
+}
+
+.botonSecundario:hover,
+.paginaEnlace:hover {
+  background: color-mix(in srgb, var(--token-color-marca) 8%, var(--token-color-fondo));
+}
+
+.botonPrimario:active,
+.botonSecundario:active,
+.paginaEnlace:active {
+  transform: scale(0.97);
+}
+
+.paginacion {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--token-espacio-2);
+  margin-top: var(--token-espacio-10);
+}
+
+/* ---------- Animaciones ---------- */
+
+@keyframes catalogo-entrada {
+  from {
+    opacity: 0;
+    transform: translateY(calc(-1 * var(--token-espacio-2)));
+  }
+}
+
+@keyframes catalogo-chip {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+}
+
+@keyframes catalogo-segura {
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panelFiltros,
+  .sinResultados,
+  .chip,
+  .rejilla [data-aparece] {
+    animation: none !important;
+  }
+
+  .tarjeta,
+  .foto,
+  .flecha,
+  .lupa,
+  .lupa svg,
+  .borrar,
+  .chip,
+  .chipCerrar,
+  .botonFiltros,
+  .chevron {
+    transition: none;
+  }
+}
