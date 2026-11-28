@@ -1,6 +1,7 @@
 import { cache } from "react";
 
 import { getPayloadClient } from "@/lib/payload-client";
+import { reintentarConsulta } from "@/lib/reintentar-consulta.ts";
 
 /**
  * Indica si existe al menos un cultivo publicado. Mientras no haya ninguno,
@@ -15,9 +16,11 @@ import { getPayloadClient } from "@/lib/payload-client";
  */
 export const hayCultivosPublicados = cache(async (): Promise<boolean> => {
   const payload = await getPayloadClient();
-  const { totalDocs } = await payload.count({
-    collection: "cultivos",
-    where: { _status: { equals: "published" } },
-  });
+  const { totalDocs } = await reintentarConsulta(() =>
+    payload.count({
+      collection: "cultivos",
+      where: { _status: { equals: "published" } },
+    }),
+  );
   return totalDocs > 0;
 });

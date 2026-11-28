@@ -1,6 +1,7 @@
 import { cache } from "react";
 
 import { getPayloadClient } from "@/lib/payload-client";
+import { reintentarConsulta } from "@/lib/reintentar-consulta.ts";
 import { obtenerWhatsAppNumber } from "@/lib/url-contacto.ts";
 
 import { resolverDestino } from "./destino.ts";
@@ -18,15 +19,17 @@ export const hayDestinoPedido = cache(async (): Promise<boolean> => {
     return true;
   }
   const payload = await getPayloadClient();
-  const { totalDocs } = await payload.count({
-    collection: "zonas-comerciales",
-    where: {
-      and: [
-        { _status: { equals: "published" } },
-        { numeroAutorizado: { equals: true } },
-        { whatsapp: { exists: true } },
-      ],
-    },
-  });
+  const { totalDocs } = await reintentarConsulta(() =>
+    payload.count({
+      collection: "zonas-comerciales",
+      where: {
+        and: [
+          { _status: { equals: "published" } },
+          { numeroAutorizado: { equals: true } },
+          { whatsapp: { exists: true } },
+        ],
+      },
+    }),
+  );
   return totalDocs > 0;
 });
